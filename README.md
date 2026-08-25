@@ -96,9 +96,15 @@ s'arrête dès qu'une équipe atteint le score visé, **21** par défaut, 11 ou 
 
 ### Mölkky
 
-De **2 à 8 joueurs** ou équipes, chacun son score. Le premier à **50 points exactement** l'emporte ;
-**dépasser 50 ramène à 25**. **Trois lancers manqués** de suite éliminent un joueur, et son tour est
-sauté ensuite.
+De **2 à 8 participants**, chacun son score. Le premier à **50 points exactement** l'emporte ;
+**dépasser 50 ramène à 25**. **Trois lancers manqués** de suite éliminent, et le tour est sauté
+ensuite.
+
+**En individuel ou en équipes.** Une équipe compte 2 à 4 joueurs, partage un score, et ses membres
+lancent à tour de rôle : l'écran annonce « Les Bleus · Marc » et fait tourner. Le lanceur se déduit
+du nombre de lancers déjà faits par l'équipe, donc corriger un lancer ancien reste juste. Les trois
+ratés se comptent **pour l'équipe**, quel que soit le membre qui lançait. Passer d'un format à
+l'autre repart de noms vides, un joueur n'étant pas une équipe.
 
 Un lancer vaut de 0 à 12 : le numéro de l'unique quille renversée, ou le nombre de quilles s'il y en
 a plusieurs. Les deux cas donnant le même chiffre, la saisie tient en **un appui** sur un pavé de

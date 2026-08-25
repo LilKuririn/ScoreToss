@@ -395,6 +395,15 @@ h1,h2,h3,p{margin:0}
    elle : on la centre tant qu'elle tient, et on repart du haut dès
    qu'elle déborde — centrer une colonne qui défile en rognerait le haut. */
 .mk-list.centre{justify-content:center}
+.mk-mates{margin-top:8px}
+.trow + .mk-mates{margin-top:8px}
+.mk-mates + .trow,.mk-mates + .trow-sw{margin-top:8px}
+/* le membre qui lance, sous le nom de son équipe */
+.mk-row .mate{
+  flex:0 0 auto;font-size:12px;font-weight:600;color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:96px;
+}
+.mk-row.on .mate{color:color-mix(in oklab,var(--c) 62%,var(--tone))}
 .mk-row{
   --c:#E14434;
   display:flex;align-items:center;gap:10px;
@@ -1377,15 +1386,29 @@ a.hall-link{text-decoration:none;color:inherit}
     </header>
 
     <div class="setup-body">
+      <div class="seg" id="mkMode">
+        <button type="button" data-mode="solo" class="on"><span class="lbl" data-i18n="mk.mode.solo">Individuel</span><span class="sub" data-i18n="mk.mode.solo.sub">Chacun pour soi</span></button>
+        <button type="button" data-mode="team"><span class="lbl" data-i18n="mk.mode.team">Équipes</span><span class="sub" data-i18n="mk.mode.team.sub">Score commun</span></button>
+      </div>
+
       <div class="tcount">
         <div>
-          <p class="eyebrow" data-i18n="mk.players">Joueurs</p>
+          <p class="eyebrow" id="mkCountLab" data-i18n="mk.players">Joueurs</p>
           <p class="note" id="mkNote">4 joueurs · premier à 50 exactement</p>
         </div>
         <div class="step wide" id="mkStep">
           <button type="button" id="mkMinus" data-i18n-aria="tour.remove">−</button>
           <div class="v" id="mkVal">4</div>
           <button type="button" id="mkPlus" data-i18n-aria="tour.add">+</button>
+        </div>
+      </div>
+
+      <div class="tcount" id="mkPerBlock" hidden>
+        <div><p class="eyebrow" data-i18n="mk.per">Joueurs par équipe</p></div>
+        <div class="step wide" id="mkPerStep">
+          <button type="button" id="mkPerMinus" data-i18n-aria="tour.remove">−</button>
+          <div class="v" id="mkPerVal">2</div>
+          <button type="button" id="mkPerPlus" data-i18n-aria="tour.add">+</button>
         </div>
       </div>
 
@@ -1728,6 +1751,17 @@ fr:{
   "mk.pins.one":"1 quille",
   "mk.pins.one.v":"son n°",
   "mk.pins.many.v":"leur nombre",
+  "mk.mode.solo":"Individuel",
+  "mk.mode.solo.sub":"Chacun pour soi",
+  "mk.mode.team":"Équipes",
+  "mk.mode.team.sub":"Score commun",
+  "mk.per":"Joueurs par équipe",
+  "mk.teams":"Équipes",
+  "mk.teamn":"Équipe {n}",
+  "mk.team.aria":"Nom de l'équipe {n}",
+  "mk.mate.aria":"Joueur {j} de l'équipe {n}",
+  "mk.note.team":"{n} équipes · premier à 50 exactement",
+  "mk.turn.team":"À {team} · {name}",
   "data.title":"Vos données",
   "data.export":"Exporter une sauvegarde",
   "data.import":"Restaurer une sauvegarde",
@@ -1934,6 +1968,17 @@ en:{
   "mk.pins.one":"1 pin",
   "mk.pins.one.v":"its number",
   "mk.pins.many.v":"how many",
+  "mk.mode.solo":"Individual",
+  "mk.mode.solo.sub":"Each on their own",
+  "mk.mode.team":"Teams",
+  "mk.mode.team.sub":"Shared score",
+  "mk.per":"Players per team",
+  "mk.teams":"Teams",
+  "mk.teamn":"Team {n}",
+  "mk.team.aria":"Name of team {n}",
+  "mk.mate.aria":"Player {j} of team {n}",
+  "mk.note.team":"{n} teams · first to exactly 50",
+  "mk.turn.team":"{team} · {name} to throw",
   "data.title":"Your data",
   "data.export":"Export a backup",
   "data.import":"Restore a backup",
@@ -2140,6 +2185,17 @@ es:{
   "mk.pins.one":"1 bolo",
   "mk.pins.one.v":"su número",
   "mk.pins.many.v":"cuántos",
+  "mk.mode.solo":"Individual",
+  "mk.mode.solo.sub":"Cada uno por su cuenta",
+  "mk.mode.team":"Equipos",
+  "mk.mode.team.sub":"Puntuación común",
+  "mk.per":"Jugadores por equipo",
+  "mk.teams":"Equipos",
+  "mk.teamn":"Equipo {n}",
+  "mk.team.aria":"Nombre del equipo {n}",
+  "mk.mate.aria":"Jugador {j} del equipo {n}",
+  "mk.note.team":"{n} equipos · el primero en 50 exactos",
+  "mk.turn.team":"Turno de {team} · {name}",
   "data.title":"Tus datos",
   "data.export":"Exportar una copia de seguridad",
   "data.import":"Restaurar una copia de seguridad",
@@ -3584,25 +3640,43 @@ var MK_MAX    = 8;
    écarts de pixels ne sont pas des écarts de terrain. */
 var MK_FORM = [[7,9,8],[5,11,12,6],[3,10,4],[1,2]];
 
+var MK_PER_MIN = 2;
+var MK_PER_MAX = 4;
+
 function mFreshPlayers(){
   var a=[];
-  for(var i=0;i<MK_MAX;i++) a.push({name:"", color:COLORS[i%COLORS.length].id});
+  for(var i=0;i<MK_MAX;i++) a.push({name:"", color:COLORS[i%COLORS.length].id, mates:["","","",""]});
   return a;
 }
-var MS = { count:4, open:-1, players:mFreshPlayers() };
+var MS = { count:4, mode:"solo", per:2, open:-1, players:mFreshPlayers() };
 var M  = null;
 
 function mName(i){
   var v=(MS.players[i].name||"").trim();
-  return v || tf("mk.playern",{n:i+1});
+  return v || tf(MS.mode==="team" ? "mk.teamn" : "mk.playern",{n:i+1});
+}
+function mMateName(i,j){
+  var m=MS.players[i].mates || [];
+  var v=(m[j]||"").trim();
+  return v || (t("team.player")+" "+(j+1));
 }
 
 /* --- préparation ------------------------------------------------- */
 function renderMCount(){
+  var eq = MS.mode==="team";
   $("mkVal").textContent=MS.count;
-  $("mkNote").textContent=tf("mk.note",{n:MS.count});
+  $("mkCountLab").textContent=t(eq ? "mk.teams" : "mk.players");
+  $("mkNote").textContent=tf(eq ? "mk.note.team" : "mk.note",{n:MS.count});
   $("mkMinus").disabled = MS.count<=MK_MIN;
   $("mkPlus").disabled  = MS.count>=MK_MAX;
+
+  $("mkPerBlock").hidden = !eq;
+  $("mkPerVal").textContent=MS.per;
+  $("mkPerMinus").disabled = MS.per<=MK_PER_MIN;
+  $("mkPerPlus").disabled  = MS.per>=MK_PER_MAX;
+
+  var kids=$("mkMode").children;
+  for(var i=0;i<kids.length;i++) kids[i].classList.toggle("on", kids[i].dataset.mode===MS.mode);
 }
 
 function renderMRows(){
@@ -3634,11 +3708,30 @@ function renderMRows(){
       name.type="text";
       name.value=pl.name;
       name.maxLength=22;
-      name.placeholder=tf("mk.playern",{n:k+1});
-      name.setAttribute("aria-label",tf("mk.player.aria",{n:k+1}));
+      var eq = MS.mode==="team";
+      name.placeholder=tf(eq ? "mk.teamn" : "mk.playern",{n:k+1});
+      name.setAttribute("aria-label",tf(eq ? "mk.team.aria" : "mk.player.aria",{n:k+1}));
       name.addEventListener("input",function(){ pl.name=name.value; save(); });
       row.appendChild(name);
       host.appendChild(row);
+
+      if(eq){
+        if(!pl.mates) pl.mates=["","","",""];
+        var mates=el("div","mates mk-mates");
+        for(var j=0;j<MS.per;j++){
+          (function(j){
+            var mi=el("input","field-input");
+            mi.type="text";
+            mi.value=pl.mates[j]||"";
+            mi.maxLength=16;
+            mi.placeholder=t("team.player")+" "+(j+1);
+            mi.setAttribute("aria-label",tf("mk.mate.aria",{j:j+1, n:k+1}));
+            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
+            mates.appendChild(mi);
+          })(j);
+        }
+        host.appendChild(mates);
+      }
 
       var sw=el("div","trow-sw swatches");
       sw.hidden = MS.open!==k;
@@ -3662,9 +3755,11 @@ function renderMSetup(){ renderMCount(); renderMRows(); }
 
 /* --- décompte ---------------------------------------------------- */
 function mNewGame(){
-  M={ target:MK_TARGET, players:[], throws:[], turn:0, over:false, winner:-1 };
+  M={ target:MK_TARGET, mode:MS.mode, per:MS.per, players:[], throws:[], turn:0, over:false, winner:-1 };
   for(var i=0;i<MS.count;i++){
-    M.players.push({ label:mName(i), hex:color(MS.players[i].color).hex });
+    var mates=[];
+    if(MS.mode==="team"){ for(var j=0;j<MS.per;j++) mates.push(mMateName(i,j)); }
+    M.players.push({ label:mName(i), hex:color(MS.players[i].color).hex, mates:mates });
   }
   mRecompute();
   show("mgame");
@@ -3672,6 +3767,21 @@ function mNewGame(){
   renderMGame();
   save();
   keepAwake();
+}
+
+/* Les membres d'une équipe lancent à tour de rôle. Celui qui lance se
+   déduit du nombre de lancers déjà faits par l'équipe : rien à stocker,
+   et une correction d'un lancer ancien reste juste. L'élimination, elle,
+   frappe l'équipe — le décompte des ratés la suit, comme son score. */
+function mThrowsBy(p, jusqua){
+  var n=0, fin=(jusqua===undefined) ? M.throws.length : jusqua;
+  for(var k=0;k<fin;k++) if(M.throws[k].p===p) n++;
+  return n;
+}
+function mMemberAt(p, rang){
+  var pl=M.players[p];
+  if(M.mode!=="team" || !pl || !pl.mates || !pl.mates.length) return null;
+  return pl.mates[rang % pl.mates.length];
 }
 
 /* Le joueur suivant encore en lice après `from`. */
@@ -3776,7 +3886,10 @@ function renderMGame(){
 
   var actif=M.turn;
   var nom = actif>=0 ? M.players[actif].label : "";
-  $("mkTurn").textContent = actif>=0 ? tf("mk.turn",{name:nom}) : tf("mk.done",{n:M.throws.length});
+  var membre = actif>=0 ? mMemberAt(actif, mThrowsBy(actif)) : null;
+  $("mkTurn").textContent = actif<0
+    ? tf("mk.done",{n:M.throws.length})
+    : (membre ? tf("mk.turn.team",{team:nom, name:membre}) : tf("mk.turn",{name:nom}));
   $("mkTargetLabel").textContent = t("game.target")+" "+M.target;
 
   var host=$("mkList");
@@ -3786,6 +3899,7 @@ function renderMGame(){
     row.style.setProperty("--c",pl.hex);
     row.appendChild(el("i","dot"));
     row.appendChild(el("span","who",pl.label));
+    if(i===actif && membre) row.appendChild(el("span","mate",membre));
 
     if(M.out[i]){
       row.appendChild(el("span","tag",t("mk.out")));
@@ -3805,7 +3919,7 @@ function renderMGame(){
   var keys=$("mkPad").children;
   for(var k=0;k<keys.length;k++){
     keys[k].disabled=off;
-    keys[k].setAttribute("aria-label", tf("mk.throw.aria",{name:nom, n:k+1}));
+    keys[k].setAttribute("aria-label", tf("mk.throw.aria",{name:membre||nom, n:k+1}));
   }
   var lst=$("mkList");
   lst.classList.remove("centre");
@@ -3815,7 +3929,7 @@ function renderMGame(){
 
   var mb=$("mkMissBtn");
   mb.disabled=off;
-  mb.setAttribute("aria-label", tf("mk.miss.aria",{name:nom}));
+  mb.setAttribute("aria-label", tf("mk.miss.aria",{name:membre||nom}));
   $("mkUndo").disabled = !M.throws.length;
 }
 
@@ -3901,12 +4015,18 @@ function renderMSheet(){
   table.appendChild(thead);
 
   var tbody=el("tbody");
+  var compte={};
   M.throws.forEach(function(th,idx){
+    var rang = compte[th.p]||0;
+    compte[th.p] = rang+1;
+    var membre = mMemberAt(th.p, rang);
+
     var row=el("tr");
     row.appendChild(el("td",null,String(idx+1).padStart(2,"0")));
 
     var td=el("td");
-    var w=el("span","pt", M.players[th.p] ? M.players[th.p].label : "?");
+    var etiq = (M.players[th.p] ? M.players[th.p].label : "?") + (membre ? " · "+membre : "");
+    var w=el("span","pt", etiq);
     if(M.players[th.p]) w.style.color=teamInk(M.players[th.p].hex);
     td.appendChild(w);
     row.appendChild(td);
@@ -3948,7 +4068,8 @@ function renderMEditor(body){
   body.appendChild(head);
 
   if(M.players[th.p]){
-    var qui=el("p","eyebrow",M.players[th.p].label);
+    var mbr=mMemberAt(th.p, mThrowsBy(th.p, MEDIT.idx));
+    var qui=el("p","eyebrow",M.players[th.p].label + (mbr ? " · "+mbr : ""));
     qui.style.paddingBottom="8px";
     body.appendChild(qui);
   }
@@ -4966,6 +5087,21 @@ $("mkMinus").addEventListener("click",function(){
 $("mkPlus").addEventListener("click",function(){
   if(MS.count<MK_MAX){ MS.count++; MS.open=-1; renderMSetup(); save(); }
 });
+$("mkMode").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-mode]");
+  if(!b || b.dataset.mode===MS.mode) return;
+  MS.mode=b.dataset.mode;
+  /* un joueur n'est pas une équipe : ce qui était nommé n'a plus de sens */
+  MS.players.forEach(function(pl){ pl.name=""; pl.mates=["","","",""]; });
+  MS.open=-1;
+  renderMSetup(); save();
+});
+$("mkPerMinus").addEventListener("click",function(){
+  if(MS.per>MK_PER_MIN){ MS.per--; MS.open=-1; renderMSetup(); save(); }
+});
+$("mkPerPlus").addEventListener("click",function(){
+  if(MS.per<MK_PER_MAX){ MS.per++; MS.open=-1; renderMSetup(); save(); }
+});
 $("mkStart").addEventListener("click",mNewGame);
 $("mkOpenLayout").addEventListener("click",mOpenLayout);
 $("mkLayoutBtn").addEventListener("click",mOpenLayout);
@@ -5129,10 +5265,15 @@ function load(){
   renderTSetup();
   if(d && d.ms && d.ms.players && d.ms.players.length===MK_MAX){
     MS=d.ms; MS.open=-1;
+    if(MS.mode!=="team") MS.mode="solo";
+    if(!MS.per || MS.per<MK_PER_MIN || MS.per>MK_PER_MAX) MS.per=MK_PER_MIN;
+    MS.players.forEach(function(pl){ if(!pl.mates) pl.mates=["","","",""]; });
   }
   if(d && d.m && d.m.players && d.m.players.length>=MK_MIN){
     M=d.m;
     if(!M.throws) M.throws=[];
+    if(!M.mode) M.mode="solo";
+    if(!M.per) M.per=MK_PER_MIN;
     mRecompute();
   }
   renderMSetup();
