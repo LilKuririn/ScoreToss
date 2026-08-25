@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
         "  if(s && s.classList.contains('on')){ document.getElementById('closeSheet').click(); return '1'; }" +
         "  var b=document.getElementById('bkSheetWrap');" +
         "  if(b && b.classList.contains('on')){ document.getElementById('bkSheetClose').click(); return '1'; }" +
+        "  var mk=document.getElementById('mkSheetWrap');" +
+        "  if(mk && mk.classList.contains('on')){ document.getElementById('mkSheetClose').click(); return '1'; }" +
+        "  var ml=document.getElementById('mkLayoutWrap');" +
+        "  if(ml && ml.classList.contains('on')){ document.getElementById('mkLayoutClose').click(); return '1'; }" +
         "  var g=document.getElementById('rulesWrap');" +
         "  if(g && g.classList.contains('on')){ document.getElementById('rulesClose').click(); return '1'; }" +
         "  var a=document.getElementById('aboutWrap');" +
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         "  if(on('s-hall')){ document.getElementById('hallBack').click(); return '1'; }" +
         "  if(on('s-tsetup')){ document.getElementById('tsBack').click(); return '1'; }" +
         "  if(on('s-bracket')){ document.getElementById('bkHome').click(); return '1'; }" +
+        "  if(on('s-msetup')){ document.getElementById('mkToGames').click(); return '1'; }" +
         "  if(on('s-setup')){ document.getElementById('backToGames').click(); return '1'; }" +
         "  return '0';" +
         "})()";

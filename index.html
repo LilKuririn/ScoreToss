@@ -382,6 +382,91 @@ h1,h2,h3,p{margin:0}
 .console-head b{color:color-mix(in oklab,var(--ink) 70%,var(--muted));font-weight:500}
 
 .crow{display:grid;grid-template-columns:1fr 92px 92px;align-items:center;gap:8px}
+/* ============ MÖLKKY ============ */
+/* La liste des joueurs : le tour en cours ressort, les éliminés s'effacent. */
+/* La liste absorbe la place et défile : à huit joueurs sur un petit
+   écran, le pavé de saisie doit rester atteignable. */
+.mk-list{
+  flex:1;min-height:0;overflow-y:auto;
+  display:flex;flex-direction:column;gap:7px;padding:0 14px 14px;
+}
+.mk-list > *{flex:0 0 auto}
+.mk-row{
+  --c:#E14434;
+  display:flex;align-items:center;gap:10px;
+  padding:11px 13px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+  transition:border-color .16s ease, background .16s ease, opacity .16s ease;
+}
+.mk-row i.dot{width:9px;height:9px;border-radius:50%;background:var(--c);flex:0 0 auto}
+.mk-row .who{
+  flex:1;min-width:0;font-size:14.5px;font-weight:600;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.mk-row .miss{
+  flex:0 0 auto;display:flex;gap:3px;
+}
+.mk-row .miss b{width:5px;height:5px;border-radius:50%;background:var(--line-2)}
+.mk-row .miss b.f{background:var(--danger)}
+.mk-row .sc{
+  flex:0 0 auto;font-family:var(--fm);font-size:19px;font-weight:800;
+  letter-spacing:-.03em;color:var(--ink);min-width:34px;text-align:right;
+}
+.mk-row .left{flex:0 0 auto;font-size:11.5px;font-weight:600;color:var(--muted)}
+.mk-row.on{
+  background:color-mix(in oklab,var(--c) 12%,var(--panel));
+  border-color:color-mix(in oklab,var(--c) 55%,transparent);
+}
+.mk-row.on .sc{color:color-mix(in oklab,var(--c) 62%,var(--tone))}
+.mk-row.out{opacity:.45}
+.mk-row.out .sc{text-decoration:line-through}
+.mk-row .tag{
+  flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--danger);
+}
+
+/* Le pavé de saisie : un lancer vaut 0 à 12, la valeur étant le numéro
+   de l'unique quille ou le nombre de quilles. Un appui suffit. */
+.mk-pad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.mk-key{
+  height:52px;border-radius:11px;
+  background:var(--panel-2);border:1px solid transparent;
+  font-family:var(--fm);font-size:18px;font-weight:700;color:var(--ink);
+  transition:background .12s ease, transform .1s ease;
+}
+.mk-key:active{background:color-mix(in oklab,var(--ink) 16%,var(--panel-2));transform:scale(.96)}
+.mk-key.on{
+  background:color-mix(in oklab,var(--ink) 13%,var(--panel-2));
+  border-color:color-mix(in oklab,var(--ink) 42%,transparent);
+}
+.mk-key:disabled,.mk-miss:disabled{opacity:.32}
+.mk-miss{
+  width:100%;margin-top:7px;height:46px;border-radius:11px;
+  background:transparent;border:1px solid var(--line-2);
+  font-size:14px;font-weight:600;color:var(--muted);
+  transition:background .12s ease,color .12s ease;
+}
+.mk-miss:active{background:color-mix(in oklab,var(--danger) 14%,transparent);color:var(--danger)}
+.mk-miss.on{border-color:var(--danger);color:var(--danger)}
+
+/* La formation de départ, dessinée à l'échelle des vraies quilles. */
+.mk-form{display:block;width:100%;max-width:290px;margin:2px auto 0}
+.mk-form .pin{fill:var(--panel-2);stroke:var(--line-2)}
+.mk-form .num{
+  fill:var(--ink);font-family:var(--fm);font-size:15px;font-weight:700;
+  text-anchor:middle;dominant-baseline:central;
+}
+.mk-form .line{stroke:var(--line-2);stroke-dasharray:4 4}
+.mk-form .lab{fill:var(--muted);font-size:11px;text-anchor:middle;letter-spacing:.06em}
+.mk-notice{
+  text-align:center;padding:0 14px 12px;color:var(--danger);
+}
+.mk-notice[hidden]{display:none}
+.mk-dist{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:12px;font-size:12.5px;color:var(--muted);
+}
+
 /* qui doit poser le maitre — une ligne sobre, au-dessus de la saisie */
 .mtr{
   display:flex;align-items:center;gap:9px;
@@ -900,6 +985,25 @@ a.hall-link{text-decoration:none;color:inherit}
         </svg>
       </button>
 
+      <button type="button" class="tile" id="playMolkky">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <rect x="5.5" y="15" width="6.4" height="14" rx="2.6" stroke="currentColor" stroke-width="1.8"/>
+            <rect x="13.8" y="10" width="6.4" height="19" rx="2.6" stroke="currentColor" stroke-width="1.8"/>
+            <rect x="22.1" y="17" width="6.4" height="12" rx="2.6" stroke="currentColor" stroke-width="1.8"/>
+            <rect x="19" y="3" width="11" height="3.6" rx="1.8" fill="#C5551F"
+                  transform="rotate(28 24.5 4.8)"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="molkky.name">Mölkky</span>
+          <span class="tile-sub" data-i18n="games.molkky.sub">À plusieurs, quilles numérotées</span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
       <div class="tile soon" aria-disabled="true">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
@@ -1036,6 +1140,22 @@ a.hall-link{text-decoration:none;color:inherit}
   </div>
 
   <!-- ============ RÈGLES DU JEU (par-dessus l'écran courant) ============ -->
+  <!-- placement des quilles -->
+  <div class="sheet-wrap" id="mkLayoutWrap">
+    <div class="scrim" id="mkLayoutScrim"></div>
+    <div class="sheet" role="dialog" aria-modal="true" data-i18n-aria="mk.layout">
+      <div class="sheet-head">
+        <h3 data-i18n="mk.layout">Placement des quilles</h3>
+        <button type="button" class="icon-btn" id="mkLayoutClose" data-i18n-aria="nav.close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="sheet-body" id="mkLayoutBody"></div>
+    </div>
+  </div>
+
   <div class="sheet-wrap" id="rulesWrap">
     <div class="scrim" id="rulesScrim"></div>
     <div class="sheet" role="dialog" aria-modal="true" data-i18n-aria="rules.title">
@@ -1222,6 +1342,141 @@ a.hall-link{text-decoration:none;color:inherit}
   </section>
 
   <!-- ============ FIN ============ -->
+  <!-- ============ MÖLKKY : PRÉPARATION ============ -->
+  <section class="screen" id="s-msetup">
+    <header class="brand">
+      <div class="brand-row">
+        <div>
+          <button type="button" class="crumb" id="mkToGames">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="games.change">Changer de jeu</span>
+          </button>
+          <h1><span data-i18n="molkky.name">Mölkky</span><span>.</span></h1>
+        </div>
+        <div class="nav">
+          <button type="button" class="nav-btn" id="mkHall" hidden data-i18n-aria="hall.aria">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M3.6 15V9.2M9 15V3.4M14.4 15v-3.9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+              <path d="M1.8 15h14.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="setup-body">
+      <div class="tcount">
+        <div>
+          <p class="eyebrow" data-i18n="mk.players">Joueurs</p>
+          <p class="note" id="mkNote">4 joueurs · premier à 50 exactement</p>
+        </div>
+        <div class="step wide" id="mkStep">
+          <button type="button" id="mkMinus" data-i18n-aria="tour.remove">−</button>
+          <div class="v" id="mkVal">4</div>
+          <button type="button" id="mkPlus" data-i18n-aria="tour.add">+</button>
+        </div>
+      </div>
+
+      <div id="mkRows"></div>
+
+      <div class="link-group">
+        <button type="button" class="hall-link" id="mkOpenLayout">
+          <span>
+            <span class="eyebrow" data-i18n="mk.layout">Placement des quilles</span>
+            <b data-i18n="mk.layout.open">Voir le placement des quilles</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" class="hall-link" id="mkOpenRules">
+          <span>
+            <span class="eyebrow" data-i18n="setup.rules.eyebrow">Règles du jeu</span>
+            <b data-i18n="setup.rules.label">Comment marquer des points</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" class="hall-link" id="mkOpenAbout">
+          <span>
+            <span class="eyebrow" data-i18n="setup.about.eyebrow">À propos</span>
+            <b data-i18n="setup.about.label">Réglages, sauvegarde et langue</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <footer class="cta-bar">
+      <button type="button" class="cta" id="mkStart" data-i18n="setup.start">Commencer la partie</button>
+    </footer>
+  </section>
+
+  <!-- ============ MÖLKKY : PARTIE ============ -->
+  <section class="screen" id="s-mgame">
+    <header class="top">
+      <p class="eyebrow" id="mkTurn">À vous</p>
+      <div class="sep"></div>
+      <p class="eyebrow" id="mkTargetLabel">Objectif 50</p>
+      <button type="button" class="icon-btn" id="mkLayoutBtn" data-i18n-aria="mk.layout">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <circle cx="5" cy="4.5" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="9" cy="4.5" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="13" cy="4.5" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="7" cy="9" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="11" cy="9" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M2.5 14.5h13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button type="button" class="icon-btn" id="mkSheetBtn" data-i18n-aria="sheet.title">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M2.5 4h13M2.5 9h13M2.5 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="mk-list" id="mkList"></div>
+    <p class="eyebrow mk-notice" id="mkNotice" hidden data-i18n="mk.back25">Dépassement — retour à 25</p>
+
+    <section class="console">
+      <div class="console-head">
+        <p class="eyebrow" data-i18n="mrules.count">Comptage</p>
+        <p class="eyebrow"><b data-i18n="mrules.one">une seule quille : son numéro</b></p>
+      </div>
+      <div class="mk-pad" id="mkPad"></div>
+      <button type="button" class="mk-miss" id="mkMissBtn" data-i18n="mk.miss">Raté</button>
+    </section>
+
+    <!-- feuille de match -->
+    <div class="sheet-wrap" id="mkSheetWrap">
+      <div class="scrim" id="mkScrim"></div>
+      <div class="sheet" role="dialog" aria-modal="true" data-i18n-aria="sheet.title">
+        <div class="sheet-head">
+          <h3 data-i18n="sheet.title">Feuille de match</h3>
+          <button type="button" class="icon-btn" id="mkSheetClose" data-i18n-aria="nav.close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="sheet-body" id="mkSheetBody"></div>
+        <div class="sheet-acts">
+          <button type="button" class="act" id="mkEdSave" hidden data-i18n="edit.save">Enregistrer la correction</button>
+          <button type="button" class="act danger" id="mkEdDel" hidden data-i18n="edit.delete">Supprimer ce lancer</button>
+          <button type="button" class="act" id="mkUndo" data-i18n="mk.undo">Annuler le dernier lancer</button>
+          <button type="button" class="act danger" id="mkQuit" data-i18n="sheet.quit">Terminer la partie</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="screen" id="s-over">
     <div class="over" id="over"></div>
   </section>
@@ -1261,7 +1516,10 @@ var GAMES = {
 function paletDefault(mode){ return mode==="double" ? 2 : 4; }
 function paletMax(mode,per){ return per*(mode==="double" ? 2 : 1); }
 /* le jeu qui fait foi : celui en cours s'il y en a un, sinon la préparation */
-function curGame(){ return (G && !G.over) ? G.game : S.game; }
+function curGame(){
+  if(S.game==="molkky") return "molkky";
+  return (G && !G.over) ? G.game : S.game;
+}
 function newEntry(g){ return g==="palet" ? [{p:0},{p:0}] : [{h:0,b:0},{h:0,b:0}]; }
 
 /* ==================================================================
@@ -1273,7 +1531,7 @@ fr:{
   "app.tagline":"Compteur de points",
   "games.eyebrow":"Choisir un jeu",
   "games.cornhole.sub":"Simple, double et tournois",
-  "games.soon":"En chantier", "games.soon.sub":"Mölkky, pétanque, palet vendéen…",
+  "games.soon":"En chantier", "games.soon.sub":"Pétanque, palet vendéen…",
   "games.change":"Changer de jeu",
   "app.desc":"Compteur de points pour les jeux d'extérieur. Cornhole et palet breton, en simple ou en double, tournois à élimination directe et palmarès entre joueurs.",
   "nav.home":"Accueil", "nav.close":"Fermer",
@@ -1371,7 +1629,7 @@ fr:{
   "hall.duels":"Confrontations",
   "hall.standings":"Classement",
   "hall.recent":"Dernières parties",
-  "hall.team":"Équipe", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
+  "hall.team":"Nom", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
   "hall.beat":"{w} bat {l}",
   "hall.tag.solo":"1v1", "hall.tag.duo":"2v2",
   "hall.clear":"Effacer le palmarès",
@@ -1420,6 +1678,42 @@ fr:{
   "about.theme.auto":"Téléphone",
   "about.theme.light":"Clair",
   "about.theme.dark":"Sombre",
+  "molkky.name":"Mölkky",
+  "games.molkky.sub":"À plusieurs, quilles numérotées",
+  "mk.players":"Joueurs",
+  "mk.playern":"Joueur {n}",
+  "mk.player.aria":"Nom du joueur {n}",
+  "mk.color.aria":"Couleur du joueur {n}",
+  "mk.note":"{n} joueurs · premier à 50 exactement",
+  "mk.turn":"À {name}",
+  "mk.miss":"Raté",
+  "mk.throw.aria":"{name} marque {n} points",
+  "mk.miss.aria":"{name} manque son lancer",
+  "mk.out":"Éliminé",
+  "mk.misses":"{n} ratés de suite",
+  "mk.back25":"Dépassement — retour à 25",
+  "mk.layout":"Placement des quilles",
+  "mk.layout.open":"Voir le placement des quilles",
+  "mk.layout.hint":"Formation de départ, à 3,50 m de la zone de lancer. Une quille renversée se relève là où elle est tombée, numéro vers les lanceurs — c'est ainsi qu'elles se dispersent.",
+  "mk.thrower":"Zone de lancer",
+  "mk.undo":"Annuler le dernier lancer",
+  "mk.sheet.empty":"Aucun lancer pour l'instant.",
+  "mk.sheet.hint":"Touchez un lancer pour le corriger. La partie est recalculée depuis le début.",
+  "mk.fix.aria":"Corriger le lancer {n}",
+  "mk.edit.title":"Correction · lancer {n}",
+  "mk.done":"Partie terminée en {n} lancers",
+  "mk.left":"Reste {n}",
+  "mk.rank":"Classement final",
+  "mrules.title":"Le mölkky",
+  "mrules.count":"Comptage",
+  "mrules.one":"une seule quille renversée : son numéro, de 1 à 12",
+  "mrules.many":"plusieurs quilles renversées : leur nombre",
+  "mrules.flow":"Déroulé",
+  "mrules.1a":"Le premier à ","mrules.1b":"50 points exactement","mrules.1c":" l'emporte.",
+  "mrules.2a":"Dépasser 50 ramène le score à ","mrules.2b":"25","mrules.2c":".",
+  "mrules.3a":"","mrules.3b":"Trois lancers manqués","mrules.3c":" de suite éliminent le joueur.",
+  "mrules.4a":"Une quille renversée se relève ","mrules.4b":"là où elle est tombée","mrules.4c":", sans être déplacée.",
+  "mrules.5a":"On lance à ","mrules.5b":"3,50 m","mrules.5c":", chacun son tour.",
   "data.title":"Vos données",
   "data.export":"Exporter une sauvegarde",
   "data.import":"Restaurer une sauvegarde",
@@ -1440,7 +1734,7 @@ en:{
   "app.tagline":"Score keeper",
   "games.eyebrow":"Pick a game",
   "games.cornhole.sub":"Singles, doubles and tournaments",
-  "games.soon":"In the works", "games.soon.sub":"Mölkky, pétanque, Vendée palet…",
+  "games.soon":"In the works", "games.soon.sub":"Pétanque, Vendée palet…",
   "games.change":"Change game",
   "app.desc":"A score keeper for outdoor games. Cornhole and Breton palet, singles or doubles, single-elimination tournaments, and a record of who beats whom.",
   "nav.home":"Home", "nav.close":"Close",
@@ -1538,7 +1832,7 @@ en:{
   "hall.duels":"Head to head",
   "hall.standings":"Standings",
   "hall.recent":"Recent games",
-  "hall.team":"Team", "hall.w":"W", "hall.l":"L", "hall.rate":"Win rate",
+  "hall.team":"Name", "hall.w":"W", "hall.l":"L", "hall.rate":"Win rate",
   "hall.beat":"{w} beat {l}",
   "hall.tag.solo":"1v1", "hall.tag.duo":"2v2",
   "hall.clear":"Clear the records",
@@ -1587,6 +1881,42 @@ en:{
   "about.theme.auto":"Phone",
   "about.theme.light":"Light",
   "about.theme.dark":"Dark",
+  "molkky.name":"Mölkky",
+  "games.molkky.sub":"Several players, numbered pins",
+  "mk.players":"Players",
+  "mk.playern":"Player {n}",
+  "mk.player.aria":"Name of player {n}",
+  "mk.color.aria":"Colour of player {n}",
+  "mk.note":"{n} players · first to exactly 50",
+  "mk.turn":"{name} to throw",
+  "mk.miss":"Miss",
+  "mk.throw.aria":"{name} scores {n} points",
+  "mk.miss.aria":"{name} misses",
+  "mk.out":"Out",
+  "mk.misses":"{n} misses in a row",
+  "mk.back25":"Overshot — back to 25",
+  "mk.layout":"Pin layout",
+  "mk.layout.open":"See the pin layout",
+  "mk.layout.hint":"Starting formation, 3.50 m from the throwing line. A pin that falls is stood back up where it landed, number facing the throwers — which is how they spread out.",
+  "mk.thrower":"Throwing line",
+  "mk.undo":"Undo the last throw",
+  "mk.sheet.empty":"No throws yet.",
+  "mk.sheet.hint":"Tap a throw to correct it. The game is recalculated from the start.",
+  "mk.fix.aria":"Correct throw {n}",
+  "mk.edit.title":"Correction · throw {n}",
+  "mk.done":"Game finished in {n} throws",
+  "mk.left":"{n} to go",
+  "mk.rank":"Final standings",
+  "mrules.title":"Mölkky",
+  "mrules.count":"Scoring",
+  "mrules.one":"one pin down: its number, from 1 to 12",
+  "mrules.many":"several pins down: how many",
+  "mrules.flow":"How it goes",
+  "mrules.1a":"First to ","mrules.1b":"exactly 50 points","mrules.1c":" wins.",
+  "mrules.2a":"Going over 50 drops the score back to ","mrules.2b":"25","mrules.2c":".",
+  "mrules.3a":"","mrules.3b":"Three missed throws","mrules.3c":" in a row put a player out.",
+  "mrules.4a":"A fallen pin is stood back up ","mrules.4b":"where it landed","mrules.4c":", never moved.",
+  "mrules.5a":"Throws are made from ","mrules.5b":"3.50 m","mrules.5c":", each in turn.",
   "data.title":"Your data",
   "data.export":"Export a backup",
   "data.import":"Restore a backup",
@@ -1607,7 +1937,7 @@ es:{
   "app.tagline":"Marcador",
   "games.eyebrow":"Elige un juego",
   "games.cornhole.sub":"Individual, parejas y torneos",
-  "games.soon":"En preparación", "games.soon.sub":"Mölkky, petanca, palet vendeano…",
+  "games.soon":"En preparación", "games.soon.sub":"Petanca, palet vendeano…",
   "games.change":"Cambiar de juego",
   "app.desc":"Marcador para juegos de exterior. Cornhole y palet bretón, individual o por parejas, torneos de eliminación directa e historial de enfrentamientos.",
   "nav.home":"Inicio", "nav.close":"Cerrar",
@@ -1705,7 +2035,7 @@ es:{
   "hall.duels":"Cara a cara",
   "hall.standings":"Clasificación",
   "hall.recent":"Últimas partidas",
-  "hall.team":"Equipo", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
+  "hall.team":"Nombre", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
   "hall.beat":"{w} gana a {l}",
   "hall.tag.solo":"1v1", "hall.tag.duo":"2v2",
   "hall.clear":"Borrar el historial",
@@ -1754,6 +2084,42 @@ es:{
   "about.theme.auto":"Teléfono",
   "about.theme.light":"Claro",
   "about.theme.dark":"Oscuro",
+  "molkky.name":"Mölkky",
+  "games.molkky.sub":"Varios jugadores, bolos numerados",
+  "mk.players":"Jugadores",
+  "mk.playern":"Jugador {n}",
+  "mk.player.aria":"Nombre del jugador {n}",
+  "mk.color.aria":"Color del jugador {n}",
+  "mk.note":"{n} jugadores · el primero en 50 exactos",
+  "mk.turn":"Turno de {name}",
+  "mk.miss":"Fallo",
+  "mk.throw.aria":"{name} anota {n} puntos",
+  "mk.miss.aria":"{name} falla el lanzamiento",
+  "mk.out":"Eliminado",
+  "mk.misses":"{n} fallos seguidos",
+  "mk.back25":"Se pasó — vuelta a 25",
+  "mk.layout":"Colocación de los bolos",
+  "mk.layout.open":"Ver la colocación de los bolos",
+  "mk.layout.hint":"Formación inicial, a 3,50 m de la zona de lanzamiento. Un bolo derribado se levanta donde cayó, con el número hacia los lanzadores — así se van dispersando.",
+  "mk.thrower":"Zona de lanzamiento",
+  "mk.undo":"Deshacer el último lanzamiento",
+  "mk.sheet.empty":"Todavía no hay lanzamientos.",
+  "mk.sheet.hint":"Toca un lanzamiento para corregirlo. La partida se recalcula desde el principio.",
+  "mk.fix.aria":"Corregir el lanzamiento {n}",
+  "mk.edit.title":"Corrección · lanzamiento {n}",
+  "mk.done":"Partida terminada en {n} lanzamientos",
+  "mk.left":"Faltan {n}",
+  "mk.rank":"Clasificación final",
+  "mrules.title":"El mölkky",
+  "mrules.count":"Puntuación",
+  "mrules.one":"un solo bolo derribado: su número, del 1 al 12",
+  "mrules.many":"varios bolos derribados: cuántos son",
+  "mrules.flow":"Desarrollo",
+  "mrules.1a":"Gana el primero en llegar a ","mrules.1b":"50 puntos exactos","mrules.1c":".",
+  "mrules.2a":"Pasarse de 50 devuelve la puntuación a ","mrules.2b":"25","mrules.2c":".",
+  "mrules.3a":"","mrules.3b":"Tres lanzamientos fallados","mrules.3c":" seguidos eliminan al jugador.",
+  "mrules.4a":"Un bolo derribado se levanta ","mrules.4b":"donde cayó","mrules.4c":", sin moverlo.",
+  "mrules.5a":"Se lanza desde ","mrules.5b":"3,50 m","mrules.5c":", por turnos.",
   "data.title":"Tus datos",
   "data.export":"Exportar una copia de seguridad",
   "data.import":"Restaurar una copia de seguridad",
@@ -1868,8 +2234,9 @@ function setLang(l){
   LANG = (l===null) ? detectLang() : l;
   document.documentElement.lang=LANG;
   applyStaticText();
-  renderCards(); renderRules(); renderTSetup();
+  renderCards(); renderRules(); renderTSetup(); renderMSetup();
   fillRules("rulesBody");
+  if(M && $("s-mgame").classList.contains("on")) renderMGame();
   refreshTourBtn(); refreshHallLink();
   if(G) renderGame(true);
   if(T && $("s-bracket").classList.contains("on")) renderBracket();
@@ -1932,11 +2299,39 @@ function fillPaletRules(host){
   host.appendChild(deroule);
 }
 
+function fillMolkkyRules(host){
+  var comptage=el("div","block");
+  comptage.appendChild(el("p","eyebrow",t("mrules.count")));
+  var pts=el("div","pts");
+  [["1",t("mrules.one")],["2+",t("mrules.many")]].forEach(function(r){
+    var row=el("div","pt-row");
+    row.appendChild(el("b",null,r[0]));
+    row.appendChild(el("span",null,r[1]));
+    pts.appendChild(row);
+  });
+  comptage.appendChild(pts);
+  host.appendChild(comptage);
+
+  var deroule=el("div","block");
+  deroule.appendChild(el("p","eyebrow",t("mrules.flow")));
+  var list=el("ul","rulist");
+  [1,2,3,4,5].forEach(function(k){
+    var li=document.createElement("li");
+    li.appendChild(document.createTextNode(t("mrules."+k+"a")));
+    li.appendChild(el("b",null,t("mrules."+k+"b")));
+    li.appendChild(document.createTextNode(t("mrules."+k+"c")));
+    list.appendChild(li);
+  });
+  deroule.appendChild(list);
+  host.appendChild(deroule);
+}
+
 function fillRules(id){
   var host=$(id);
   if(!host) return;
   host.innerHTML="";
 
+  if(curGame()==="molkky") return fillMolkkyRules(host);
   if(curGame()==="palet") return fillPaletRules(host);
 
   var comptage=el("div","block");
@@ -3145,6 +3540,521 @@ function renderOver(){
 }
 
 /* ==================================================================
+   MÖLKKY
+
+   Le premier jeu qui ne se joue pas à deux camps : chacun son score,
+   et l'élimination frappe les joueurs un à un. Le moteur commun, câblé
+   sur deux équipes, ne s'y prête pas — le mölkky a donc ses écrans et
+   son décompte, mais la même grammaire : historique rejoué, correction
+   après coup, palmarès partagé.
+
+   Un lancer vaut de 0 à 12, et c'est tout : le numéro de l'unique
+   quille renversée, ou le nombre de quilles s'il y en a plusieurs. Les
+   deux cas donnant le même chiffre, la saisie tient en un appui.
+================================================================== */
+var MK_TARGET = 50;
+var MK_BACK   = 25;   /* score après un dépassement */
+var MK_OUT    = 3;    /* ratés consécutifs qui éliminent */
+var MK_MIN    = 2;
+var MK_MAX    = 8;
+
+/* La formation officielle, relevée sur le schéma de molkky.world :
+   quatre rangées, le 1 et le 2 face aux lanceurs. Redessinée à la
+   maille des quilles — le schéma d'origine est en perspective, ses
+   écarts de pixels ne sont pas des écarts de terrain. */
+var MK_FORM = [[7,9,8],[5,11,12,6],[3,10,4],[1,2]];
+
+function mFreshPlayers(){
+  var a=[];
+  for(var i=0;i<MK_MAX;i++) a.push({name:"", color:COLORS[i%COLORS.length].id});
+  return a;
+}
+var MS = { count:4, open:-1, players:mFreshPlayers() };
+var M  = null;
+
+function mName(i){
+  var v=(MS.players[i].name||"").trim();
+  return v || tf("mk.playern",{n:i+1});
+}
+
+/* --- préparation ------------------------------------------------- */
+function renderMCount(){
+  $("mkVal").textContent=MS.count;
+  $("mkNote").textContent=tf("mk.note",{n:MS.count});
+  $("mkMinus").disabled = MS.count<=MK_MIN;
+  $("mkPlus").disabled  = MS.count>=MK_MAX;
+}
+
+function renderMRows(){
+  var host=$("mkRows");
+  host.innerHTML="";
+  host.style.display="flex";
+  host.style.flexDirection="column";
+  host.style.gap="0";
+
+  for(var k=0;k<MS.count;k++){
+    (function(k){
+      var pl=MS.players[k];
+      var row=el("div","trow");
+      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
+
+      var pick=el("button","pick");
+      pick.type="button";
+      pick.style.setProperty("--c",color(pl.color).hex);
+      pick.setAttribute("aria-label",tf("mk.color.aria",{n:k+1}));
+      pick.setAttribute("aria-expanded", MS.open===k ? "true":"false");
+      pick.appendChild(el("i"));
+      pick.addEventListener("click",function(){
+        MS.open = MS.open===k ? -1 : k;
+        renderMRows();
+      });
+      row.appendChild(pick);
+
+      var name=el("input","field-input");
+      name.type="text";
+      name.value=pl.name;
+      name.maxLength=22;
+      name.placeholder=tf("mk.playern",{n:k+1});
+      name.setAttribute("aria-label",tf("mk.player.aria",{n:k+1}));
+      name.addEventListener("input",function(){ pl.name=name.value; save(); });
+      row.appendChild(name);
+      host.appendChild(row);
+
+      var sw=el("div","trow-sw swatches");
+      sw.hidden = MS.open!==k;
+      COLORS.forEach(function(col){
+        var b=el("button","sw");
+        b.type="button";
+        b.style.setProperty("--c",col.hex);
+        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
+        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
+        b.addEventListener("click",function(){
+          pl.color=col.id; MS.open=-1;
+          renderMRows(); save();
+        });
+        sw.appendChild(b);
+      });
+      host.appendChild(sw);
+    })(k);
+  }
+}
+function renderMSetup(){ renderMCount(); renderMRows(); }
+
+/* --- décompte ---------------------------------------------------- */
+function mNewGame(){
+  M={ target:MK_TARGET, players:[], throws:[], turn:0, over:false, winner:-1 };
+  for(var i=0;i<MS.count;i++){
+    M.players.push({ label:mName(i), hex:color(MS.players[i].color).hex });
+  }
+  mRecompute();
+  show("mgame");
+  buildMPad();
+  renderMGame();
+  save();
+  keepAwake();
+}
+
+/* Le joueur suivant encore en lice après `from`. */
+function mNext(from){
+  var n=M.players.length;
+  for(var k=1;k<=n;k++){
+    var i=(from+k+n)%n;
+    if(!M.out[i]) return i;
+  }
+  return -1;
+}
+
+/* Tout se déduit de l'historique : corriger un lancer d'il y a dix
+   tours reste exact, dépassements et éliminations compris. */
+function mRecompute(){
+  var n=M.players.length, i;
+  M.score=[]; M.miss=[]; M.out=[];
+  for(i=0;i<n;i++){ M.score[i]=0; M.miss[i]=0; M.out[i]=false; }
+  M.over=false; M.winner=-1; M.reset=-1;
+
+  for(var k=0;k<M.throws.length;k++){
+    if(M.over) break;
+    var th=M.throws[k], pl=th.p, v=th.v;
+    if(pl<0 || pl>=n) continue;
+    var dernier = (k===M.throws.length-1);
+    if(dernier) M.reset=-1;
+    if(v>0){
+      M.miss[pl]=0;
+      M.score[pl]+=v;
+      if(M.score[pl]>M.target){
+        M.score[pl]=MK_BACK;
+        if(dernier) M.reset=pl;      /* on ne le signale que sur le coup */
+      }
+      if(M.score[pl]===M.target){ M.over=true; M.winner=pl; }
+    }else{
+      M.miss[pl]++;
+      if(M.miss[pl]>=MK_OUT) M.out[pl]=true;
+    }
+  }
+
+  /* dernier joueur en lice : il l'emporte sans avoir à atteindre 50 */
+  if(!M.over && n>1){
+    var vivants=[];
+    for(i=0;i<n;i++) if(!M.out[i]) vivants.push(i);
+    if(vivants.length<=1){
+      M.over=true;
+      M.winner = vivants.length ? vivants[0] : -1;
+    }
+  }
+
+  M.turn = M.over ? -1 : mNext(M.throws.length ? M.throws[M.throws.length-1].p : -1);
+}
+
+function mThrow(v){
+  if(!M || M.over || M.turn<0) return;
+  M.throws.push({p:M.turn, v:v});
+  mRecompute();
+  buzz(v>0 ? 14 : 8);
+  if(M.over){ mArchive(); renderMGame(); setTimeout(renderMOver, 620); }
+  else renderMGame();
+  save();
+}
+
+function mUndo(){
+  if(!M || !M.throws.length) return;
+  M.throws.pop();
+  mAfterChange();
+}
+
+function mAfterChange(){
+  mRecompute();
+  buzz(10);
+  save();
+  if(M.over){
+    mCloseSheet();
+    mArchive();
+    renderMGame();
+    setTimeout(renderMOver, 380);
+  }else{
+    renderMGame();
+    renderMSheet();
+  }
+}
+
+/* --- rendu de la partie ------------------------------------------ */
+function buildMPad(){
+  var host=$("mkPad");
+  host.innerHTML="";
+  for(var v=1;v<=12;v++){
+    (function(v){
+      var b=el("button","mk-key",String(v));
+      b.type="button";
+      b.addEventListener("click",function(){ mThrow(v); });
+      host.appendChild(b);
+    })(v);
+  }
+}
+
+function renderMGame(){
+  if(!M) return;
+  if(!$("mkPad").children.length) buildMPad();
+
+  var actif=M.turn;
+  var nom = actif>=0 ? M.players[actif].label : "";
+  $("mkTurn").textContent = actif>=0 ? tf("mk.turn",{name:nom}) : tf("mk.done",{n:M.throws.length});
+  $("mkTargetLabel").textContent = t("game.target")+" "+M.target;
+
+  var host=$("mkList");
+  host.innerHTML="";
+  M.players.forEach(function(pl,i){
+    var row=el("div","mk-row"+(i===actif?" on":"")+(M.out[i]?" out":""));
+    row.style.setProperty("--c",pl.hex);
+    row.appendChild(el("i","dot"));
+    row.appendChild(el("span","who",pl.label));
+
+    if(M.out[i]){
+      row.appendChild(el("span","tag",t("mk.out")));
+    }else{
+      var miss=el("div","miss");
+      miss.setAttribute("aria-label",tf("mk.misses",{n:M.miss[i]}));
+      for(var d=0;d<MK_OUT;d++) miss.appendChild(el("b", d<M.miss[i] ? "f" : null));
+      row.appendChild(miss);
+      var reste=M.target-M.score[i];
+      if(reste>0 && reste<=12) row.appendChild(el("span","left",tf("mk.left",{n:reste})));
+    }
+    row.appendChild(el("div","sc num",String(M.score[i])));
+    host.appendChild(row);
+  });
+
+  var off = M.over || actif<0;
+  var keys=$("mkPad").children;
+  for(var k=0;k<keys.length;k++){
+    keys[k].disabled=off;
+    keys[k].setAttribute("aria-label", tf("mk.throw.aria",{name:nom, n:k+1}));
+  }
+  $("mkNotice").hidden = !(M.reset>=0) || M.over;
+
+  var mb=$("mkMissBtn");
+  mb.disabled=off;
+  mb.setAttribute("aria-label", tf("mk.miss.aria",{name:nom}));
+  $("mkUndo").disabled = !M.throws.length;
+}
+
+/* --- le placement des quilles ------------------------------------ */
+function buildMLayout(host){
+  host.innerHTML="";
+  var R=25, JEU=5, PAS=2*R+JEU;
+  var W=4*PAS+16, H=MK_FORM.length*PAS+56;
+
+  var svg=document.createElementNS(SVGNS,"svg");
+  svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  svg.setAttribute("class","mk-form");
+  svg.setAttribute("role","img");
+  svg.setAttribute("aria-label",t("mk.layout"));
+
+  MK_FORM.forEach(function(rang,r){
+    var y=8+R+r*PAS;
+    var x0=(W-(rang.length*PAS-JEU))/2;
+    rang.forEach(function(n,c){
+      var cx=x0+R+c*PAS;
+      var q=document.createElementNS(SVGNS,"circle");
+      q.setAttribute("cx",cx); q.setAttribute("cy",y); q.setAttribute("r",R);
+      q.setAttribute("stroke-width","1.4");
+      q.setAttribute("class","pin");
+      svg.appendChild(q);
+      var tx=document.createElementNS(SVGNS,"text");
+      tx.setAttribute("x",cx); tx.setAttribute("y",y);
+      tx.setAttribute("class","num");
+      tx.textContent=String(n);
+      svg.appendChild(tx);
+    });
+  });
+
+  /* la ligne de lancer, face au 1 et au 2 */
+  var ly=8+MK_FORM.length*PAS+14;
+  var ln=document.createElementNS(SVGNS,"line");
+  ln.setAttribute("x1",12); ln.setAttribute("x2",W-12);
+  ln.setAttribute("y1",ly); ln.setAttribute("y2",ly);
+  ln.setAttribute("stroke-width","1.6");
+  ln.setAttribute("class","line");
+  svg.appendChild(ln);
+  var lab=document.createElementNS(SVGNS,"text");
+  lab.setAttribute("x",W/2); lab.setAttribute("y",ly+20);
+  lab.setAttribute("class","lab");
+  lab.textContent=t("mk.thrower");
+  svg.appendChild(lab);
+
+  host.appendChild(svg);
+
+  var d=el("div","mk-dist");
+  d.appendChild(el("b",null,t("mrules.5b")));
+  host.appendChild(d);
+  host.appendChild(el("p","hint",t("mk.layout.hint")));
+}
+
+function mOpenLayout(){ buildMLayout($("mkLayoutBody")); $("mkLayoutWrap").classList.add("on"); }
+function mCloseLayout(){ $("mkLayoutWrap").classList.remove("on"); }
+
+/* --- feuille de match -------------------------------------------- */
+var MEDIT=null;
+
+function renderMSheet(){
+  var body=$("mkSheetBody");
+  body.innerHTML="";
+  $("mkEdSave").hidden = !MEDIT;
+  $("mkEdDel").hidden  = !MEDIT;
+  $("mkUndo").hidden   = !!MEDIT;
+  $("mkQuit").hidden   = !!MEDIT;
+  if(MEDIT){ renderMEditor(body); return; }
+
+  if(!M.throws.length){
+    body.appendChild(el("p","empty",t("mk.sheet.empty")));
+    $("mkUndo").disabled=true;
+    return;
+  }
+
+  var table=el("table","log");
+  var thead=el("thead"), tr=el("tr");
+  tr.appendChild(el("th",null,"#"));
+  tr.appendChild(el("th",null,t("mk.players")));
+  tr.appendChild(el("th",null,t("over.points")));
+  thead.appendChild(tr);
+  table.appendChild(thead);
+
+  var tbody=el("tbody");
+  M.throws.forEach(function(th,idx){
+    var row=el("tr");
+    row.appendChild(el("td",null,String(idx+1).padStart(2,"0")));
+
+    var td=el("td");
+    var w=el("span","pt", M.players[th.p] ? M.players[th.p].label : "?");
+    if(M.players[th.p]) w.style.color=teamInk(M.players[th.p].hex);
+    td.appendChild(w);
+    row.appendChild(td);
+
+    var tv=el("td");
+    tv.appendChild(el("span", th.v ? "pt" : "pt zero", th.v ? "+"+th.v : t("mk.miss")));
+    row.appendChild(tv);
+
+    row.setAttribute("role","button");
+    row.tabIndex=0;
+    row.setAttribute("aria-label",tf("mk.fix.aria",{n:idx+1}));
+    row.addEventListener("click",function(){ mOpenEditor(idx); });
+    row.addEventListener("keydown",function(ev){
+      if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); mOpenEditor(idx); }
+    });
+    tbody.appendChild(row);
+  });
+  table.appendChild(tbody);
+  body.appendChild(table);
+  body.appendChild(el("p","hint",t("mk.sheet.hint")));
+  $("mkUndo").disabled=false;
+}
+
+function mOpenEditor(idx){
+  if(!M.throws[idx]) return;
+  MEDIT={idx:idx, v:M.throws[idx].v};
+  renderMSheet();
+}
+function mCloseEditor(){ MEDIT=null; renderMSheet(); }
+
+function renderMEditor(body){
+  var th=M.throws[MEDIT.idx];
+  var head=el("div","ed-head");
+  head.appendChild(el("p","eyebrow",tf("mk.edit.title",{n:String(MEDIT.idx+1).padStart(2,"0")})));
+  var back=el("button","ed-back",t("edit.cancel"));
+  back.type="button";
+  back.addEventListener("click",mCloseEditor);
+  head.appendChild(back);
+  body.appendChild(head);
+
+  if(M.players[th.p]){
+    var qui=el("p","eyebrow",M.players[th.p].label);
+    qui.style.paddingBottom="8px";
+    body.appendChild(qui);
+  }
+
+  var pad=el("div","mk-pad");
+  for(var v=1;v<=12;v++){
+    (function(v){
+      var b=el("button","mk-key"+(MEDIT.v===v?" on":""),String(v));
+      b.type="button";
+      b.addEventListener("click",function(){ MEDIT.v=v; renderMSheet(); });
+      pad.appendChild(b);
+    })(v);
+  }
+  body.appendChild(pad);
+
+  var miss=el("button","mk-miss"+(MEDIT.v===0?" on":""),t("mk.miss"));
+  miss.type="button";
+  miss.addEventListener("click",function(){ MEDIT.v=0; renderMSheet(); });
+  body.appendChild(miss);
+}
+
+function mOpenSheet(){
+  MEDIT=null;
+  renderMSheet();
+  mArmQuit(false);
+  $("mkSheetWrap").classList.add("on");
+}
+function mCloseSheet(){
+  $("mkSheetWrap").classList.remove("on");
+  MEDIT=null;
+}
+function mArmQuit(on){
+  var b=$("mkQuit");
+  b.dataset.armed = on ? "1" : "0";
+  b.textContent = on ? t("sheet.quit.confirm") : t("sheet.quit");
+}
+
+/* --- archivage et fin de partie ---------------------------------- */
+function mArchive(){
+  if(!M || M.archived || M.winner<0) return;
+  H.unshift({
+    d:Date.now(), g:"molkky",
+    n:M.players.map(function(pl){ return pl.label; }),
+    c:M.players.map(function(pl){ return pl.hex; }),
+    s:M.score.slice(),
+    w:M.winner, r:M.throws.length, t:false
+  });
+  if(H.length>200) H.length=200;
+  M.archived=true;
+}
+
+function mRank(){
+  var w=M.winner;
+  return M.players.map(function(pl,i){ return i; }).sort(function(a,b){
+    if(a===w) return -1;
+    if(b===w) return 1;
+    if(M.out[a]!==M.out[b]) return M.out[a] ? 1 : -1;
+    return M.score[b]-M.score[a];
+  });
+}
+
+function renderMOver(){
+  var box=$("over");
+  box.innerHTML="";
+  var w=M.winner;
+  if(w>=0) box.style.setProperty("--team",M.players[w].hex);
+
+  var head=el("div","over-head reveal");
+  head.appendChild(el("p","eyebrow",tf("mk.done",{n:M.throws.length})));
+  if(w>=0){
+    head.appendChild(el("h2",null,tf("over.wins",{name:M.players[w].label})));
+    var fin=el("div","final");
+    fin.appendChild(el("span","a",String(M.score[w])));
+    head.appendChild(fin);
+  }
+  box.appendChild(head);
+
+  var card=el("div","tale reveal");
+  card.style.animationDelay="80ms";
+  var top=el("div","tale-top");
+  top.appendChild(el("p","eyebrow",t("mk.rank")));
+  top.appendChild(el("p","eyebrow",tf("over.goal",{n:M.target})));
+  card.appendChild(top);
+
+  mRank().forEach(function(i,rang){
+    var row=el("div","mk-row"+(M.out[i]?" out":""));
+    row.style.setProperty("--c",M.players[i].hex);
+    row.style.marginTop="7px";
+    row.appendChild(el("i","dot"));
+    row.appendChild(el("span","who",(rang+1)+". "+M.players[i].label));
+    if(M.out[i]) row.appendChild(el("span","tag",t("mk.out")));
+    row.appendChild(el("div","sc num",String(M.score[i])));
+    card.appendChild(row);
+  });
+  box.appendChild(card);
+
+  var acts=el("div","over-acts reveal");
+  acts.style.animationDelay="160ms";
+
+  var share=el("button","share-btn",t("share.result"));
+  share.type="button";
+  share.addEventListener("click",mShare);
+  acts.appendChild(share);
+
+  var again=el("button","cta",t("over.rematch"));
+  again.type="button";
+  again.addEventListener("click",function(){ mNewGame(); });
+  acts.appendChild(again);
+
+  var back=el("button","cta ghost",t("over.newsetup"));
+  back.type="button";
+  back.addEventListener("click",function(){ M=null; save(); show("msetup"); renderMSetup(); });
+  acts.appendChild(back);
+
+  box.appendChild(acts);
+  show("over");
+  buzz([14,60,26]);
+}
+
+function mShare(){
+  if(!M || M.winner<0) return;
+  var lignes=[t("molkky.name")+" · "+tf("over.goal",{n:M.target})];
+  mRank().forEach(function(i,rang){
+    lignes.push((rang+1)+". "+M.players[i].label+" — "+M.score[i]+(M.out[i] ? " ("+t("mk.out")+")" : ""));
+  });
+  lignes.push("ScoreToss");
+  shareText(lignes.join("\n"));
+}
+
+/* ==================================================================
    PALMARÈS — parties archivées et confrontations
 ================================================================== */
 var H=[];
@@ -3179,7 +4089,8 @@ function nameKey(s){ return (s||"").trim().toLocaleLowerCase("fr"); }
 function modeTags(){
   var m={};
   HG().forEach(function(g){
-    for(var i=0;i<2;i++){
+    if(!g.mode) return;          /* le mölkky n'est ni simple ni double */
+    for(var i=0;i<g.n.length;i++){
       var k=nameKey(g.n[i]);
       if(!k) continue;
       if(!m[k]) m[k]={solo:false,duo:false};
@@ -3201,7 +4112,7 @@ function tagEl(tags,name){
 function standings(){
   var map={}, order=[];
   HG().forEach(function(g){
-    for(var i=0;i<2;i++){
+    for(var i=0;i<g.n.length;i++){
       var k=nameKey(g.n[i]);
       if(!k) continue;
       if(!map[k]){ map[k]={label:g.n[i], hex:g.c[i], v:0, d:0}; order.push(k); }
@@ -3220,6 +4131,7 @@ function standings(){
 function duels(){
   var map={}, order=[];
   HG().forEach(function(g){
+    if(g.n.length!==2) return;   /* une confrontation se joue à deux */
     var ka=nameKey(g.n[0]), kb=nameKey(g.n[1]);
     if(!ka || !kb || ka===kb) return;
     var flip = kb<ka;
@@ -3337,24 +4249,35 @@ function renderHall(){
     var dt=new Date(g.d);
     row.appendChild(el("p","d", dt.toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric",month:"short"})));
     var m=el("p","m");
-    var mp=tf("hall.beat",{w:"\u0000",l:"\u0001"}).split(/[\u0000\u0001]/);
-    m.appendChild(document.createTextNode(mp[0]||""));
-    m.appendChild(el("b",null,g.n[g.w]));
-    m.appendChild(document.createTextNode(mp[1]||""));
-    m.appendChild(document.createTextNode(g.n[1-g.w]));
-    m.appendChild(document.createTextNode(mp[2]||""));
-    row.appendChild(m);
-    row.appendChild(el("p","sc", g.s[g.w]+"–"+g.s[1-g.w]));
+    if(g.n.length===2){
+      var mp=tf("hall.beat",{w:"\u0000",l:"\u0001"}).split(/[\u0000\u0001]/);
+      m.appendChild(document.createTextNode(mp[0]||""));
+      m.appendChild(el("b",null,g.n[g.w]));
+      m.appendChild(document.createTextNode(mp[1]||""));
+      m.appendChild(document.createTextNode(g.n[1-g.w]));
+      m.appendChild(document.createTextNode(mp[2]||""));
+      row.appendChild(m);
+      row.appendChild(el("p","sc", g.s[g.w]+"–"+g.s[1-g.w]));
+    }else{
+      /* à plus de deux, on ne nomme que le vainqueur */
+      m.appendChild(el("b",null,g.n[g.w]));
+      row.appendChild(m);
+      row.appendChild(el("p","sc", String(g.s[g.w])));
+    }
     bl.appendChild(row);
   });
   body.appendChild(bl);
 }
 
 function refreshHallLink(){
-  var btn=$("openHall");
-  btn.hidden = !HG().length;
-  btn.title = t("hall.aria")+" · "+tn("hall.count",HG().length);
-  btn.setAttribute("aria-label", btn.title);
+  var n=HG().length, titre=t("hall.aria")+" · "+tn("hall.count",n);
+  ["openHall","mkHall"].forEach(function(id){
+    var btn=$(id);
+    if(!btn) return;
+    btn.hidden = !n;
+    btn.title = titre;
+    btn.setAttribute("aria-label", titre);
+  });
 }
 
 /* ------------------------------------------------------------------
@@ -3459,7 +4382,7 @@ function exportName(){
 
 function exportData(){
   TOUR[S.game]=T; DRAFT[S.game]=TS;
-  var payload=JSON.stringify({v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H}, null, 1);
+  var payload=JSON.stringify({v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H, ms:MS, m:M}, null, 1);
   var name=exportName();
   var b=bridge();
   if(b && b.saveFile){
@@ -3485,11 +4408,16 @@ function applyImport(text){
   if(!window.confirm(t("data.confirm"))) return;
 
   if(d.s && d.s.teams && d.s.teams.length===2) S=d.s;
-  if(S.game!=="palet") S.game="cornhole";
+  if(S.game!=="palet" && S.game!=="molkky") S.game="cornhole";
   if(!S.tgt) S.tgt={cornhole:21, palet:12};
   TOUR={cornhole:null, palet:null}; DRAFT={cornhole:null, palet:null};
   adoptTour(d);
   H = (d.h && d.h.length) ? d.h : [];
+  if(d.ms && d.ms.players && d.ms.players.length===MK_MAX){ MS=d.ms; MS.open=-1; }
+  else { MS={count:4, open:-1, players:mFreshPlayers()}; }
+  M = (d.m && d.m.players && d.m.players.length>=MK_MIN) ? d.m : null;
+  if(M){ if(!M.throws) M.throws=[]; mRecompute(); }
+  renderMSetup();
   G = (d.g && d.g.teams) ? d.g : null;
   if(G){
     if(!G.game) G.game="cornhole";
@@ -3579,8 +4507,10 @@ $("openRulesT").addEventListener("click",openRules);
 $("rulesClose").addEventListener("click",closeRules);
 $("rulesScrim").addEventListener("click",closeRules);
 
-$("openHall").addEventListener("click",function(){ renderHall(); show("hall"); });
-$("hallBack").addEventListener("click",function(){ show("setup"); });
+var HALL_BACK="setup";
+$("openHall").addEventListener("click",function(){ HALL_BACK="setup"; renderHall(); show("hall"); });
+$("mkHall").addEventListener("click",function(){ HALL_BACK="msetup"; renderHall(); show("hall"); });
+$("hallBack").addEventListener("click",function(){ show(HALL_BACK); });
 $("hallClear").addEventListener("click",function(){
   var b=$("hallClear");
   if(b.dataset.armed!=="1"){
@@ -3987,6 +4917,69 @@ function applyMatchResult(){
 ------------------------------------------------------------------ */
 $("playCornhole").addEventListener("click",function(){ applyGame("cornhole"); show("setup"); });
 $("playPalet").addEventListener("click",function(){ applyGame("palet"); show("setup"); });
+
+/* Le mölkky ne partage ni l'écran de préparation ni le moteur : on bascule
+   le jeu courant — pour que le palmarès filtre juste — puis on ouvre les
+   siens. Le tableau de tournoi du jeu quitté est rangé au passage. */
+$("playMolkky").addEventListener("click",function(){
+  if(!S.tgt) S.tgt={cornhole:21, palet:12};
+  if(S.game!=="molkky"){
+    S.tgt[S.game]=S.target;
+    TOUR[S.game]=T;
+    DRAFT[S.game]=TS;
+  }
+  S.game="molkky";
+  T=null;
+  fillRules("rulesBody");
+  save();
+  show("msetup");
+  renderMSetup();
+});
+$("mkToGames").addEventListener("click",function(){ show("games"); });
+$("mkMinus").addEventListener("click",function(){
+  if(MS.count>MK_MIN){ MS.count--; MS.open=-1; renderMSetup(); save(); }
+});
+$("mkPlus").addEventListener("click",function(){
+  if(MS.count<MK_MAX){ MS.count++; MS.open=-1; renderMSetup(); save(); }
+});
+$("mkStart").addEventListener("click",mNewGame);
+$("mkOpenLayout").addEventListener("click",mOpenLayout);
+$("mkLayoutBtn").addEventListener("click",mOpenLayout);
+$("mkLayoutClose").addEventListener("click",mCloseLayout);
+$("mkLayoutScrim").addEventListener("click",mCloseLayout);
+$("mkOpenRules").addEventListener("click",openRules);
+$("mkOpenAbout").addEventListener("click",openAbout);
+$("mkSheetBtn").addEventListener("click",mOpenSheet);
+$("mkSheetClose").addEventListener("click",mCloseSheet);
+$("mkScrim").addEventListener("click",mCloseSheet);
+$("mkMissBtn").addEventListener("click",function(){ mThrow(0); });
+$("mkUndo").addEventListener("click",mUndo);
+$("mkEdSave").addEventListener("click",function(){
+  if(!MEDIT) return;
+  M.throws[MEDIT.idx].v = MEDIT.v;
+  MEDIT=null;
+  mAfterChange();
+});
+$("mkEdDel").addEventListener("click",function(){
+  if(!MEDIT) return;
+  M.throws.splice(MEDIT.idx,1);
+  MEDIT=null;
+  mAfterChange();
+});
+$("mkQuit").addEventListener("click",function(){
+  var b=$("mkQuit");
+  if(b.dataset.armed!=="1"){
+    mArmQuit(true);
+    setTimeout(function(){ if(b.dataset.armed==="1") mArmQuit(false); },4000);
+    return;
+  }
+  mCloseSheet();
+  M=null;
+  buzz(12);
+  save();
+  show("msetup");
+  renderMSetup();
+});
 $("mtrMiss").addEventListener("click",maitreMiss);
 $("backToGames").addEventListener("click",function(){ show("games"); });
 
@@ -4068,16 +5061,18 @@ function refreshTourBtn(){
 }
 
 function show(name){
-  ["games","setup","tsetup","bracket","hall","game","over"].forEach(function(n){
+  ["games","setup","tsetup","bracket","hall","game","over","msetup","mgame"].forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
   if(name!=="game") closeSheet();
+  if(name!=="mgame") mCloseSheet();
   if(name==="setup"){ refreshTourBtn(); refreshHallLink(); }
+  if(name==="msetup") refreshHallLink();
 }
 
 function save(){
   TOUR[S.game]=T; DRAFT[S.game]=TS;   /* le jeu courant avant d'ecrire */
-  try{ localStorage.setItem(KEY, JSON.stringify({s:S,g:G,tg:TOUR,ds:DRAFT,h:H})); }catch(e){}
+  try{ localStorage.setItem(KEY, JSON.stringify({s:S,g:G,tg:TOUR,ds:DRAFT,h:H,ms:MS,m:M})); }catch(e){}
 }
 
 /* Les enregistrements d'avant le palet ne connaissent qu'un tableau et
@@ -4101,18 +5096,33 @@ function load(){
   try{ d=JSON.parse(raw); }catch(e){ return; }
   if(d && d.s){
     S=d.s;
-    if(S.game!=="palet") S.game="cornhole";
+    if(S.game!=="palet" && S.game!=="molkky") S.game="cornhole";
     if(!S.tgt) S.tgt={cornhole:21, palet:12};
     if(!S.palets) S.palets=paletDefault(S.mode);
     if(!S.teams || S.teams.length!==2) S.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
   }
   adoptTour(d);
   renderTSetup();
+  if(d && d.ms && d.ms.players && d.ms.players.length===MK_MAX){
+    MS=d.ms; MS.open=-1;
+  }
+  if(d && d.m && d.m.players && d.m.players.length>=MK_MIN){
+    M=d.m;
+    if(!M.throws) M.throws=[];
+    mRecompute();
+  }
+  renderMSetup();
   if(d && d.h && d.h.length) H=d.h;
   refreshTourBtn();
   refreshHallLink();
 
-  if(d && d.g && d.g.teams){
+  /* le mölkky reprend d'abord : il a son propre écran de partie */
+  if(S.game==="molkky" && M && !M.over){
+    show("mgame");
+    buildMPad();
+    renderMGame();
+    keepAwake();
+  }else if(d && d.g && d.g.teams){
     G=d.g;
     if(!G.game) G.game="cornhole";
     if(!G.max) G.max=4;

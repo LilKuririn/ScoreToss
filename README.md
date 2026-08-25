@@ -4,7 +4,7 @@
 
 # ScoreToss
 
-Compteur de points pour les jeux d'extérieur : **cornhole** et **palet breton**.
+Compteur de points pour les jeux d'extérieur : **cornhole**, **palet breton** et **mölkky**.
 
 Conçu pour être lu d'un coup d'œil depuis l'autre planche, et utilisé debout dans un jardin : deux
 grands chiffres, chacun dans la couleur de son équipe, et rien d'autre qui réclame l'attention
@@ -25,9 +25,9 @@ En local, ouvrir [`index.html`](index.html) dans un navigateur suffit.
 
 ## Compter une partie
 
-L'accueil liste les jeux ; le reste de l'application est commun aux deux. Manches successives,
-honneur au vainqueur de la précédente, correction après coup, tournois et palmarès fonctionnent
-à l'identique — seules la saisie d'une manche et les règles changent.
+L'accueil liste les jeux. Le cornhole et le palet partagent tout : manches successives, honneur au
+vainqueur de la précédente, correction après coup, tournois et palmarès — seules la saisie d'une
+manche et les règles changent. Le mölkky, qui ne se joue pas à deux camps, a ses propres écrans.
 
 **Simple (1v1) ou double (2v2).** Nom d'équipe, noms des joueurs, couleur au choix parmi neuf.
 Passer d'un mode à l'autre repart de noms vides, un joueur n'étant pas une équipe.
@@ -64,7 +64,7 @@ Le tournoi et la partie en cours sont sauvegardés séparément : un 1v1 improvi
 le tableau commencé. Et rien n'oblige à aller au bout — on peut repartir d'un nouveau tableau ou
 abandonner, en deux appuis pour éviter la fausse manœuvre.
 
-**Chaque jeu a son tableau**, et son brouillon de tableau. Un tournoi de cornhole en cours n'allume
+Le mölkky n'a pas de tableau. **Chacun des deux autres a le sien**, et son brouillon. Un tournoi de cornhole en cours n'allume
 pas la pastille du bouton quand on passe au palet, et les noms d'équipes saisis d'un côté ne
 réapparaissent pas de l'autre. Les deux peuvent tourner en même temps sans se gêner.
 
@@ -93,6 +93,21 @@ Un sac dans le trou vaut **3 points**, un sac sur la planche **1 point**. Chaque
 **4 sacs** par manche — en double, 2 sacs par joueur. Seule la **différence** entre les deux équipes
 est marquée : 5 points contre 3 rapportent 2 points, l'autre équipe n'en marque aucun. La partie
 s'arrête dès qu'une équipe atteint le score visé, **21** par défaut, 11 ou 15 au choix.
+
+### Mölkky
+
+De **2 à 8 joueurs** ou équipes, chacun son score. Le premier à **50 points exactement** l'emporte ;
+**dépasser 50 ramène à 25**. **Trois lancers manqués** de suite éliminent un joueur, et son tour est
+sauté ensuite.
+
+Un lancer vaut de 0 à 12 : le numéro de l'unique quille renversée, ou le nombre de quilles s'il y en
+a plusieurs. Les deux cas donnant le même chiffre, la saisie tient en **un appui** sur un pavé de
+douze touches — le jeu va vite, l'application ne doit pas le ralentir.
+
+Un bouton ouvre le **placement des quilles** : la formation officielle, à 3,50 m de la zone de
+lancer, consultable depuis la préparation comme en cours de partie.
+
+Pas de tournoi pour ce jeu : le tableau à élimination directe suppose des matchs à deux.
 
 ### Palet breton
 
