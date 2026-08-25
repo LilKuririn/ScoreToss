@@ -69,6 +69,38 @@ Sans publicité, sans compte ni inscription. Tout reste sur votre téléphone et
 
 ---
 
+## Version 2.0 — le palet breton
+
+Les utilisateurs ont une version antérieure : on revient au journal des changements.
+
+Nom de release, jamais montré aux utilisateurs : `2.0 — Palet breton`
+
+### en-US *(420 / 500)*
+
+```
+New: Breton palet.
+
+On the board, with brass palets, singles or doubles. One stepper per team, because only one team ever scores. A game runs to 12, the decider to 15. The screen says whose turn it is to place the master, and hands the throw over after three missed attempts.
+
+Each game now keeps its own tournament and its own records.
+
+The target score is easier to spot, and light or dark can be set by hand in About.
+```
+
+### fr-FR *(429 / 500)*
+
+```
+Nouveau : le palet breton.
+
+Sur planche, au laiton, en simple ou en double. Une seule réglette par équipe, puisqu'une seule marque. Partie en 12 points, belle en 15. L'écran indique à qui revient le lancer du maître, et le passe à l'adversaire après trois essais manqués.
+
+Chaque jeu garde désormais son tournoi et son palmarès.
+
+Le score à atteindre se repère mieux, et le thème clair ou sombre se règle à la main dans À propos.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche

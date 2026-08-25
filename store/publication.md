@@ -10,17 +10,25 @@ c'est un carnet d'exploitation, pas une présentation de l'application.
 - Compte développeur créé, identité vérifiée.
 - Clé d'envoi générée, ses quatre secrets déposés dans le dépôt. La CI produit le bundle.
 - Application créée sous `com.scoretosslabs.cornscore`, gratuite, catégorie Sport, anglais par défaut.
-- Test fermé lancé, distribué aux testeurs.
+- Test fermé mené à son terme : douze testeurs, quatorze jours continus.
 - Niveau d'API cible relevé à 36, avant l'échéance Play du 31 août 2026.
 - Renommage en ScoreToss, nouvelle icône, nouveau visuel de fiche.
 - Page de soutien Ko-fi reliée à l'écran *À propos*.
+- **Production ouverte** en août 2026 avec le build 31, dernier d'avant le palet, sur 177 pays.
+- Politique de confidentialité repointée après le renommage du dépôt en `ScoreToss` : GitHub
+  redirige les URL de dépôt mais **pas** GitHub Pages, l'ancienne répondait 404. Corrigée dans les
+  deux formulaires de la console, *Politique de confidentialité* et *Sécurité des données*.
 
 **Reste à faire**
 
-1. **Les captures d'écran** de la fiche, à prendre sur le téléphone — voir [`fiche-play.md`](fiche-play.md).
-2. **Achever le test fermé** : douze testeurs inscrits pendant quatorze jours continus, sans jamais
-   repasser en dessous. C'est lui, et non le test interne, qui ouvre l'accès à la production.
-3. **Publier en production** avant le 31 août 2026, échéance du niveau d'API.
+1. **Les captures d'écran** de la fiche, dont une montrant l'accueil à deux jeux — voir
+   [`fiche-play.md`](fiche-play.md).
+2. **Publier la V2** : le palet breton et tout ce qui l'accompagne attendent sur `main`. Grouper
+   dans le même envoi la release et les deux descriptions réécrites.
+3. **Aligner le nom de version.** La CI le fabrique en dur — `-Pvn=1.0.${{ github.run_number }}`
+   dans [`../.github/workflows/apk.yml`](../.github/workflows/apk.yml) — alors que l'écran
+   *À propos* affiche 2.0 depuis la V2. Le bundle 39 part donc en `1.0.39`. Purement cosmétique :
+   ce nom ne paraît ni dans le magasin ni dans l'application. À reprendre au prochain build.
 
 ## Les identifiants, et ce qui ne change plus
 
