@@ -235,6 +235,7 @@ h1,h2,h3,p{margin:0}
   border-radius:var(--r);padding:14px;
 }
 .opt{display:flex;flex-direction:column;gap:9px}
+.opt[hidden]{display:none}      /* sinon `display:flex` l'emporte sur `hidden` */
 .opt + .opt{margin-top:16px}
 .opt-row{display:flex;gap:6px}
 /* Les non retenues sont de simples contours, la retenue est pleine et
@@ -692,6 +693,7 @@ h1,h2,h3,p{margin:0}
   display:flex;align-items:center;justify-content:space-between;gap:14px;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px;
 }
+.tcount[hidden]{display:none}   /* sinon `display:flex` l'emporte sur `hidden` */
 .tcount .note{margin-top:5px}
 .step.wide{grid-template-columns:42px 1fr 42px;height:48px;flex:0 0 132px}
 .step.wide .v{font-size:20px;color:var(--ink)}
