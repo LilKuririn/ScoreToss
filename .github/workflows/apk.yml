@@ -21,6 +21,20 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # Le nom de version vient de `APP_VERSION`, dans index.html : une seule
+      # source de vérité. Recopié ici, il finissait par dériver de ce que
+      # l'écran *À propos* affiche.
+      - name: Nom de version
+        id: v
+        run: |
+          vn=$(sed -n 's/^var APP_VERSION *= *"\([^"]*\)".*/\1/p' index.html | head -1)
+          if [ -z "$vn" ]; then
+            echo "APP_VERSION introuvable dans index.html" >&2
+            exit 1
+          fi
+          echo "vn=$vn" >> "$GITHUB_OUTPUT"
+          echo "Nom de version : $vn.${{ github.run_number }}"
+
       - name: Java 17
         uses: actions/setup-java@v5
         with:
@@ -58,7 +72,7 @@ jobs:
           set -o pipefail
           gradle assembleDebug --no-daemon --stacktrace \
             -Pvc=${{ github.run_number }} \
-            -Pvn=1.0.${{ github.run_number }} 2>&1 | tee ../build.log
+            -Pvn=${{ steps.v.outputs.vn }}.${{ github.run_number }} 2>&1 | tee ../build.log
 
       - name: Journal en cas d'échec
         if: failure()
@@ -85,9 +99,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release view apk > /dev/null 2>&1 || gh release create apk \
-            --title "Cornscore — APK" \
-            --notes "Dernier APK installable, reconstruit à chaque modification de l'application. Fichier : cornscore.apk"
+          titre="ScoreToss — APK"
+          notes="Dernier APK installable, reconstruit à chaque modification de l'application. Fichier : cornscore.apk"
+          if gh release view apk > /dev/null 2>&1; then
+            gh release edit apk --title "$titre" --notes "$notes"
+          else
+            gh release create apk --title "$titre" --notes "$notes"
+          fi
           gh release upload apk cornscore.apk --clobber
 
       # ---- Paquet destiné au Play Store -------------------------------
@@ -118,7 +136,7 @@ jobs:
         run: |
           gradle bundleRelease --no-daemon --stacktrace \
             -Pvc=${{ github.run_number }} \
-            -Pvn=1.0.${{ github.run_number }}
+            -Pvn=${{ steps.v.outputs.vn }}.${{ github.run_number }}
 
       - name: Déposer le bundle
         if: steps.upload_key.outputs.ready == 'yes'

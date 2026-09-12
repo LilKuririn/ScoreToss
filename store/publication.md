@@ -20,6 +20,9 @@ c'est un carnet d'exploitation, pas une présentation de l'application.
   deux formulaires de la console, *Politique de confidentialité* et *Sécurité des données*.
 - **V2 en production** depuis le 25 août 2026 : le palet breton, le cloisonnement des tournois et
   du palmarès par jeu, le réglage du thème.
+- **Nom de version dérivé du code.** La CI lit `APP_VERSION` dans `index.html` et en fait
+  `<version>.<numéro de build>` — il ne peut plus diverger de ce que l'écran *À propos* affiche.
+  Au passage, la Release GitHub s'intitule « ScoreToss — APK ».
 
 **Reste à faire**
 
@@ -28,11 +31,16 @@ c'est un carnet d'exploitation, pas une présentation de l'application.
    [`notes-de-version.md`](notes-de-version.md) — et les descriptions réécrites pour trois jeux,
    dans [`fiche-play.md`](fiche-play.md). Les textes publiés ne mentionnent encore que deux jeux.
 2. **Les captures d'écran** de la fiche, jamais faites, dont une montrant l'accueil à trois jeux.
-3. **Aligner le nom de version.** La CI le fabrique en dur — `-Pvn=1.0.${{ github.run_number }}`
-   dans [`../.github/workflows/apk.yml`](../.github/workflows/apk.yml) — alors que l'écran
-   *À propos* suit la vraie version. Purement cosmétique : ce nom ne paraît ni dans le magasin ni
-   dans l'application. Au même endroit, la Release GitHub s'intitule encore
-   « Cornscore — APK ».
+
+## Le nom de version
+
+Une seule source : `APP_VERSION`, en tête du script de [`../index.html`](../index.html). La CI
+l'extrait et y accole le numéro de build, ce qui donne par exemple `3.0.40`. Monter une version se
+fait donc en changeant cette ligne, et rien d'autre.
+
+Ce nom ne paraît ni dans le magasin ni dans l'application — seul l'écran *À propos* montre
+`APP_VERSION`, sans le numéro de build. C'est le **code** de version, lui, que la console refuse en
+double : il vaut le numéro de build et monte tout seul.
 
 ## Les identifiants, et ce qui ne change plus
 
