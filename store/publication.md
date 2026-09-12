@@ -23,14 +23,15 @@ c'est un carnet d'exploitation, pas une présentation de l'application.
 - **Nom de version dérivé du code.** La CI lit `APP_VERSION` dans `index.html` et en fait
   `<version>.<numéro de build>` — il ne peut plus diverger de ce que l'écran *À propos* affiche.
   Au passage, la Release GitHub s'intitule « ScoreToss — APK ».
+- **Captures d'écran** de la fiche faites et déposées, dont l'accueil à trois jeux.
+- **V3 en production** en septembre 2026 : le mölkky, en individuel comme en équipes, avec les
+  descriptions réécrites pour trois jeux et les notes de
+  [`notes-de-version.md`](notes-de-version.md).
 
 **Reste à faire**
 
-1. **Publier la V3** : le mölkky, en individuel comme en équipes, attend sur `main` depuis le
-   25 août. Grouper dans le même envoi la release, ses notes — voir
-   [`notes-de-version.md`](notes-de-version.md) — et les descriptions réécrites pour trois jeux,
-   dans [`fiche-play.md`](fiche-play.md). Les textes publiés ne mentionnent encore que deux jeux.
-2. **Les captures d'écran** de la fiche, jamais faites, dont une montrant l'accueil à trois jeux.
+Rien de bloquant. La prochaine échéance est technique et annuelle : le niveau d'API cible, vers le
+mois d'août — voir plus bas.
 
 ## Le nom de version
 

@@ -5,8 +5,8 @@ Les limites de caractères sont celles de la console. Les compteurs indiqués so
 **La console fait foi.** Ce fichier est un brouillon de travail : il peut avoir divergé de ce qui
 est réellement publié. Vérifier avant de s'y fier.
 
-Textes de la **V3**, qui ajoute le mölkky. La V2 publiée le 25 août 2026 ne parlait que de deux
-jeux : ne coller ceci qu'avec la release qui embarque le troisième.
+Textes de la **V3**, celle qui ajoute le mölkky, publiée en septembre 2026. Les trois jeux y sont
+décrits et cherchables.
 
 ---
 
