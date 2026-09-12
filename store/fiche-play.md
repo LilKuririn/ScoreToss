@@ -5,6 +5,9 @@ Les limites de caractères sont celles de la console. Les compteurs indiqués so
 **La console fait foi.** Ce fichier est un brouillon de travail : il peut avoir divergé de ce qui
 est réellement publié. Vérifier avant de s'y fier.
 
+Textes de la **V3**, qui ajoute le mölkky. La V2 publiée le 25 août 2026 ne parlait que de deux
+jeux : ne coller ceci qu'avec la release qui embarque le troisième.
+
 ---
 
 ## English (langue par défaut de la fiche)
@@ -15,21 +18,21 @@ est réellement publié. Vérifier avant de s'y fier.
 ScoreToss: Outdoor games
 ```
 
-**Short description** *(80 max — 74 utilisés)*
+**Short description** *(80 max — 73 utilisés)*
 
 ```
-Score cornhole and Breton palet. Tournaments and records. No ads, offline.
+Cornhole, Breton palet, Mölkky. Tournaments and records. No ads, offline.
 ```
 
-**Full description** *(4000 max — 2781 utilisés)*
+**Full description** *(4000 max — 3396 utilisés)*
 
 ```
-A score keeper for outdoor games, built to be read at a glance from the other end of the boards.
+A score keeper for outdoor games, built to be read at a glance from across the garden.
 
-Two big numbers, each in its team's colour, and a row of ticks showing how close you are to the target. Nothing else competes for attention while you play.
+Big numbers, each in its own colour, and nothing else competing for attention while you play.
 
-TWO GAMES
-Cornhole and Breton palet, singles or doubles. Pick one on the home screen — everything after that works the same way, frames, tournaments and records included.
+THREE GAMES
+Cornhole, Breton palet and Mölkky. Pick one on the home screen. Cornhole and palet share everything — frames, tournaments, records — while Mölkky, which isn't played in two camps, has screens of its own.
 
 CORNHOLE
 Tap the bags — in the hole for 3, on the board for 1 — and ScoreToss works out the cancellation for you. It shows what the frame is worth before you confirm it, so nobody has to do arithmetic between throws. Play to 11, 15 or 21.
@@ -39,14 +42,21 @@ On the board, with brass palets. Only the team closest to the master scores, one
 
 Placing the master counts too: three attempts to land it on the board, then the throw passes to the other team, and whoever lands it throws first. A discreet line says whose turn it is, with one tap to hand it over.
 
+MÖLKKY
+2 to 8 players, or 2 to 8 teams of 2 to 4 sharing a score. First to exactly 50 wins; going over drops you back to 25. Three misses in a row and you are out.
+
+A throw is worth 0 to 12 — the number on the single skittle knocked down, or how many fell when several did. Both cases give the same figure, so scoring is one tap on a twelve-key pad. The game is quick; the app should not slow it down.
+
+In teams, members throw in turn and the screen names whoever is up. One button shows the official skittle layout, from setup or mid-game.
+
 GOT IT WRONG? FIX IT
-Any frame can be corrected or deleted after the fact, however far back it is. The whole game is recalculated from the history, so a miscount in frame three is a five-second fix, not an argument.
+Any frame, any throw can be corrected or deleted after the fact, however far back it is. Everything is recalculated from the history, so a miscount early on is a five-second fix, not an argument.
 
 TOURNAMENTS
-Enter 2 to 16 teams, name them, give them a colour, and the bracket builds itself with byes for the top seeds. The tree stays there to consult, the next match is always one tap away, and results climb the bracket on their own. Each game keeps its own bracket, so the two never get in each other's way.
+Enter 2 to 16 teams, name them, give them a colour, and the bracket builds itself with byes for the top seeds. The tree stays there to consult, the next match is always one tap away, and results climb the bracket on their own. Cornhole and palet each keep their own bracket, so the two never get in each other's way.
 
-WHO'S ACTUALLY WINNING
-Finished games are kept, so the app can answer the only question that really matters between two barbecues: head-to-head records, wins and losses, and your recent games. Each game keeps its own — a cornhole win and a palet win are not the same thing.
+WHO IS ACTUALLY WINNING
+Finished games are kept, so the app can answer the only question that really matters between two barbecues: head-to-head records, wins and losses, and your recent games. Each game keeps its own — wins do not travel from one to another.
 
 SMALL THINGS THAT HELP
 - A coin toss decides who throws first
@@ -60,7 +70,7 @@ SMALL THINGS THAT HELP
 NO ADS, NO ACCOUNT, NO INTERNET
 ScoreToss collects nothing. There is no sign-up, no server and no tracking. Your games, tournaments and records are stored on your phone and never leave it. The app works entirely offline — in a garden, on a campsite, wherever the boards are.
 
-Cornhole also goes by bags, baggo, sack toss or bean bag toss. Breton palet is also known as palet sur planche or brass palet. If you throw corn-filled bags at a holed board, or brass discs at a wooden one, this is your scoreboard.
+Cornhole also goes by bags, baggo, sack toss or bean bag toss. Breton palet is also known as palet sur planche or brass palet. Mölkky is also spelled molkky, and sometimes called Finnish skittles. If you throw corn-filled bags at a holed board, brass discs at a wooden one, or a pin at numbered skittles, this is your scoreboard.
 
 Free, and free of everything else.
 ```
@@ -75,21 +85,21 @@ Free, and free of everything else.
 ScoreToss : Jeux d'extérieur
 ```
 
-**Description courte** *(80 max — 72 utilisés)*
+**Description courte** *(80 max — 75 utilisés)*
 
 ```
-Comptez les points au cornhole et au palet breton. Sans pub, hors ligne.
+Cornhole, palet breton, mölkky. Tournois et palmarès. Sans pub, hors ligne.
 ```
 
-**Description complète** *(4000 max — 3067 utilisés)*
+**Description complète** *(4000 max — 3842 utilisés)*
 
 ```
-Un compteur de points pour les jeux d'extérieur, conçu pour se lire d'un coup d'œil depuis l'autre planche.
+Un compteur de points pour les jeux d'extérieur, conçu pour se lire d'un coup d'œil depuis l'autre bout du jardin.
 
-Deux grands chiffres, chacun dans la couleur de son équipe, et une réglette de crans qui montre la distance au score visé. Rien d'autre ne vient réclamer l'attention pendant la partie.
+De grands chiffres, chacun dans sa couleur, et rien d'autre qui vienne réclamer l'attention pendant la partie.
 
-DEUX JEUX
-Le cornhole et le palet breton, en simple ou en double. On choisit sur l'écran d'accueil — tout le reste fonctionne pareil, manches, tournois et palmarès compris.
+TROIS JEUX
+Le cornhole, le palet breton et le mölkky. On choisit sur l'écran d'accueil. Le cornhole et le palet partagent tout — manches, tournois, palmarès — tandis que le mölkky, qui ne se joue pas à deux camps, a ses propres écrans.
 
 CORNHOLE
 On touche les sacs — 3 points dans le trou, 1 sur la planche — et ScoreToss calcule l'annulation. Le résultat de la manche s'affiche avant validation, personne n'a de soustraction à faire entre deux lancers. Score à atteindre au choix : 11, 15 ou 21.
@@ -99,14 +109,21 @@ Sur planche, au laiton. Seule l'équipe la plus proche du maître marque, un poi
 
 Poser le maître compte aussi : trois essais pour le placer sur la planche, puis le lancer passe à l'adversaire, et celui qui y parvient lance en premier. Une ligne discrète dit à qui revient le tour, avec un appui pour le passer.
 
+MÖLKKY
+De 2 à 8 joueurs, ou de 2 à 8 équipes de 2 à 4 qui partagent un score. Le premier à 50 points exactement l'emporte ; dépasser 50 ramène à 25. Trois lancers manqués de suite éliminent.
+
+Un lancer vaut de 0 à 12 : le numéro de l'unique quille renversée, ou le nombre de quilles s'il y en a plusieurs. Les deux cas donnant le même chiffre, la saisie tient en un appui sur un pavé de douze touches. Le jeu va vite, l'application ne doit pas le ralentir.
+
+En équipes, les membres lancent à tour de rôle et l'écran annonce qui est au lancer. Un bouton ouvre le placement officiel des quilles, depuis la préparation comme en cours de partie.
+
 UNE ERREUR ? ON CORRIGE
-Chaque manche peut être corrigée ou supprimée après coup, aussi loin soit-elle. Le score est recalculé sur tout l'historique : une erreur de décompte à la manche trois se répare en cinq secondes au lieu de finir en discussion.
+Chaque manche, chaque lancer peut être corrigé ou supprimé après coup, aussi loin soit-il. Tout est recalculé depuis l'historique : une erreur de décompte en début de partie se répare en cinq secondes au lieu de finir en discussion.
 
 TOURNOIS
-De 2 à 16 équipes, nommées, colorées, et le tableau se construit tout seul avec les exemptions pour les têtes de série. L'arbre reste consultable, le prochain match est toujours à un appui, et les résultats remontent d'eux-mêmes. Chaque jeu garde son propre tableau, les deux ne se gênent jamais.
+De 2 à 16 équipes, nommées, colorées, et le tableau se construit tout seul avec les exemptions pour les têtes de série. L'arbre reste consultable, le prochain match est toujours à un appui, et les résultats remontent d'eux-mêmes. Le cornhole et le palet gardent chacun leur tableau, les deux ne se gênent jamais.
 
 QUI MÈNE VRAIMENT
-Les parties terminées sont conservées, ce qui permet de répondre à la seule question qui fâche entre deux barbecues : les confrontations directes, les victoires, les défaites, et les dernières rencontres. Chaque jeu a le sien — une victoire au cornhole et une au palet ne se comparent pas.
+Les parties terminées sont conservées, ce qui permet de répondre à la seule question qui fâche entre deux barbecues : les confrontations directes, les victoires, les défaites, et les dernières rencontres. Chaque jeu a le sien — les victoires ne voyagent pas de l'un à l'autre.
 
 LES PETITS RIENS
 - Un tirage au sort désigne qui lance en premier
@@ -120,7 +137,7 @@ LES PETITS RIENS
 SANS PUBLICITÉ, SANS COMPTE, SANS INTERNET
 ScoreToss ne collecte rien. Ni inscription, ni serveur, ni traceur. Vos parties, vos tournois et votre palmarès restent sur votre téléphone et n'en sortent jamais. L'application fonctionne intégralement hors ligne — dans un jardin, en camping, partout où sont les planches.
 
-Le cornhole est aussi appelé jeu de poches, lancer de sacs, ou bags et baggo en anglais. Le palet breton est aussi connu comme palet sur planche ou palet laiton. Si vous lancez des sacs de maïs sur une planche percée, ou des palets de laiton sur une planche de hêtre, voici votre tableau de marque.
+Le cornhole est aussi appelé jeu de poches ou lancer de sacs, et bags ou baggo en anglais. Le palet breton est aussi connu comme palet sur planche ou palet laiton. Le mölkky s'écrit aussi molkky, et se joue parfois sous le nom de quilles finlandaises. Si vous lancez des sacs de maïs sur une planche percée, des palets de laiton sur une planche de hêtre, ou un bâton sur des quilles numérotées, voici votre tableau de marque.
 
 Gratuite, et débarrassée du reste.
 ```

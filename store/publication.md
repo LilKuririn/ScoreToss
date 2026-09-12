@@ -18,17 +18,21 @@ c'est un carnet d'exploitation, pas une présentation de l'application.
 - Politique de confidentialité repointée après le renommage du dépôt en `ScoreToss` : GitHub
   redirige les URL de dépôt mais **pas** GitHub Pages, l'ancienne répondait 404. Corrigée dans les
   deux formulaires de la console, *Politique de confidentialité* et *Sécurité des données*.
+- **V2 en production** depuis le 25 août 2026 : le palet breton, le cloisonnement des tournois et
+  du palmarès par jeu, le réglage du thème.
 
 **Reste à faire**
 
-1. **Les captures d'écran** de la fiche, dont une montrant l'accueil à deux jeux — voir
-   [`fiche-play.md`](fiche-play.md).
-2. **Publier la V2** : le palet breton et tout ce qui l'accompagne attendent sur `main`. Grouper
-   dans le même envoi la release et les deux descriptions réécrites.
+1. **Publier la V3** : le mölkky, en individuel comme en équipes, attend sur `main` depuis le
+   25 août. Grouper dans le même envoi la release, ses notes — voir
+   [`notes-de-version.md`](notes-de-version.md) — et les descriptions réécrites pour trois jeux,
+   dans [`fiche-play.md`](fiche-play.md). Les textes publiés ne mentionnent encore que deux jeux.
+2. **Les captures d'écran** de la fiche, jamais faites, dont une montrant l'accueil à trois jeux.
 3. **Aligner le nom de version.** La CI le fabrique en dur — `-Pvn=1.0.${{ github.run_number }}`
    dans [`../.github/workflows/apk.yml`](../.github/workflows/apk.yml) — alors que l'écran
-   *À propos* affiche 2.0 depuis la V2. Le bundle 39 part donc en `1.0.39`. Purement cosmétique :
-   ce nom ne paraît ni dans le magasin ni dans l'application. À reprendre au prochain build.
+   *À propos* suit la vraie version. Purement cosmétique : ce nom ne paraît ni dans le magasin ni
+   dans l'application. Au même endroit, la Release GitHub s'intitule encore
+   « Cornscore — APK ».
 
 ## Les identifiants, et ce qui ne change plus
 

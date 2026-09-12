@@ -101,6 +101,32 @@ Le score à atteindre se repère mieux, et le thème clair ou sombre se règle �
 
 ---
 
+## Version 3.0 — le mölkky
+
+Nom de release, jamais montré aux utilisateurs : `3.0 — Mölkky`
+
+### en-US *(363 / 500)*
+
+```
+New: Mölkky.
+
+2 to 8 players, or teams of 2 to 4 sharing a score. First to exactly 50 wins, going over drops you back to 25, and three misses in a row puts you out. One tap on a twelve-key pad records a throw, and a button shows the official skittle layout.
+
+Fixed: the match sheet lines its columns up again, and two settings no longer show up in the wrong game.
+```
+
+### fr-FR *(398 / 500)*
+
+```
+Nouveau : le mölkky.
+
+De 2 à 8 joueurs, ou des équipes de 2 à 4 qui partagent un score. Premier à 50 exactement, dépasser ramène à 25, trois ratés de suite éliminent. Un appui sur un pavé de douze touches suffit à saisir un lancer, et un bouton montre le placement officiel des quilles.
+
+Corrigé : la feuille de match retrouve ses colonnes, et deux réglages n'apparaissent plus dans le mauvais jeu.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche

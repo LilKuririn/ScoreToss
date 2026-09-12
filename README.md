@@ -80,7 +80,7 @@ entre deux barbecues : **qui mène**.
 Une petite marque `1v1` ou `2v2` distingue les joueurs des équipes. Un nom apparu dans les deux
 formats n'en reçoit aucune : elle mentirait.
 
-Chaque jeu a son palmarès : une victoire au cornhole et une au palet ne se comparent pas.
+Chaque jeu a son palmarès, mölkky compris : les victoires ne voyagent pas de l'un à l'autre.
 
 ## Les règles appliquées
 
@@ -161,7 +161,7 @@ Le **thème clair ou sombre** se règle au même endroit, avec la même position
 défaut. Un choix explicite est posé avant le premier rendu, sans clignotement, et s'impose à la
 couleur de la barre système.
 
-Le vocabulaire est **commun aux deux jeux** : on parle de manche partout, quel que soit ce que dit
+Le vocabulaire est **commun aux trois jeux** : on parle de manche partout, quel que soit ce que dit
 la fédération. En anglais, *frame* désigne la manche et *round* le tour de tournoi — deux mots que
 le français confond.
 
@@ -198,5 +198,5 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 
 ## Ce qui viendra
 
-Le mölkky, la pétanque et le palet vendéen, sur le même moteur — l'accueil garde une place pour eux.
+La pétanque et le palet vendéen, sur le même moteur — l'accueil garde une place pour eux.
 Les tournois en poules, quand l'élimination directe montrera ses limites.
