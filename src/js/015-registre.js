@@ -54,6 +54,8 @@
    Le HTML et le CSS propres à un jeu vivent dans son dossier et entrent
    par des repères @@jeux:fichier@@ ; ses éléments portent
    data-propre="identifiant", et le code commun ne les affiche que pour lui.
+   Ses textes, dans textes.js, rejoignent le dictionnaire commun par
+   ajouterTextes().
 ------------------------------------------------------------------ */
 var JEUX = {};
 var ORDRE_JEUX = [];
