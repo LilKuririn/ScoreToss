@@ -2474,7 +2474,7 @@ function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
    mots dans la langue : on découpe la phrase autour du marqueur. */
 function outcomeInto(host, name, n){
   host.innerHTML="";
-  var parts=tn("game.scores",n).replace(/\{name\}/g," ").split(" ");
+  var parts=tn("game.scores",n).replace(/\{name\}/g,"\u0000").split("\u0000");
   host.appendChild(document.createTextNode(parts[0]||""));
   host.appendChild(el("b",null,name));
   host.appendChild(document.createTextNode(parts[1]||""));
