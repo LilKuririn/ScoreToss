@@ -10,3 +10,6 @@ android/build/
 android/app/build/
 android/local.properties
 *.apk
+
+# Banc de comparaison : versions de référence extraites de l'historique
+.banc/

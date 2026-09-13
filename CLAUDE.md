@@ -20,6 +20,21 @@ Les fichiers de `src/js/` s'exécutent dans une seule fonction englobante : ils 
 portée, et rien ne devient global. **L'ordre des fichiers compte** — en CSS la règle la plus
 tardive l'emporte, en JS les écouteurs sont posés dans l'ordre de lecture.
 
+## Vérifier une refonte : le banc de comparaison
+
+`tools/banc/` joue onze parcours réels — les trois jeux, tournois, palmarès, réglages, reprise,
+import, petit écran — sur deux versions de l'application, et compare ce qui s'affiche vraiment :
+chaque élément visible, sa place, ses couleurs, son texte, plus l'état enregistré. Le hasard,
+l'heure et les animations sont figés : une version comparée à elle-même donne zéro différence.
+
+1. Extraire la référence : `git show <commit>:index.html > .banc/reference.html` (dossier ignoré).
+2. Servir la racine du dépôt en HTTP (par exemple `python -m http.server 8765`) et ouvrir
+   `/tools/banc/index.html`.
+3. Dans la console : `demarrer({})`, puis lire `BANC.resultat`.
+
+Tout changement censé ne rien changer à l'écran doit passer le banc avec zéro différence. Un
+nouveau jeu ajoute son parcours à `tools/banc/scenarios.js`.
+
 ## Ce qui ne doit jamais bouger
 
 - **L'URL de la page et la portée du service worker.** De nombreux utilisateurs iPhone ont

@@ -205,6 +205,7 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 | `index.html` | Toute l'application, **générée** — ne pas modifier |
 | `src/` | Les sources : squelette, styles, écrans et script |
 | `tools/build.js` | Assemble `index.html` depuis `src/`, ou vérifie qu'il correspond |
+| `tools/banc/` | Banc de comparaison : rejoue des parcours réels sur deux versions et compare l'affichage |
 | `sw.js`, `manifest.webmanifest` | Installation sur l'écran d'accueil et fonctionnement hors ligne |
 | `icon-*.png`, `apple-touch-icon.png` | Icônes 192 / 512 / masquable |
 | `privacy.html` | Politique de confidentialité, trilingue |

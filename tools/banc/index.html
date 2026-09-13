@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Banc de comparaison — ScoreToss</title>
+<style>
+  body{font:13px/1.45 system-ui,sans-serif;margin:16px;background:#f4f5f5;color:#15191b}
+  code{background:#e4e7e7;padding:1px 4px;border-radius:3px}
+  iframe{border:1px solid #b9c0c0;background:#fff;display:block;margin:12px 0}
+  pre{white-space:pre-wrap;font-size:12px}
+</style>
+</head>
+<body>
+<p>
+  Banc de comparaison. Il joue les mêmes parcours sur deux versions de l'application et compare,
+  point par point, ce qui s'affiche vraiment. Depuis la console :
+  <code>demarrer({reference:"/.banc/reference.html", candidat:"/index.html"})</code>,
+  puis lire <code>BANC</code>. Option <code>seulement:["palet-partie"]</code> pour un seul parcours.
+</p>
+<div id="scene-hote"></div>
+<pre id="journal"></pre>
+
+<script src="scenarios.js"></script>
+<script>
+"use strict";
+/* Deux passes identiques doivent produire deux empreintes identiques :
+   le hasard et l'heure sont figés, les animations réduites à rien — le
+   tirage au sort se pose alors d'un coup, comme pour qui a demandé
+   moins d'animations à son téléphone. Le cadre est chargé en `srcdoc` :
+   même origine que le banc, donc même stockage, mais pas de service
+   worker, qui mélangerait les versions. */
+var AMORCE =
+  '<base href="/">' +
+  '<script>(function(){' +
+    'var g=20260913;Math.random=function(){g=(g*1103515245+12345)%2147483648;return g/2147483648;};' +
+    'var D=Date,FIXE=D.UTC(2026,8,13,10,0,0);' +
+    'function F(){if(!arguments.length)return new D(FIXE);' +
+      'return new (Function.prototype.bind.apply(D,[null].concat([].slice.call(arguments))))();}' +
+    'F.now=function(){return FIXE;};F.UTC=D.UTC;F.parse=D.parse;F.prototype=D.prototype;window.Date=F;' +
+    'var mm=window.matchMedia;window.matchMedia=function(q){' +
+      'if(/prefers-reduced-motion/.test(q))return{matches:true,media:q,' +
+        'addListener:function(){},removeListener:function(){},addEventListener:function(){},removeEventListener:function(){}};' +
+      'return mm.call(window,q);};' +
+    'try{navigator.vibrate=function(){return true;};}catch(e){}' +
+    'window.confirm=function(){return true;};' +
+  '})();<\/script>' +
+  '<style>*,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;' +
+    'animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important}</style>';
+
+var pause = function(ms){ return new Promise(function(r){ setTimeout(r, ms); }); };
+
+/* L'empreinte d'un écran : chaque élément réellement affiché, sa place, ses
+   couleurs, son texte propre et ses attributs d'état — puis l'état
+   enregistré, pour que la compatibilité des données soit comparée aussi. */
+var PROPS = ["display","color","background-color","font-size","font-weight","opacity",
+             "text-transform","text-align","border-top-color","border-top-width"];
+
+function empreinte(w){
+  var d=w.document, out=[];
+  out.push("#page lang="+d.documentElement.lang+" theme="+(d.documentElement.getAttribute("data-theme")||"")+" titre="+d.title);
+  var tous=d.body.querySelectorAll("*");
+  for(var i=0;i<tous.length;i++){
+    var e=tous[i], r=e.getBoundingClientRect();
+    if(r.width<=0 || r.height<=0) continue;
+    var cs=w.getComputedStyle(e);
+    if(cs.visibility==="hidden") continue;
+    var texte="";
+    for(var k=0;k<e.childNodes.length;k++) if(e.childNodes[k].nodeType===3) texte+=e.childNodes[k].nodeValue;
+    texte=texte.replace(/\s+/g," ").trim().slice(0,80);
+    var classe = typeof e.className==="string" ? e.className : (e.getAttribute("class")||"");
+    var etat=[
+      e.getAttribute("aria-label")||"", e.getAttribute("aria-pressed")||"",
+      e.disabled ? "désactivé" : "", e.dataset ? (e.dataset.armed||"") : "",
+      e.getAttribute("placeholder")||"", e.tagName==="INPUT" ? e.value : ""
+    ].join("|");
+    out.push([e.tagName.toLowerCase(), e.id, classe,
+      Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height),
+      PROPS.map(function(p){ return cs.getPropertyValue(p); }).join(";"), texte, etat].join(" ¦ "));
+  }
+  var stock="";
+  try{ stock=w.localStorage.getItem("cornhole.v1")||""; }catch(e){}
+  out.push("#stockage "+stock);
+  return out;
+}
+
+async function chargerScene(ctx){
+  var hote=document.getElementById("scene-hote");
+  hote.innerHTML="";
+  var f=document.createElement("iframe");
+  f.style.width=ctx.taille[0]+"px";
+  f.style.height=ctx.taille[1]+"px";
+  var pret=new Promise(function(r){ f.addEventListener("load", r, {once:true}); });
+  f.srcdoc=ctx.html;
+  hote.appendChild(f);
+  await pret;
+  ctx.w=f.contentWindow;
+  await pause(150);
+}
+
+function aides(ctx){
+  function q(sel){
+    var e=ctx.w.document.querySelector(sel);
+    if(!e) throw new Error("introuvable : "+sel);
+    return e;
+  }
+  return {
+    get d(){ return ctx.w.document; },
+    q: q,
+    clic: async function(sel, n){
+      var e=q(sel);
+      for(var i=0;i<(n||1);i++) e.click();
+      await pause(40);
+    },
+    clicN: async function(sel, index, sous){
+      var e=ctx.w.document.querySelectorAll(sel)[index];
+      if(!e) throw new Error("introuvable : "+sel+" ["+index+"]");
+      if(sous){ e=e.querySelector(sous); if(!e) throw new Error("introuvable : "+sel+" ["+index+"] "+sous); }
+      e.click();
+      await pause(40);
+    },
+    clicTexte: async function(sel, texte){
+      var e=[].slice.call(ctx.w.document.querySelectorAll(sel)).find(function(x){ return x.textContent.trim()===texte; });
+      if(!e) throw new Error("introuvable : "+sel+" « "+texte+" »");
+      e.click();
+      await pause(40);
+    },
+    attendre: pause,
+    etat: function(){
+      try{ return JSON.parse(ctx.w.localStorage.getItem("cornhole.v1")||"null") || {}; }catch(e){ return {}; }
+    },
+    point: function(nom){ ctx.points.push({scenario:ctx.nom, point:nom, lignes:empreinte(ctx.w)}); },
+    recharger: function(){ return chargerScene(ctx); },
+    importer: async function(obj){
+      var w=ctx.w, inp=q("#importFile"), dt=new w.DataTransfer();
+      dt.items.add(new w.File([JSON.stringify(obj)], "sauvegarde.json", {type:"application/json"}));
+      inp.files=dt.files;
+      inp.dispatchEvent(new w.Event("change"));
+      await pause(300);
+    }
+  };
+}
+
+async function passe(url, opts){
+  /* Le service worker de l'application sert son cache avant le réseau, et
+     ce cache peut contenir n'importe quelle page sous le nom index.html.
+     Un paramètre unique rend l'adresse inconnue du cache. */
+  var rep=await fetch(url+(url.indexOf("?")<0 ? "?" : "&")+"banc="+Date.now(), {cache:"no-store"});
+  if(!rep.ok) throw new Error(url+" : HTTP "+rep.status);
+  var brut=await rep.text();
+  if(brut.indexOf("<head>")<0) throw new Error(url+" : pas de <head>");
+  var html=brut.replace("<head>", "<head>"+AMORCE);
+  var points=[], erreurs=[];
+  for(var i=0;i<SCENARIOS.length;i++){
+    var s=SCENARIOS[i];
+    if(opts.seulement && opts.seulement.indexOf(s.nom)<0) continue;
+    localStorage.clear();
+    localStorage.setItem("cornhole.lang","fr");
+    var ctx={nom:s.nom, html:html, taille:s.taille, points:points, w:null};
+    BANC.progression=url+" · "+s.nom;
+    try{
+      await chargerScene(ctx);
+      await s.fn(aides(ctx));
+    }catch(e){
+      erreurs.push(s.nom+" : "+e.message);
+      points.push({scenario:s.nom, point:"ERREUR", lignes:[e.message]});
+    }
+  }
+  localStorage.clear();
+  return {points:points, erreurs:erreurs};
+}
+
+/* Les lignes sont comparées comme des ensembles : un élément inséré
+   décalerait toutes les suivantes, et le rapport ne dirait plus rien. */
+function comparer(A, B){
+  var diffs=[], identiques=0, n=Math.max(A.points.length, B.points.length);
+  for(var i=0;i<n;i++){
+    var a=A.points[i], b=B.points[i];
+    var nom=(a||b).scenario+" › "+(a||b).point;
+    if(!a || !b || a.scenario!==b.scenario || a.point!==b.point){
+      diffs.push({point:nom, probleme:"points désalignés", reference:a && (a.scenario+" › "+a.point), candidat:b && (b.scenario+" › "+b.point)});
+      continue;
+    }
+    if(a.lignes.join("\n")===b.lignes.join("\n")){ identiques++; continue; }
+    var compte={};
+    a.lignes.forEach(function(l){ compte[l]=(compte[l]||0)+1; });
+    var apparues=[];
+    b.lignes.forEach(function(l){ if(compte[l]) compte[l]--; else apparues.push(l); });
+    var disparues=[];
+    Object.keys(compte).forEach(function(l){ for(var k=0;k<compte[l];k++) disparues.push(l); });
+    diffs.push({
+      point:nom,
+      probleme: (disparues.length || apparues.length) ? "contenu différent" : "même contenu, ordre différent",
+      ecart: disparues.length+" disparues / "+apparues.length+" apparues",
+      disparues:disparues.slice(0,4), apparues:apparues.slice(0,4)
+    });
+  }
+  return {points:n, identiques:identiques, differences:diffs};
+}
+
+window.BANC={etat:"prêt"};
+window.demarrer=function(opts){
+  opts=opts||{};
+  window.BANC={etat:"en cours", debut:Date.now()};
+  (async function(){
+    try{
+      var A=await passe(opts.reference || "/.banc/reference.html", opts);
+      var B=await passe(opts.candidat || "/index.html", opts);
+      var r=comparer(A,B);
+      r.erreursReference=A.erreurs;
+      r.erreursCandidat=B.erreurs;
+      r.duree=Math.round((Date.now()-BANC.debut)/1000)+" s";
+      BANC.resultat=r;
+      BANC.etat="fini";
+      document.getElementById("journal").textContent=JSON.stringify(r, null, 1);
+    }catch(e){
+      BANC.etat="erreur";
+      BANC.erreur=e.message;
+    }
+  })();
+  return "lancé";
+};
+</script>
+</body>
+</html>
