@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0D1012" media="(prefers-color-scheme: dark)">
+<script>
+/* Le theme choisi doit etre pose avant que la page peigne quoi que ce soit,
+   sinon un theme force clignote au chargement. La cle est repetee ici a
+   dessein : ce bloc s'execute bien avant le script principal. */
+try{
+  var _th = localStorage.getItem("cornhole.theme");
+  if(_th==="light" || _th==="dark") document.documentElement.setAttribute("data-theme", _th);
+}catch(e){}
+</script>
+<meta name="theme-color" content="#EFF2F2" media="(prefers-color-scheme: light)">
+<meta name="description" content="Compteur de points pour les jeux d'extérieur : cornhole et palet breton, en simple, en double et en tournoi.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ScoreToss">
+<title>ScoreToss — Compteur de points</title>
+</head>
+<body>
+
+<style>
+@@css@@
+</style>
+
+<div class="shell">
+@@html@@
+</div>
+
+<script>
+(function(){
+"use strict";
+@@js@@
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+/* =============================================================
+   5. TOURNOI — préparation
+   ============================================================= */
+.brand-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.ghost-btn{
+  display:flex;align-items:center;gap:7px;flex:0 0 auto;
+  padding:9px 13px;border-radius:11px;
+  background:var(--panel);border:1px solid var(--line);
+  font-size:13.5px;font-weight:600;color:var(--ink);
+  transition:border-color .16s ease;
+}
+.ghost-btn svg{color:var(--muted)}
+.ghost-btn:active{border-color:var(--line-2)}
+.nav{display:flex;gap:8px;flex:0 0 auto}
+.nav-btn{
+  position:relative;width:42px;height:42px;border-radius:12px;
+  display:grid;place-items:center;
+  background:var(--panel);border:1px solid var(--line);color:var(--ink);
+  transition:border-color .16s ease,color .16s ease,transform .12s ease;
+}
+.nav-btn[hidden]{display:none}
+.nav-btn:active{transform:scale(.94)}
+.nav-btn .pip{
+  position:absolute;top:-3px;right:-3px;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--live);border:2px solid var(--bg);
+}
+.nav-btn .pip[hidden]{display:none}
+.nav-btn.live{
+  color:color-mix(in oklab,var(--live) 62%,var(--ink));
+  border-color:color-mix(in oklab,var(--live) 32%,var(--line));
+}
+
+.tcount{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px;
+}
+.tcount[hidden]{display:none}   /* sinon `display:flex` l'emporte sur `hidden` */
+.tcount .note{margin-top:5px}
+.step.wide{grid-template-columns:42px 1fr 42px;height:48px;flex:0 0 132px}
+.step.wide .v{font-size:20px;color:var(--ink)}
+
+.trow{display:flex;align-items:center;gap:9px}
+.trow + .trow,.trow-sw + .trow{margin-top:8px}
+.trow .seed{
+  font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--muted);
+  width:19px;flex:0 0 auto;
+}
+.pick{
+  width:34px;height:34px;flex:0 0 auto;border-radius:10px;
+  background:color-mix(in oklab,var(--c) 16%,var(--panel));
+  border:1px solid color-mix(in oklab,var(--c) 34%,transparent);
+  display:grid;place-items:center;transition:transform .14s ease;
+}
+.pick i{width:13px;height:13px;border-radius:50%;background:var(--c);display:block}
+.pick:active{transform:scale(.92)}
+.trow .field-input{flex:1;min-width:0;padding:10px 12px;font-size:15px}
+.trow-sw{
+  margin-top:8px;padding:11px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+}
+.trow-sw[hidden]{display:none}
+
+/* =============================================================
+   6. TOURNOI — tableau
+   ============================================================= */
+.bk-scroll{flex:1;min-height:0;overflow:auto;display:flex;padding:14px 16px;-webkit-overflow-scrolling:touch}
+.bk-canvas{position:relative;margin:auto}
+.bk-links{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.bk-links path{fill:none;stroke:var(--line-2);stroke-width:1.25}
+
+.bk-col{
+  position:absolute;top:0;
+  font-family:var(--fm);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);
+}
+.bk-match{
+  position:absolute;display:flex;flex-direction:column;justify-content:center;gap:2px;
+  padding:8px 10px;border-radius:11px;text-align:left;
+  background:var(--panel);border:1px solid var(--line);
+  transition:border-color .18s ease,background .18s ease;
+}
+.bk-match.playable{
+  background:color-mix(in oklab,var(--ink) 5%,var(--panel));
+  border-color:var(--line-2);
+}
+.bk-match.playable:active{transform:scale(.985)}
+.bk-match:disabled{cursor:default}
+.bk-side{display:flex;align-items:center;gap:7px;min-width:0;height:20px}
+.bk-side i{width:7px;height:7px;border-radius:50%;background:var(--c,var(--line-2));flex:0 0 auto}
+.bk-side span{
+  flex:1;min-width:0;font-size:12.5px;font-weight:600;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.bk-side b{
+  font-family:var(--fm);font-size:12px;font-weight:600;color:var(--muted);
+  font-variant-numeric:tabular-nums;flex:0 0 auto;
+}
+.bk-side.named span{color:var(--ink);font-weight:600}
+.bk-side.won span,.bk-side.won b{color:color-mix(in oklab,var(--c) 62%,var(--tone));font-weight:700}
+.bk-side.lost span,.bk-side.lost b{color:var(--muted);font-weight:500}
+.bk-side.tbd span{font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.bk-rule{height:1px;background:var(--line);margin:2px 0}
+
+.bk-bar{
+  border-top:1px solid var(--line);background:var(--panel);
+  padding:12px 16px calc(13px + env(safe-area-inset-bottom));
+  display:flex;align-items:center;gap:12px;
+}
+.bk-next{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.bk-vs{font-size:14.5px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bk-vs em{font-style:normal;font-family:var(--fm);font-size:11px;letter-spacing:.08em;color:var(--muted);padding:0 5px}
+.bk-play{
+  flex:0 0 auto;padding:14px 22px;border-radius:12px;
+  background:var(--ink);color:var(--bg);font-size:15px;font-weight:700;
+  transition:transform .12s ease;
+}
+.bk-play:active{transform:scale(.97)}
+.sheet-note{font-size:15px;font-weight:600;letter-spacing:-.01em;padding-top:6px}
+.bk-champ{--team:#E14434}
+.bk-champ .bk-vs{font-size:19px;font-weight:800;letter-spacing:-.03em;color:color-mix(in oklab,var(--team) 62%,var(--tone))}
+

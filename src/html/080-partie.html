@@ -1,0 +1,74 @@
+  <!-- ============ PARTIE ============ -->
+  <section class="screen" id="s-game">
+    <header class="top">
+      <p class="eyebrow" id="roundLabel">Manche 1</p>
+      <div class="sep"></div>
+      <p class="eyebrow" id="targetLabel">Objectif 21</p>
+      <button type="button" class="icon-btn" id="openSheet" data-i18n-aria="sheet.title">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M2.5 4h13M2.5 9h13M2.5 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="fields" id="fields"></div>
+
+    <section class="console">
+      <div class="console-head">
+        <p class="eyebrow" id="consoleTitle">4 sacs par équipe</p>
+        <p class="eyebrow ch-corn"><span data-i18n="game.hole">Trou</span> <b data-i18n="game.hole.pts">3 pts</b></p>
+        <p class="eyebrow ch-corn"><span data-i18n="game.board">Planche</span> <b data-i18n="game.board.pts">1 pt</b></p>
+        <p class="eyebrow ch-palet" hidden><b data-i18n="game.perpalet">1 pt par palet</b></p>
+      </div>
+      <div class="mtr" id="mtr" hidden>
+        <i id="mtrDot"></i>
+        <span class="lab" data-i18n="game.master">Maître</span>
+        <span class="who" id="mtrWho"></span>
+        <button type="button" id="mtrMiss" data-i18n="game.missed">Manqué</button>
+      </div>
+
+      <div id="rows"></div>
+      <div class="settle">
+        <p class="outcome" id="outcome">Aucun sac compté</p>
+        <button type="button" class="validate" id="validate" data-i18n="game.validate">Valider</button>
+      </div>
+    </section>
+
+    <!-- tirage au sort -->
+    <div class="toss-wrap" id="tossWrap" hidden>
+      <div class="toss-scrim"></div>
+      <div class="toss-box" role="dialog" aria-modal="true" data-i18n-aria="toss.draw">
+        <p class="eyebrow" data-i18n="toss.who">Qui lance en premier</p>
+        <div class="reel" id="reel">
+          <div class="reel-strip" id="reelStrip"></div>
+          <span class="notch l"></span>
+          <span class="notch r"></span>
+        </div>
+        <p class="toss-out" id="tossOut" aria-live="polite" data-i18n="toss.running">Tirage en cours</p>
+      </div>
+    </div>
+
+    <!-- feuille de match -->
+    <div class="sheet-wrap" id="sheetWrap">
+      <div class="scrim" id="scrim"></div>
+      <div class="sheet" role="dialog" aria-modal="true" data-i18n-aria="sheet.title">
+        <div class="sheet-head">
+          <h3 data-i18n="sheet.title">Feuille de match</h3>
+          <button type="button" class="icon-btn" id="closeSheet" data-i18n-aria="nav.close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="sheet-body" id="sheetBody"></div>
+        <div class="sheet-acts">
+          <button type="button" class="act" id="edSave" hidden data-i18n="edit.save">Enregistrer la correction</button>
+          <button type="button" class="act danger" id="edDel" hidden data-i18n="edit.delete">Supprimer cette manche</button>
+          <button type="button" class="act" id="undo" data-i18n="sheet.undo">Annuler la dernière manche</button>
+          <button type="button" class="act danger" id="quit" data-i18n="sheet.quit">Terminer la partie</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FIN ============ -->

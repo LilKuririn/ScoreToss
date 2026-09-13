@@ -1,0 +1,91 @@
+  <!-- ============ MÖLKKY : PRÉPARATION ============ -->
+  <section class="screen" id="s-msetup">
+    <header class="brand">
+      <div class="brand-row">
+        <div>
+          <button type="button" class="crumb" id="mkToGames">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="games.change">Changer de jeu</span>
+          </button>
+          <h1><span data-i18n="molkky.name">Mölkky</span><span>.</span></h1>
+        </div>
+        <div class="nav">
+          <button type="button" class="nav-btn" id="mkHall" hidden data-i18n-aria="hall.aria">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M3.6 15V9.2M9 15V3.4M14.4 15v-3.9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+              <path d="M1.8 15h14.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="setup-body">
+      <div class="seg" id="mkMode">
+        <button type="button" data-mode="solo" class="on"><span class="lbl" data-i18n="mk.mode.solo">Individuel</span><span class="sub" data-i18n="mk.mode.solo.sub">Chacun pour soi</span></button>
+        <button type="button" data-mode="team"><span class="lbl" data-i18n="mk.mode.team">Équipes</span><span class="sub" data-i18n="mk.mode.team.sub">Score commun</span></button>
+      </div>
+
+      <div class="tcount">
+        <div>
+          <p class="eyebrow" id="mkCountLab" data-i18n="mk.players">Joueurs</p>
+          <p class="note" id="mkNote">4 joueurs · premier à 50 exactement</p>
+        </div>
+        <div class="step wide" id="mkStep">
+          <button type="button" id="mkMinus" data-i18n-aria="tour.remove">−</button>
+          <div class="v" id="mkVal">4</div>
+          <button type="button" id="mkPlus" data-i18n-aria="tour.add">+</button>
+        </div>
+      </div>
+
+      <div class="tcount" id="mkPerBlock" hidden>
+        <div><p class="eyebrow" data-i18n="mk.per">Joueurs par équipe</p></div>
+        <div class="step wide" id="mkPerStep">
+          <button type="button" id="mkPerMinus" data-i18n-aria="tour.remove">−</button>
+          <div class="v" id="mkPerVal">2</div>
+          <button type="button" id="mkPerPlus" data-i18n-aria="tour.add">+</button>
+        </div>
+      </div>
+
+      <div id="mkRows"></div>
+
+      <div class="link-group">
+        <button type="button" class="hall-link" id="mkOpenLayout">
+          <span>
+            <span class="eyebrow" data-i18n="mk.layout">Placement des quilles</span>
+            <b data-i18n="mk.layout.open">Voir le placement des quilles</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" class="hall-link" id="mkOpenRules">
+          <span>
+            <span class="eyebrow" data-i18n="setup.rules.eyebrow">Règles du jeu</span>
+            <b data-i18n="setup.rules.label">Comment marquer des points</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" class="hall-link" id="mkOpenAbout">
+          <span>
+            <span class="eyebrow" data-i18n="setup.about.eyebrow">À propos</span>
+            <b data-i18n="setup.about.label">Réglages, sauvegarde et langue</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <footer class="cta-bar">
+      <button type="button" class="cta" id="mkStart" data-i18n="setup.start">Commencer la partie</button>
+    </footer>
+  </section>
+

@@ -1,0 +1,19 @@
+name: Assemblage
+
+# index.html est généré depuis src/ par tools/build.js. Ce contrôle échoue
+# quand les deux divergent : un fichier de src/ modifié sans réassembler —
+# le site et l'APK serviraient alors l'ancienne version —, ou index.html
+# retouché à la main, ce que le prochain assemblage effacerait.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: index.html correspond à src/
+        run: node tools/build.js --check

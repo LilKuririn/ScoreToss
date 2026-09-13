@@ -167,7 +167,21 @@ le français confond.
 
 ## Comment c'est fait
 
-HTML, CSS et JavaScript natifs dans **un seul fichier**, sans dépendance ni étape de compilation.
+HTML, CSS et JavaScript natifs, sans dépendance. L'application est **livrée en un seul fichier**,
+`index.html` : c'est ce que servent GitHub Pages, le cache hors ligne et la coquille Android, sans
+liste de fichiers à tenir à jour nulle part.
+
+Mais elle **s'écrit en morceaux**, dans `src/` — un fichier par écran, par feuille de style et par
+partie du script —, que `tools/build.js` remet bout à bout dans l'ordre de leur préfixe. Le script
+ne demande que Node. `index.html` ne se modifie donc jamais à la main :
+
+```bash
+node tools/build.js
+```
+
+À chaque push, la CI vérifie que `index.html` correspond bien à `src/`. Un fichier source modifié
+sans réassembler, ou un `index.html` retouché directement, la fait échouer.
+
 Le thème est défini par des variables CSS et les couleurs d'équipe sont dérivées du fond avec
 `color-mix()`, ce qui rend l'interface lisible en clair comme en sombre sans dupliquer une seule
 règle. L'état est conservé dans `localStorage`.
@@ -188,12 +202,14 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 
 | Chemin | Rôle |
 | --- | --- |
-| `index.html` | Toute l'application |
+| `index.html` | Toute l'application, **générée** — ne pas modifier |
+| `src/` | Les sources : squelette, styles, écrans et script |
+| `tools/build.js` | Assemble `index.html` depuis `src/`, ou vérifie qu'il correspond |
 | `sw.js`, `manifest.webmanifest` | Installation sur l'écran d'accueil et fonctionnement hors ligne |
 | `icon-*.png`, `apple-touch-icon.png` | Icônes 192 / 512 / masquable |
 | `privacy.html` | Politique de confidentialité, trilingue |
 | `android/` | Coquille native et projet Gradle |
-| `.github/workflows/apk.yml` | Construction de l'APK et du bundle |
+| `.github/workflows/` | Construction de l'APK et du bundle, contrôle de l'assemblage |
 | `store/` | Visuels, textes de fiche et [carnet de publication](store/publication.md) |
 
 ## Ce qui viendra

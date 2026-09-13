@@ -1,0 +1,166 @@
+/* =============================================================
+   1. ÉCRAN DE PRÉPARATION
+   ============================================================= */
+.brand{padding:clamp(22px,6vw,34px) 20px 14px}
+.brand h1{
+  font-size:clamp(34px,10vw,44px);font-weight:800;
+  letter-spacing:-.045em;line-height:.95;margin-top:8px;
+}
+.brand h1 span{color:var(--muted)}
+
+/* =============================================================
+   0. CHOIX DU JEU
+   ============================================================= */
+.games{
+  flex:1;min-height:0;overflow-y:auto;
+  padding:0 16px 16px;display:flex;flex-direction:column;gap:12px;
+}
+.games > *{flex:0 0 auto}
+
+.tile{
+  display:flex;align-items:center;gap:15px;width:100%;text-align:left;
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;
+  padding:17px 16px;
+  transition:border-color .18s ease,transform .12s ease;
+}
+.tile:active{transform:scale(.99);border-color:var(--line-2)}
+.tile-mark{
+  flex:0 0 auto;width:58px;height:58px;border-radius:15px;
+  display:grid;place-items:center;color:var(--ink);
+  background:color-mix(in oklab,var(--ink) 6%,var(--panel));
+}
+.tile-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.tile-name{font-size:19px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.tile-sub{font-size:12.8px;line-height:1.45;color:var(--muted)}
+.tile .chev{color:var(--muted);flex:0 0 auto}
+
+/* le jeu à venir : même gabarit, mais rien à toucher */
+.tile.soon{background:none;border-style:dashed;cursor:default}
+.tile.soon .tile-mark{background:none;border:1px dashed var(--line-2);color:var(--muted)}
+.soon-chip{
+  font-family:var(--fm);font-size:9px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  border:1px solid var(--line-2);border-radius:20px;padding:3px 9px;
+}
+
+/* fil d'ariane vers le choix du jeu */
+.crumb{
+  display:flex;align-items:center;gap:6px;padding:2px 0;
+  font-family:var(--fm);font-size:10px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  transition:color .16s ease;
+}
+.crumb:active{color:var(--ink)}
+
+.setup-body{flex:1;min-height:0;overflow-y:auto;padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+/* les blocs gardent leur taille naturelle : c'est la colonne qui défile,
+   pas les cartes qui s'écrasent. */
+.setup-body > *{flex:0 0 auto}
+
+.seg{
+  display:grid;grid-template-columns:1fr 1fr;gap:4px;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:4px;
+}
+.seg button{
+  padding:11px 8px;border-radius:10px;font-weight:600;font-size:15px;
+  color:var(--muted);transition:background .18s ease,color .18s ease;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.seg button .sub{font-family:var(--fm);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+.seg button.on{background:var(--panel-2);color:var(--ink)}
+.seg3{grid-template-columns:1fr 1fr 1fr}
+.seg3 button{font-size:14px}
+.seg4{grid-template-columns:1fr 1fr}
+.seg4 button{font-size:14px}
+
+.card{
+  --team:#E14434;
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px;display:flex;flex-direction:column;gap:12px;
+  border-left:3px solid color-mix(in oklab,var(--team) 80%,var(--panel));
+}
+.card-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.card-head .cname{
+  font-family:var(--fm);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:color-mix(in oklab,var(--team) 62%,var(--tone));
+}
+.field-input{
+  width:100%;padding:12px 13px;border-radius:11px;
+  background:var(--panel-2);border:1px solid transparent;
+  font-size:16px;font-weight:600;letter-spacing:-.01em;
+  transition:border-color .18s ease;
+}
+.field-input::placeholder{color:var(--muted);font-weight:500}
+.field-input:focus{border-color:color-mix(in oklab,var(--team) 55%,transparent);outline:none}
+.mates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mates .field-input{font-size:14px;padding:10px 12px;font-weight:500}
+
+.swatches{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;padding:3px 0}
+.sw{
+  width:100%;aspect-ratio:1;border-radius:50%;position:relative;
+  background:var(--c);border:1px solid rgba(0,0,0,.18);
+  transition:transform .16s ease;
+}
+.sw::after{
+  content:"";position:absolute;inset:-5px;border-radius:50%;
+  border:1.5px solid transparent;transition:border-color .16s ease;
+}
+.sw[aria-pressed="true"]::after{border-color:var(--c)}
+.sw:active{transform:scale(.9)}
+
+.panel-block{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:var(--r);padding:14px;
+}
+.opt{display:flex;flex-direction:column;gap:9px}
+.opt[hidden]{display:none}      /* sinon `display:flex` l'emporte sur `hidden` */
+.opt + .opt{margin-top:16px}
+.opt-row{display:flex;gap:6px}
+/* Les non retenues sont de simples contours, la retenue est pleine et
+   cernee : l'ecart se voit d'un coup d'oeil. On evite le remplissage en
+   `--ink`, deja pris par la CTA, qui ferait lire la pastille comme
+   l'action principale de l'ecran. */
+.chip{
+  flex:1;padding:10px 6px;border-radius:9px;background:transparent;
+  font-size:14px;font-weight:600;color:var(--muted);text-align:center;
+  border:1px solid var(--line);
+  transition:color .16s ease,border-color .16s ease,background .16s ease;
+}
+.chip.on{
+  background:color-mix(in oklab,var(--ink) 13%,var(--panel-2));
+  color:var(--ink);font-weight:700;
+  border-color:color-mix(in oklab,var(--ink) 42%,transparent);
+}
+.chip:active{background:color-mix(in oklab,var(--ink) 7%,transparent)}
+.note{font-size:12.5px;line-height:1.5;color:var(--muted)}
+
+/* résumé des règles */
+#rulesBody{display:flex;flex-direction:column;gap:20px;padding-top:16px}
+.pts{display:flex;flex-direction:column;gap:10px}
+.pt-row{display:flex;align-items:center;gap:13px}
+.pt-row b{
+  flex:0 0 auto;width:34px;height:34px;border-radius:10px;
+  display:grid;place-items:center;
+  background:var(--panel-2);border:1px solid var(--line-2);
+  font-family:var(--fm);font-size:15px;font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.pt-row span{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.rulist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px}
+.rulist li{position:relative;padding-left:17px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.rulist li::before{
+  content:"";position:absolute;left:0;top:8px;
+  width:5px;height:5px;border-radius:50%;background:var(--line-2);
+}
+.rulist b{color:var(--ink);font-weight:600}
+
+.cta-bar{padding:12px 16px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--bg)}
+.cta{
+  width:100%;padding:16px;border-radius:13px;
+  background:var(--ink);color:var(--bg);
+  font-size:16px;font-weight:700;letter-spacing:-.01em;
+  transition:transform .12s ease,opacity .2s ease;
+}
+.cta:active{transform:scale(.985)}
+.cta.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--line-2)}
+

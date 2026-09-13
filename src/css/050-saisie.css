@@ -1,0 +1,60 @@
+/* qui doit poser le maitre — une ligne sobre, au-dessus de la saisie */
+.mtr{
+  display:flex;align-items:center;gap:9px;
+  height:40px;padding:0 4px 0 11px;margin-bottom:9px;
+  background:var(--panel-2);border-radius:10px;
+}
+.mtr i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.mtr .lab{
+  flex:0 0 auto;font-size:11px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+}
+.mtr .who{
+  flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.mtr button{
+  flex:0 0 auto;height:32px;padding:0 11px;border-radius:8px;
+  background:var(--panel);border:1px solid var(--line);
+  font-size:12.5px;font-weight:600;color:var(--muted);
+  transition:color .14s ease, background .14s ease;
+}
+.mtr button:active{background:var(--line-2);color:var(--ink)}
+
+/* au palet une seule reglette par equipe : elle occupe la place des deux */
+.crow.solo{grid-template-columns:1fr 120px}
+.crow .who{display:flex;align-items:center;gap:7px;min-width:0}
+.crow .who span{
+  font-size:13.5px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.step{
+  --team:#E14434;
+  display:grid;grid-template-columns:30px 1fr 30px;align-items:center;
+  background:var(--panel-2);border-radius:10px;height:44px;
+}
+.step button{
+  height:100%;display:grid;place-items:center;color:var(--muted);
+  font-family:var(--fm);font-size:17px;line-height:1;border-radius:10px;
+  transition:color .14s ease;
+}
+.step button:disabled{opacity:.28;cursor:default}
+.step button:not(:disabled):active{color:var(--ink)}
+.step .v{
+  text-align:center;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;
+  color:var(--muted);transition:color .18s ease;
+}
+.step .v.hot{color:color-mix(in oklab,var(--team) 62%,var(--tone))}
+
+.settle{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;margin-top:2px}
+.outcome{
+  font-family:var(--fm);font-size:11.5px;letter-spacing:.05em;
+  color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.outcome b{color:var(--ink);font-weight:600}
+.validate{
+  padding:14px 22px;border-radius:12px;background:var(--ink);color:var(--bg);
+  font-size:15px;font-weight:700;transition:transform .12s ease;
+}
+.validate:active{transform:scale(.97)}
+

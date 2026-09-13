@@ -1,0 +1,98 @@
+/* ============ MÖLKKY ============ */
+/* La liste des joueurs : le tour en cours ressort, les éliminés s'effacent. */
+/* La liste absorbe la place et défile : à huit joueurs sur un petit
+   écran, le pavé de saisie doit rester atteignable. */
+.mk-list{
+  flex:1;min-height:0;overflow-y:auto;
+  display:flex;flex-direction:column;gap:7px;padding:0 14px 14px;
+}
+.mk-list > *{flex:0 0 auto}
+/* à deux ou trois joueurs la liste laissait une large bande vide sous
+   elle : on la centre tant qu'elle tient, et on repart du haut dès
+   qu'elle déborde — centrer une colonne qui défile en rognerait le haut. */
+.mk-list.centre{justify-content:center}
+.mk-mates{margin-top:8px}
+.trow + .mk-mates{margin-top:8px}
+.mk-mates + .trow,.mk-mates + .trow-sw{margin-top:8px}
+/* le membre qui lance, sous le nom de son équipe */
+.mk-row .mate{
+  flex:0 0 auto;font-size:12px;font-weight:600;color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:96px;
+}
+.mk-row.on .mate{color:color-mix(in oklab,var(--c) 62%,var(--tone))}
+.mk-row{
+  --c:#E14434;
+  display:flex;align-items:center;gap:10px;
+  padding:11px 13px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+  transition:border-color .16s ease, background .16s ease, opacity .16s ease;
+}
+.mk-row i.dot{width:9px;height:9px;border-radius:50%;background:var(--c);flex:0 0 auto}
+.mk-row .who{
+  flex:1;min-width:0;font-size:14.5px;font-weight:600;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.mk-row .miss{
+  flex:0 0 auto;display:flex;gap:3px;
+}
+.mk-row .miss b{width:5px;height:5px;border-radius:50%;background:var(--line-2)}
+.mk-row .miss b.f{background:var(--danger)}
+.mk-row .sc{
+  flex:0 0 auto;font-family:var(--fm);font-size:19px;font-weight:800;
+  letter-spacing:-.03em;color:var(--ink);min-width:34px;text-align:right;
+}
+.mk-row .left{flex:0 0 auto;font-size:11.5px;font-weight:600;color:var(--muted)}
+.mk-row.on{
+  background:color-mix(in oklab,var(--c) 12%,var(--panel));
+  border-color:color-mix(in oklab,var(--c) 55%,transparent);
+}
+.mk-row.on .sc{color:color-mix(in oklab,var(--c) 62%,var(--tone))}
+.mk-row.out{opacity:.45}
+.mk-row.out .sc{text-decoration:line-through}
+.mk-row .tag{
+  flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--danger);
+}
+
+/* Le pavé de saisie : un lancer vaut 0 à 12, la valeur étant le numéro
+   de l'unique quille ou le nombre de quilles. Un appui suffit. */
+.mk-pad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.mk-key{
+  height:52px;border-radius:11px;
+  background:var(--panel-2);border:1px solid transparent;
+  font-family:var(--fm);font-size:18px;font-weight:700;color:var(--ink);
+  transition:background .12s ease, transform .1s ease;
+}
+.mk-key:active{background:color-mix(in oklab,var(--ink) 16%,var(--panel-2));transform:scale(.96)}
+.mk-key.on{
+  background:color-mix(in oklab,var(--ink) 13%,var(--panel-2));
+  border-color:color-mix(in oklab,var(--ink) 42%,transparent);
+}
+.mk-key:disabled,.mk-miss:disabled{opacity:.32}
+.mk-miss{
+  width:100%;margin-top:7px;height:46px;border-radius:11px;
+  background:transparent;border:1px solid var(--line-2);
+  font-size:14px;font-weight:600;color:var(--muted);
+  transition:background .12s ease,color .12s ease;
+}
+.mk-miss:active{background:color-mix(in oklab,var(--danger) 14%,transparent);color:var(--danger)}
+.mk-miss.on{border-color:var(--danger);color:var(--danger)}
+
+/* La formation de départ, dessinée à l'échelle des vraies quilles. */
+.mk-form{display:block;width:100%;max-width:290px;margin:2px auto 0}
+.mk-form .pin{fill:var(--panel-2);stroke:var(--line-2)}
+.mk-form .num{
+  fill:var(--ink);font-family:var(--fm);font-size:15px;font-weight:700;
+  text-anchor:middle;dominant-baseline:central;
+}
+.mk-form .line{stroke:var(--line-2);stroke-dasharray:4 4}
+.mk-form .lab{fill:var(--muted);font-size:11px;text-anchor:middle;letter-spacing:.06em}
+.mk-notice{
+  text-align:center;padding:0 14px 12px;color:var(--danger);
+}
+.mk-notice[hidden]{display:none}
+.mk-dist{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:12px;font-size:12.5px;color:var(--muted);
+}
+

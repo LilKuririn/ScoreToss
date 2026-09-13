@@ -1,0 +1,97 @@
+/* =============================================================
+   2. ÉCRAN DE PARTIE
+   ============================================================= */
+.top{
+  display:flex;align-items:center;gap:12px;
+  padding:calc(10px + env(safe-area-inset-top)) 8px 10px 16px;
+  border-bottom:1px solid var(--line);
+}
+.top .eyebrow{flex:0 0 auto}
+.top .sep{flex:1;height:1px;background:var(--line)}
+.icon-btn{
+  width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
+  color:var(--muted);transition:background .16s ease,color .16s ease;
+}
+.icon-btn:active{background:var(--panel);color:var(--ink)}
+
+.fields{flex:1;min-height:0;display:flex;flex-direction:column}
+
+.tfield{
+  --team:#E14434;
+  --t-bg:color-mix(in oklab,var(--team) 9%,var(--panel));
+  --t-ink:color-mix(in oklab,var(--team) 60%,var(--tone));
+  --t-name:color-mix(in oklab,var(--team) 72%,var(--tone));
+  flex:1;min-height:0;position:relative;
+  padding:14px 16px 12px;
+  display:flex;flex-direction:column;
+  background:var(--t-bg);
+  transition:background .3s ease;
+}
+.tfield + .tfield{border-top:1px solid var(--line)}
+.tfield.lead{background:color-mix(in oklab,var(--team) 14%,var(--panel))}
+
+.dot{width:9px;height:9px;border-radius:50%;background:var(--team);flex:0 0 auto}
+.t-name{
+  display:flex;align-items:center;gap:8px;
+  font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--t-name);
+}
+.t-name span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.honor{
+  display:inline-block;
+  font-family:var(--fm);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
+  color:color-mix(in oklab,var(--team) 55%,var(--tone));
+  border:1px solid color-mix(in oklab,var(--team) 40%,transparent);
+  padding:3px 7px;border-radius:20px;
+}
+.t-mates{font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--muted);margin-top:7px}
+.t-mates:empty{display:none}
+.t-honor{margin-top:11px}
+.t-honor[hidden]{display:none}
+
+.t-score{
+  flex:1;min-height:0;display:flex;align-items:center;gap:12px;
+  position:relative;
+}
+.t-id{flex:1;min-width:0}
+.t-num{
+  flex:0 0 auto;
+  font-size:clamp(64px,23vw,116px);line-height:.78;color:var(--t-ink);
+}
+.t-gain{
+  position:absolute;right:2px;top:2px;
+  font-family:var(--fm);font-size:15px;font-weight:600;
+  color:color-mix(in oklab,var(--team) 70%,var(--tone));
+  opacity:0;pointer-events:none;
+}
+.t-gain.play{animation:gain 1.15s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes gain{
+  0%{opacity:0;transform:translateY(14px)}
+  22%{opacity:1;transform:translateY(0)}
+  70%{opacity:1;transform:translateY(-6px)}
+  100%{opacity:0;transform:translateY(-22px)}
+}
+.tfield.bloom::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(80% 120% at 88% 62%,color-mix(in oklab,var(--team) 34%,transparent),transparent 70%);
+  animation:bloom .9s ease-out forwards;
+}
+@keyframes bloom{from{opacity:1}to{opacity:0}}
+
+/* réglette de progression vers l'objectif */
+.ticks{display:flex;gap:3px;align-items:flex-end;height:12px;margin-top:10px}
+.ticks i{flex:1;height:4px;border-radius:2px;background:var(--line-2);transition:background .25s ease,height .25s ease}
+.ticks i.f{background:color-mix(in oklab,var(--team) 78%,var(--tone));height:9px}
+.ticks i.last{height:12px}
+
+/* --- console de saisie --------------------------------------- */
+.console{
+  border-top:1px solid var(--line);background:var(--panel);
+  padding:12px 14px calc(12px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;gap:9px;
+}
+.console-head{display:grid;grid-template-columns:1fr 92px 92px;align-items:center;gap:8px}
+.console-head .eyebrow{text-align:center}
+.console-head .eyebrow:first-child{text-align:left}
+.console-head b{color:color-mix(in oklab,var(--ink) 70%,var(--muted));font-weight:500}
+
+.crow{display:grid;grid-template-columns:1fr 92px 92px;align-items:center;gap:8px}

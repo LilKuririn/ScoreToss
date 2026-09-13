@@ -1,0 +1,38 @@
+  <!-- ============ TOURNOI · TABLEAU ============ -->
+  <section class="screen" id="s-bracket">
+    <header class="top">
+      <p class="eyebrow" id="bkTitle">Tournoi</p>
+      <div class="sep"></div>
+      <button type="button" class="ghost-btn" id="bkHome" data-i18n="nav.home">Accueil</button>
+      <button type="button" class="icon-btn" id="bkMenu" data-i18n-aria="tour.menu">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M2.5 4h13M2.5 9h13M2.5 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="bk-scroll" id="bkScroll"></div>
+
+    <footer class="bk-bar" id="bkBar"></footer>
+
+    <!-- options du tournoi -->
+    <div class="sheet-wrap" id="bkSheetWrap">
+      <div class="scrim" id="bkScrim"></div>
+      <div class="sheet" role="dialog" aria-modal="true" data-i18n-aria="tour.menu">
+        <div class="sheet-head">
+          <h3 data-i18n="tour.title">Tournoi</h3>
+          <button type="button" class="icon-btn" id="bkSheetClose" data-i18n-aria="nav.close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="sheet-body" id="bkSheetBody"></div>
+        <div class="sheet-acts">
+          <button type="button" class="act" id="bkRestart" data-i18n="tour.restart">Repartir d'un nouveau tableau</button>
+          <button type="button" class="act danger" id="bkAbandon" data-i18n="tour.abandon">Abandonner le tournoi</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
