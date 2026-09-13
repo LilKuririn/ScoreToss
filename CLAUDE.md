@@ -26,7 +26,8 @@ Chaque jeu vit dans `src/jeux/NNN-identifiant/` — le préfixe fixe l'ordre des
 Le code commun ne nomme aucun jeu : il interroge le registre, `src/js/015-registre.js`, dont
 l'en-tête décrit le contrat complet.
 
-- `jeu.js`, obligatoire : `declarerJeu({...})`, puis le code propre au jeu. Il s'exécute tôt,
+- `jeu.js`, obligatoire : `declarerJeu({...})` — identifiant, famille, catégorie (`exterieur`,
+  `interieur` ou `societe`) et `nom()` au minimum —, puis le code propre au jeu. Il s'exécute tôt,
   avant la plupart des fichiers partagés : n'y lire aucune variable partagée au chargement,
   seulement à l'intérieur des fonctions.
 - `tuile.html` : sa tuile d'accueil, un bouton portant `data-jeu="identifiant"`.

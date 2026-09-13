@@ -1,14 +1,85 @@
 
-  <!-- ============ CHOIX DU JEU ============ -->
+  <!-- ============ ACCUEIL : LES CATÉGORIES ============ -->
   <section class="screen on" id="s-games">
     <header class="brand">
-      <p class="eyebrow" data-i18n="games.eyebrow">Choisir un jeu</p>
+      <p class="eyebrow" data-i18n="cat.eyebrow">Choisir une catégorie</p>
       <h1>ScoreToss<span>.</span></h1>
     </header>
 
-    <div class="games">
+    <div class="games" id="categories">
+      <button type="button" class="tile" data-categorie="exterieur">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <path d="M17 4.5L9.5 16.5h4.2L9 24h16l-4.7-7.5h4.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <rect x="15.3" y="24" width="3.4" height="6" rx="1.2" fill="#C5551F"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="cat.exterieur">Extérieur</span>
+          <span class="tile-sub"></span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button type="button" class="tile" data-categorie="interieur">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <path d="M4.5 15L17 4.5 29.5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 12.5V29h18V12.5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <circle cx="17" cy="20" r="4" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="17" cy="20" r="1.5" fill="#C5551F"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="cat.interieur">Intérieur</span>
+          <span class="tile-sub"></span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button type="button" class="tile" data-categorie="societe">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <rect x="5" y="5" width="24" height="24" rx="5.5" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="11.5" cy="11.5" r="1.9" fill="currentColor"/>
+            <circle cx="17" cy="17" r="1.9" fill="#C5551F"/>
+            <circle cx="22.5" cy="22.5" r="1.9" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="cat.societe">Société</span>
+          <span class="tile-sub"></span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ LES JEUX D'UNE CATÉGORIE ============ -->
+  <section class="screen" id="s-cat">
+    <header class="brand">
+      <div class="brand-row">
+        <div>
+          <button type="button" class="crumb" id="catBack">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="cat.back">Catégories</span>
+          </button>
+          <h1 id="catTitle">Extérieur<span>.</span></h1>
+        </div>
+      </div>
+    </header>
+
+    <div class="games" id="catGames">
       @@jeux:tuile.html@@
-      <div class="tile soon" aria-disabled="true">
+      <div class="tile soon" id="catSoon" aria-disabled="true">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
             <circle cx="11.5" cy="21" r="5" stroke="currentColor" stroke-width="1.8"/>
@@ -18,9 +89,8 @@
         </span>
         <span class="tile-txt">
           <span class="soon-chip" data-i18n="games.soon">En chantier</span>
-          <span class="tile-sub" data-i18n="games.soon.sub">Pétanque, bibock…</span>
+          <span class="tile-sub" id="catSoonSub" data-i18n="games.soon.sub">Pétanque, bibock…</span>
         </span>
       </div>
     </div>
   </section>
-

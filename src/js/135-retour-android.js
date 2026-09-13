@@ -16,7 +16,7 @@ function retourAndroid(){
   if(tirage && !tirage.hidden) return true;   /* le tirage au sort se termine seul */
 
   var fiches=[["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
-  var ecrans=[["s-hall","hallBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"]];
+  var ecrans=[["s-hall","hallBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"], ["s-cat","catBack"]];
   ORDRE_JEUX.forEach(function(id){
     var r=JEUX[id].retour;
     if(!r) return;

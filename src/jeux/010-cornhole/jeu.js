@@ -12,6 +12,7 @@ declarerJeu({
   id:"cornhole",
   famille:"duel",
   historique:true,
+  categorie:"exterieur",
   cibles:[11,15,21], cible:21,
   nom:function(){ return "Cornhole"; },
   regles:fillCornholeRules,

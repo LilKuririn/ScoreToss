@@ -5,7 +5,9 @@
 var TXT = {
 fr:{
   "app.tagline":"Compteur de points",
-  "games.eyebrow":"Choisir un jeu",
+  "cat.eyebrow":"Choisir une catégorie", "cat.back":"Catégories", "cat.soon":"Bientôt",
+  "cat.exterieur":"Extérieur", "cat.interieur":"Intérieur", "cat.societe":"Société",
+  "cat.count":"{n} jeu", "cat.count_p":"{n} jeux",
   "games.soon":"En chantier", "games.soon.sub":"Pétanque, bibock…",
   "games.change":"Changer de jeu",
   "app.desc":"Compteur de points pour les jeux d'extérieur. Cornhole, palet breton et mölkky, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
@@ -132,7 +134,9 @@ fr:{
 },
 en:{
   "app.tagline":"Score keeper",
-  "games.eyebrow":"Pick a game",
+  "cat.eyebrow":"Pick a category", "cat.back":"Categories", "cat.soon":"Coming soon",
+  "cat.exterieur":"Outdoor", "cat.interieur":"Indoor", "cat.societe":"Board games",
+  "cat.count":"{n} game", "cat.count_p":"{n} games",
   "games.soon":"In the works", "games.soon.sub":"Pétanque, Bibock…",
   "games.change":"Change game",
   "app.desc":"A score keeper for outdoor games. Cornhole, Breton palet and Mölkky, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
@@ -259,7 +263,9 @@ en:{
 },
 es:{
   "app.tagline":"Marcador",
-  "games.eyebrow":"Elige un juego",
+  "cat.eyebrow":"Elige una categoría", "cat.back":"Categorías", "cat.soon":"Próximamente",
+  "cat.exterieur":"Exterior", "cat.interieur":"Interior", "cat.societe":"Juegos de mesa",
+  "cat.count":"{n} juego", "cat.count_p":"{n} juegos",
   "games.soon":"En preparación", "games.soon.sub":"Petanca, bibock…",
   "games.change":"Cambiar de juego",
   "app.desc":"Marcador para juegos de exterior. Cornhole, palet bretón y mölkky, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
@@ -492,6 +498,8 @@ function setLang(l){
   LANG = (l===null) ? detectLang() : l;
   document.documentElement.lang=LANG;
   applyStaticText();
+  renderCategories();
+  if($("s-cat").classList.contains("on")) peindreCategorie();
   renderCards(); renderRules(); renderTSetup();
   pourChaqueJeu("changementDeLangue");
   fillRules("rulesBody");

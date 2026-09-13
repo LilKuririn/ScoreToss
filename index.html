@@ -159,6 +159,8 @@ h1,h2,h3,p{margin:0}
 /* le jeu à venir : même gabarit, mais rien à toucher */
 .tile.soon{background:none;border-style:dashed;cursor:default}
 .tile.soon .tile-mark{background:none;border:1px dashed var(--line-2);color:var(--muted)}
+.tile.soon .chev{visibility:hidden}
+.tile[hidden]{display:none}      /* sinon `display:flex` l'emporte sur `hidden` */
 .soon-chip{
   font-family:var(--fm);font-size:9px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
@@ -963,14 +965,85 @@ a.hall-link{text-decoration:none;color:inherit}
 
 <div class="shell">
 
-  <!-- ============ CHOIX DU JEU ============ -->
+  <!-- ============ ACCUEIL : LES CATÉGORIES ============ -->
   <section class="screen on" id="s-games">
     <header class="brand">
-      <p class="eyebrow" data-i18n="games.eyebrow">Choisir un jeu</p>
+      <p class="eyebrow" data-i18n="cat.eyebrow">Choisir une catégorie</p>
       <h1>ScoreToss<span>.</span></h1>
     </header>
 
-    <div class="games">
+    <div class="games" id="categories">
+      <button type="button" class="tile" data-categorie="exterieur">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <path d="M17 4.5L9.5 16.5h4.2L9 24h16l-4.7-7.5h4.2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <rect x="15.3" y="24" width="3.4" height="6" rx="1.2" fill="#C5551F"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="cat.exterieur">Extérieur</span>
+          <span class="tile-sub"></span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button type="button" class="tile" data-categorie="interieur">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <path d="M4.5 15L17 4.5 29.5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 12.5V29h18V12.5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <circle cx="17" cy="20" r="4" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="17" cy="20" r="1.5" fill="#C5551F"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="cat.interieur">Intérieur</span>
+          <span class="tile-sub"></span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button type="button" class="tile" data-categorie="societe">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <rect x="5" y="5" width="24" height="24" rx="5.5" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="11.5" cy="11.5" r="1.9" fill="currentColor"/>
+            <circle cx="17" cy="17" r="1.9" fill="#C5551F"/>
+            <circle cx="22.5" cy="22.5" r="1.9" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="cat.societe">Société</span>
+          <span class="tile-sub"></span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ LES JEUX D'UNE CATÉGORIE ============ -->
+  <section class="screen" id="s-cat">
+    <header class="brand">
+      <div class="brand-row">
+        <div>
+          <button type="button" class="crumb" id="catBack">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="cat.back">Catégories</span>
+          </button>
+          <h1 id="catTitle">Extérieur<span>.</span></h1>
+        </div>
+      </div>
+    </header>
+
+    <div class="games" id="catGames">
       <button type="button" class="tile" id="playCornhole" data-jeu="cornhole">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
@@ -1026,7 +1099,7 @@ a.hall-link{text-decoration:none;color:inherit}
         </svg>
       </button>
 
-      <div class="tile soon" aria-disabled="true">
+      <div class="tile soon" id="catSoon" aria-disabled="true">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
             <circle cx="11.5" cy="21" r="5" stroke="currentColor" stroke-width="1.8"/>
@@ -1036,12 +1109,11 @@ a.hall-link{text-decoration:none;color:inherit}
         </span>
         <span class="tile-txt">
           <span class="soon-chip" data-i18n="games.soon">En chantier</span>
-          <span class="tile-sub" data-i18n="games.soon.sub">Pétanque, bibock…</span>
+          <span class="tile-sub" id="catSoonSub" data-i18n="games.soon.sub">Pétanque, bibock…</span>
         </span>
       </div>
     </div>
   </section>
-
   <!-- ============ PRÉPARATION ============ -->
   <section class="screen" id="s-setup">
     <header class="brand">
@@ -1567,6 +1639,10 @@ function newEntry(g){ return jeuDuel(g).entreeVide(); }
    s'affronter en tournoi ; "tours", des participants qui lancent chacun
    à leur tour.
 
+   Tout jeu déclare son identifiant, sa famille, sa catégorie — "exterieur",
+   "interieur" ou "societe", voir 016-categories.js — et nom(), le nom
+   sous lequel l'accueil l'annonce.
+
    Un jeu de la famille "duel" fournit :
      cibles, cible             les scores proposés, et celui par défaut
      nom()                     le titre de l'écran de préparation
@@ -1692,6 +1768,7 @@ declarerJeu({
   id:"cornhole",
   famille:"duel",
   historique:true,
+  categorie:"exterieur",
   cibles:[11,15,21], cible:21,
   nom:function(){ return "Cornhole"; },
   regles:fillCornholeRules,
@@ -1777,6 +1854,7 @@ function fillCornholeRules(host){
 declarerJeu({
   id:"palet",
   famille:"duel",
+  categorie:"exterieur",
   cibles:[12,15], cible:12,
   nom:function(){ return t("palet.name"); },
   regles:fillPaletRules,
@@ -1884,6 +1962,8 @@ function fillPaletRules(host){
 declarerJeu({
   id:"molkky",
   famille:"tours",
+  categorie:"exterieur",
+  nom:function(){ return t("molkky.name"); },
   regles:fillMolkkyRules,
   ecrans:["msetup","mgame"],
   lienPalmares:"mkHall",
@@ -2522,7 +2602,7 @@ function mShare(){
 }
 
 /* --- commandes -------------------------------------------------- */
-$("mkToGames").addEventListener("click",function(){ show("games"); });
+$("mkToGames").addEventListener("click",retourAuxJeux);
 $("mkMinus").addEventListener("click",function(){
   if(MS.count>MK_MIN){ MS.count--; MS.open=-1; renderMSetup(); save(); }
 });
@@ -2630,6 +2710,69 @@ function fillMolkkyRules(host){
   deroule.appendChild(list);
   host.appendChild(deroule);
 }
+
+/* ------------------------------------------------------------------
+   Catégories de jeux
+
+   L'accueil propose d'abord une catégorie, puis la liste de ses jeux.
+   Chaque jeu déclare la sienne dans le registre. Une catégorie sans jeu
+   reste annoncée sur l'accueil, mais ne s'ouvre pas.
+------------------------------------------------------------------ */
+var CATEGORIES = [
+  {id:"exterieur", bientot:"games.soon.sub"},
+  {id:"interieur"},
+  {id:"societe"}
+];
+var CATEGORIE = CATEGORIES[0].id;      /* celle dont la liste est affichée */
+
+function categorie(id){
+  for(var i=0;i<CATEGORIES.length;i++) if(CATEGORIES[i].id===id) return CATEGORIES[i];
+  return CATEGORIES[0];
+}
+function jeuxDeCategorie(id){
+  return ORDRE_JEUX.filter(function(j){ return JEUX[j].categorie===id; });
+}
+
+/* Les tuiles de l'accueil : un seul jeu s'annonce par son nom, plusieurs
+   par leur nombre, aucun par « bientôt ». */
+function renderCategories(){
+  CATEGORIES.forEach(function(c){
+    var b=document.querySelector('#categories [data-categorie="'+c.id+'"]');
+    if(!b) return;
+    var jeux=jeuxDeCategorie(c.id);
+    b.classList.toggle("soon", !jeux.length);
+    if(jeux.length) b.removeAttribute("aria-disabled");
+    else b.setAttribute("aria-disabled","true");
+    b.querySelector(".tile-sub").textContent = !jeux.length ? t("cat.soon")
+      : (jeux.length===1 ? JEUX[jeux[0]].nom() : tn("cat.count", jeux.length));
+  });
+}
+
+/* La liste d'une catégorie : ses tuiles de jeu, et l'annonce de ceux à
+   venir si elle en a une. */
+function peindreCategorie(){
+  var c=categorie(CATEGORIE);
+  var h1=$("catTitle");
+  if(h1 && h1.firstChild) h1.firstChild.nodeValue = t("cat."+c.id);
+  var tuiles=$("catGames").querySelectorAll(".tile[data-jeu]");
+  for(var i=0;i<tuiles.length;i++) tuiles[i].hidden = jeu(tuiles[i].dataset.jeu).categorie!==c.id;
+  $("catSoon").hidden = !c.bientot;
+  if(c.bientot) $("catSoonSub").textContent = t(c.bientot);
+}
+function ouvrirCategorie(id){
+  CATEGORIE=categorie(id).id;
+  peindreCategorie();
+  show("cat");
+}
+/* « Changer de jeu » ramène à la liste de la catégorie du jeu en cours. */
+function retourAuxJeux(){ ouvrirCategorie(jeu(S.game).categorie); }
+
+$("categories").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-categorie]");
+  if(!b || b.classList.contains("soon")) return;
+  ouvrirCategorie(b.dataset.categorie);
+});
+$("catBack").addEventListener("click",function(){ show("games"); });
 /* ==================================================================
    Langues — « manche » se dit frame au cornhole, à ne pas confondre
    avec les tours d'un tournoi (rounds).
@@ -2637,7 +2780,9 @@ function fillMolkkyRules(host){
 var TXT = {
 fr:{
   "app.tagline":"Compteur de points",
-  "games.eyebrow":"Choisir un jeu",
+  "cat.eyebrow":"Choisir une catégorie", "cat.back":"Catégories", "cat.soon":"Bientôt",
+  "cat.exterieur":"Extérieur", "cat.interieur":"Intérieur", "cat.societe":"Société",
+  "cat.count":"{n} jeu", "cat.count_p":"{n} jeux",
   "games.soon":"En chantier", "games.soon.sub":"Pétanque, bibock…",
   "games.change":"Changer de jeu",
   "app.desc":"Compteur de points pour les jeux d'extérieur. Cornhole, palet breton et mölkky, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
@@ -2764,7 +2909,9 @@ fr:{
 },
 en:{
   "app.tagline":"Score keeper",
-  "games.eyebrow":"Pick a game",
+  "cat.eyebrow":"Pick a category", "cat.back":"Categories", "cat.soon":"Coming soon",
+  "cat.exterieur":"Outdoor", "cat.interieur":"Indoor", "cat.societe":"Board games",
+  "cat.count":"{n} game", "cat.count_p":"{n} games",
   "games.soon":"In the works", "games.soon.sub":"Pétanque, Bibock…",
   "games.change":"Change game",
   "app.desc":"A score keeper for outdoor games. Cornhole, Breton palet and Mölkky, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
@@ -2891,7 +3038,9 @@ en:{
 },
 es:{
   "app.tagline":"Marcador",
-  "games.eyebrow":"Elige un juego",
+  "cat.eyebrow":"Elige una categoría", "cat.back":"Categorías", "cat.soon":"Próximamente",
+  "cat.exterieur":"Exterior", "cat.interieur":"Interior", "cat.societe":"Juegos de mesa",
+  "cat.count":"{n} juego", "cat.count_p":"{n} juegos",
   "games.soon":"En preparación", "games.soon.sub":"Petanca, bibock…",
   "games.change":"Cambiar de juego",
   "app.desc":"Marcador para juegos de exterior. Cornhole, palet bretón y mölkky, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
@@ -3531,6 +3680,8 @@ function setLang(l){
   LANG = (l===null) ? detectLang() : l;
   document.documentElement.lang=LANG;
   applyStaticText();
+  renderCategories();
+  if($("s-cat").classList.contains("on")) peindreCategorie();
   renderCards(); renderRules(); renderTSetup();
   pourChaqueJeu("changementDeLangue");
   fillRules("rulesBody");
@@ -5479,7 +5630,7 @@ function retourAndroid(){
   if(tirage && !tirage.hidden) return true;   /* le tirage au sort se termine seul */
 
   var fiches=[["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
-  var ecrans=[["s-hall","hallBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"]];
+  var ecrans=[["s-hall","hallBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"], ["s-cat","catBack"]];
   ORDRE_JEUX.forEach(function(id){
     var r=JEUX[id].retour;
     if(!r) return;
@@ -5512,11 +5663,11 @@ function ouvrirJeu(id){
   applyGame(id);
   show("setup");
 }
-document.querySelector("#s-games .games").addEventListener("click",function(e){
+$("catGames").addEventListener("click",function(e){
   var b=e.target.closest("button[data-jeu]");
   if(b) ouvrirJeu(b.dataset.jeu);
 });
-$("backToGames").addEventListener("click",function(){ show("games"); });
+$("backToGames").addEventListener("click",retourAuxJeux);
 
 $("openTour").addEventListener("click",function(){
   if(T){ openBracket(); }
@@ -5596,7 +5747,7 @@ function refreshTourBtn(){
 }
 
 function show(name){
-  ["games","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
+  ["games","cat","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
   if(name!=="game") closeSheet();
@@ -5691,6 +5842,7 @@ applyStaticText();
    sans redessiner — une partie en double reprise après fermeture montrait
    la bascule sur Simple et deux champs au lieu de six. */
 load();
+renderCategories();
 
 renderCards();
 renderRules();

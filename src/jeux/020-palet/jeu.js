@@ -8,6 +8,7 @@
 declarerJeu({
   id:"palet",
   famille:"duel",
+  categorie:"exterieur",
   cibles:[12,15], cible:12,
   nom:function(){ return t("palet.name"); },
   regles:fillPaletRules,

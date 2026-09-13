@@ -10,11 +10,11 @@ function ouvrirJeu(id){
   applyGame(id);
   show("setup");
 }
-document.querySelector("#s-games .games").addEventListener("click",function(e){
+$("catGames").addEventListener("click",function(e){
   var b=e.target.closest("button[data-jeu]");
   if(b) ouvrirJeu(b.dataset.jeu);
 });
-$("backToGames").addEventListener("click",function(){ show("games"); });
+$("backToGames").addEventListener("click",retourAuxJeux);
 
 $("openTour").addEventListener("click",function(){
   if(T){ openBracket(); }
@@ -94,7 +94,7 @@ function refreshTourBtn(){
 }
 
 function show(name){
-  ["games","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
+  ["games","cat","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
   if(name!=="game") closeSheet();
@@ -189,6 +189,7 @@ applyStaticText();
    sans redessiner — une partie en double reprise après fermeture montrait
    la bascule sur Simple et deux champs au lieu de six. */
 load();
+renderCategories();
 
 renderCards();
 renderRules();

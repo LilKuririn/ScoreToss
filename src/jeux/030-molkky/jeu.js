@@ -6,6 +6,8 @@
 declarerJeu({
   id:"molkky",
   famille:"tours",
+  categorie:"exterieur",
+  nom:function(){ return t("molkky.name"); },
   regles:fillMolkkyRules,
   ecrans:["msetup","mgame"],
   lienPalmares:"mkHall",
@@ -644,7 +646,7 @@ function mShare(){
 }
 
 /* --- commandes -------------------------------------------------- */
-$("mkToGames").addEventListener("click",function(){ show("games"); });
+$("mkToGames").addEventListener("click",retourAuxJeux);
 $("mkMinus").addEventListener("click",function(){
   if(MS.count>MK_MIN){ MS.count--; MS.open=-1; renderMSetup(); save(); }
 });

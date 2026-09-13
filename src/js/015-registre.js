@@ -12,6 +12,10 @@
    s'affronter en tournoi ; "tours", des participants qui lancent chacun
    à leur tour.
 
+   Tout jeu déclare son identifiant, sa famille, sa catégorie — "exterieur",
+   "interieur" ou "societe", voir 016-categories.js — et nom(), le nom
+   sous lequel l'accueil l'annonce.
+
    Un jeu de la famille "duel" fournit :
      cibles, cible             les scores proposés, et celui par défaut
      nom()                     le titre de l'écran de préparation
