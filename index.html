@@ -507,6 +507,128 @@ h1,h2,h3,p{margin:0}
   margin-top:12px;font-size:12.5px;color:var(--muted);
 }
 
+/* ============ FLÉCHETTES ============ */
+.fl-mates{margin-top:8px}
+.fl-mates + .trow,.fl-mates + .trow-sw{margin-top:8px}
+
+/* Les scores : un par joueur ou par équipe, celui qui lance ressort. À
+   plus de trois, la rangée défile plutôt que d'écraser la cible. */
+.fl-scores{display:flex;gap:7px;overflow-x:auto;padding:0 14px 12px;scrollbar-width:none}
+.fl-scores::-webkit-scrollbar{display:none}
+.fl-score{
+  --c:#E14434;
+  flex:1 0 116px;min-width:0;
+  display:grid;grid-template-columns:auto 1fr;column-gap:7px;row-gap:2px;align-items:center;
+  padding:9px 12px 8px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+  transition:border-color .16s ease,background .16s ease;
+}
+.fl-score i.dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.fl-score .who{font-size:13px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fl-score .sc{grid-column:1 / -1;font-size:30px;line-height:1.05;color:var(--ink)}
+.fl-score.on{
+  background:color-mix(in oklab,var(--c) 12%,var(--panel));
+  border-color:color-mix(in oklab,var(--c) 55%,transparent);
+}
+.fl-score.on .sc,.fl-score.win .sc{color:color-mix(in oklab,var(--c) 62%,var(--tone))}
+
+.fl-console{
+  flex:1;min-height:0;display:flex;flex-direction:column;gap:9px;
+  padding:0 14px calc(14px + env(safe-area-inset-bottom));
+}
+.fl-console > *{flex:0 0 auto}
+
+/* la volée en cours, fléchette par fléchette */
+.fl-volee{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:6px}
+.fl-slot{
+  background:var(--panel-2);border-radius:11px;min-height:48px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+}
+.fl-slot b{font-family:var(--fm);font-size:15px;font-weight:700}
+.fl-slot small{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;min-height:13px}
+.fl-slot.vide b{color:var(--muted);font-weight:500}
+.fl-total{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px;padding:0 4px 0 8px}
+.fl-total b{font-size:22px}
+
+.fl-vise{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-height:24px}
+.fl-vise b{font-family:var(--fm);font-size:18px;font-weight:700}
+.fl-vise b.attente{font-family:var(--ff);font-size:13px;font-weight:600;color:var(--muted)}
+.fl-msg{font-size:12.5px;font-weight:600;text-align:right}
+.fl-msg.bust{color:var(--danger)}
+.fl-msg.gagne{color:var(--live)}
+
+/* La cible prend toute la place restante, sans jamais sortir de l'écran. */
+.fl-console > .fl-zone{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
+.fl-cible{
+  height:100%;max-width:100%;aspect-ratio:1/1;
+  touch-action:none;user-select:none;-webkit-user-select:none;
+}
+.fl-cible svg{display:block;width:100%;height:100%}
+.fl-cible.fini{opacity:.45;pointer-events:none}
+
+.fl-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fl-btn{
+  height:46px;border-radius:11px;background:transparent;border:1px solid var(--line-2);
+  font-size:14px;font-weight:600;color:var(--ink);transition:background .12s ease,color .12s ease;
+}
+.fl-btn:active{background:color-mix(in oklab,var(--ink) 8%,transparent)}
+.fl-btn:disabled{opacity:.32}
+.fl-rate{color:var(--muted)}
+.fl-rate:active{background:color-mix(in oklab,var(--danger) 14%,transparent);color:var(--danger)}
+.fl-rate.on{border-color:var(--danger);color:var(--danger)}
+
+/* La cible est un objet : ses couleurs ne suivent pas le thème. */
+.fl-plan .cadre{fill:#0F1315}
+.fl-plan .noir{fill:#1B2022}
+.fl-plan .creme{fill:#E8E0CB}
+.fl-plan .rouge{fill:#C8443A}
+.fl-plan .vert{fill:#2E8C5A}
+.fl-plan .seg{stroke:rgba(0,0,0,.45);stroke-width:.5}
+.fl-plan .n{fill:#E8E0CB;font-family:var(--ff);font-size:10.5px;font-weight:700;text-anchor:middle}
+.fl-plan .surb{fill:rgba(255,255,255,.38);fill-rule:evenodd;stroke:#E2892C;stroke-width:1.8;pointer-events:none}
+.fl-plan .choix{fill:rgba(255,255,255,.22);fill-rule:evenodd;stroke:#E2892C;stroke-width:1.2;stroke-dasharray:3 2;pointer-events:none}
+
+/* feuille de match : une ligne par volée, chaque fléchette se corrige */
+.fl-log{width:100%;border-collapse:collapse}
+.fl-log th{
+  font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);text-align:left;padding:0 0 8px;
+}
+.fl-log th:last-child,.fl-log td:last-child{text-align:right}
+.fl-log td{padding:7px 0;border-top:1px solid var(--line);vertical-align:middle;font-size:13.5px}
+.fl-log td.nv{font-family:var(--fm);font-size:11px;color:var(--muted);width:28px}
+.fl-log .qui{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:104px}
+.fl-log .darts{display:flex;gap:4px}
+.fl-dart{
+  min-width:40px;height:32px;padding:0 6px;border-radius:8px;background:var(--panel-2);
+  font-family:var(--fm);font-size:12.5px;font-weight:700;
+}
+.fl-dart:active{background:color-mix(in oklab,var(--ink) 14%,var(--panel-2))}
+.fl-log td.reste{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap;padding-left:8px}
+.fl-log tr.bust td.reste{color:var(--danger)}
+.fl-log tr.bust .fl-dart{text-decoration:line-through;color:var(--muted)}
+
+.fl-editeur{display:flex;flex-direction:column;align-items:center;gap:8px;padding:2px 20px 10px}
+.fl-editeur[hidden]{display:none}      /* sinon `display:flex` l'emporte sur `hidden` */
+.fl-editeur .fl-cible{width:min(100%,240px);height:auto}
+.fl-editeur .fl-cible svg{height:auto}
+.fl-editeur .fl-btn{width:min(100%,240px)}
+.fl-choix{font-family:var(--fm);font-size:20px;font-weight:700;padding:4px 0 2px}
+
+/* le classement de fin de partie */
+.fl-rang{width:100%;border-collapse:collapse;margin-top:4px}
+.fl-rang th{
+  font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);text-align:right;padding:0 0 6px 8px;
+}
+.fl-rang th:first-child{text-align:left;padding-left:0}
+.fl-rang td{padding:9px 0 9px 8px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px}
+.fl-rang td:first-child{text-align:left;padding-left:0}
+.fl-rang .who{display:flex;align-items:center;gap:7px;min-width:0;font-weight:600}
+.fl-rang .who i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.fl-rang .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fl-rang td.reste{font-weight:800}
+.fl-rang tr.win td.reste{color:var(--live)}
 /* un seul compte par équipe : la réglette occupe la place des deux */
 .crow.solo{grid-template-columns:1fr 120px}
 .crow .who{display:flex;align-items:center;gap:7px;min-width:0}
@@ -1099,6 +1221,24 @@ a.hall-link{text-decoration:none;color:inherit}
         </svg>
       </button>
 
+      <button type="button" class="tile" id="playFlechettes" data-jeu="flechettes">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <circle cx="15.5" cy="18.5" r="11.5" stroke="currentColor" stroke-width="1.8"/>
+            <circle cx="15.5" cy="18.5" r="6" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="15.5" cy="18.5" r="2" fill="#C5551F"/>
+            <path d="M18.5 15.5L29 5M24.5 5H29v4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="fl.name">Fléchettes</span>
+          <span class="tile-sub" data-i18n="fl.tile.sub">501 et 301, fin sur un double</span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
       <div class="tile soon" id="catSoon" aria-disabled="true">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
@@ -1581,6 +1721,151 @@ a.hall-link{text-decoration:none;color:inherit}
           <button type="button" class="act danger" id="mkEdDel" hidden data-i18n="edit.delete">Supprimer ce lancer</button>
           <button type="button" class="act" id="mkUndo" data-i18n="mk.undo">Annuler le dernier lancer</button>
           <button type="button" class="act danger" id="mkQuit" data-i18n="sheet.quit">Terminer la partie</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FLÉCHETTES : PRÉPARATION ============ -->
+  <section class="screen" id="s-fsetup">
+    <header class="brand">
+      <div class="brand-row">
+        <div>
+          <button type="button" class="crumb" id="flToGames">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="games.change">Changer de jeu</span>
+          </button>
+          <h1><span data-i18n="fl.name">Fléchettes</span><span>.</span></h1>
+        </div>
+        <div class="nav">
+          <button type="button" class="nav-btn" id="flHall" hidden data-i18n-aria="hall.aria">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M3.6 15V9.2M9 15V3.4M14.4 15v-3.9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+              <path d="M1.8 15h14.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="setup-body">
+      <div class="seg" id="flMode">
+        <button type="button" data-mode="solo" class="on"><span class="lbl" data-i18n="fl.mode.solo">Individuel</span><span class="sub" data-i18n="fl.mode.solo.sub">Chacun pour soi</span></button>
+        <button type="button" data-mode="team"><span class="lbl" data-i18n="fl.mode.team">Équipes</span><span class="sub" data-i18n="fl.mode.team.sub">Score commun</span></button>
+      </div>
+
+      <div class="panel-block">
+        <div class="opt">
+          <p class="eyebrow" data-i18n="fl.depart">Score de départ</p>
+          <div class="opt-row" id="flDepart"></div>
+          <p class="hint" data-i18n="fl.depart.hint">Fin obligatoire sur un double, en une seule manche.</p>
+        </div>
+      </div>
+
+      <div class="tcount">
+        <div>
+          <p class="eyebrow" id="flCountLab" data-i18n="fl.players">Joueurs</p>
+          <p class="note" id="flNote">2 joueurs · 501 double out</p>
+        </div>
+        <div class="step wide">
+          <button type="button" id="flMinus" data-i18n-aria="tour.remove">−</button>
+          <div class="v" id="flVal">2</div>
+          <button type="button" id="flPlus" data-i18n-aria="tour.add">+</button>
+        </div>
+      </div>
+
+      <div class="tcount" id="flPerBlock" hidden>
+        <div><p class="eyebrow" data-i18n="fl.per">Joueurs par équipe</p></div>
+        <div class="step wide">
+          <button type="button" id="flPerMinus" data-i18n-aria="tour.remove">−</button>
+          <div class="v" id="flPerVal">2</div>
+          <button type="button" id="flPerPlus" data-i18n-aria="tour.add">+</button>
+        </div>
+      </div>
+
+      <div id="flRows"></div>
+
+      <div class="link-group">
+        <button type="button" class="hall-link" id="flOpenRules">
+          <span>
+            <span class="eyebrow" data-i18n="setup.rules.eyebrow">Règles du jeu</span>
+            <b data-i18n="setup.rules.label">Comment marquer des points</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" class="hall-link" id="flOpenAbout">
+          <span>
+            <span class="eyebrow" data-i18n="setup.about.eyebrow">À propos</span>
+            <b data-i18n="setup.about.label">Réglages, sauvegarde et langue</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <footer class="cta-bar">
+      <button type="button" class="cta" id="flStart" data-i18n="setup.start">Commencer la partie</button>
+    </footer>
+  </section>
+
+  <!-- ============ FLÉCHETTES : PARTIE ============ -->
+  <section class="screen" id="s-fgame">
+    <header class="top">
+      <p class="eyebrow" id="flTurn">À vous</p>
+      <div class="sep"></div>
+      <p class="eyebrow" id="flStartLabel">501 · double out</p>
+      <button type="button" class="icon-btn" id="flSheetBtn" data-i18n-aria="sheet.title">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M2.5 4h13M2.5 9h13M2.5 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="fl-scores" id="flScores"></div>
+
+    <section class="fl-console">
+      <div class="fl-volee" id="flVolee"></div>
+      <div class="fl-vise" aria-live="polite">
+        <b id="flVise" class="attente">Visez, puis levez le doigt</b>
+        <span class="fl-msg" id="flMsg"></span>
+      </div>
+      <div class="fl-zone">
+        <div class="fl-cible" id="flCible" role="application" data-i18n-aria="fl.board.aria"></div>
+      </div>
+      <div class="fl-actions">
+        <button type="button" class="fl-btn fl-rate" id="flMiss" data-i18n="fl.miss">Raté</button>
+        <button type="button" class="fl-btn" id="flCancel" data-i18n="fl.cancel">Annuler la fléchette</button>
+      </div>
+    </section>
+
+    <!-- feuille de match -->
+    <div class="sheet-wrap" id="flSheetWrap">
+      <div class="scrim" id="flScrim"></div>
+      <div class="sheet" role="dialog" aria-modal="true" data-i18n-aria="sheet.title">
+        <div class="sheet-head">
+          <h3 data-i18n="sheet.title">Feuille de match</h3>
+          <button type="button" class="icon-btn" id="flSheetClose" data-i18n-aria="nav.close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="sheet-body" id="flSheetBody"></div>
+        <div class="fl-editeur" id="flEditeur" hidden>
+          <div class="fl-cible" id="flEdCible" role="application" data-i18n-aria="fl.board.aria"></div>
+          <button type="button" class="fl-btn fl-rate" id="flEdMiss" data-i18n="fl.miss">Raté</button>
+        </div>
+        <div class="sheet-acts">
+          <button type="button" class="act" id="flEdSave" hidden data-i18n="edit.save">Enregistrer la correction</button>
+          <button type="button" class="act danger" id="flEdDel" hidden data-i18n="fl.edit.delete">Supprimer cette fléchette</button>
+          <button type="button" class="act danger" id="flQuit" data-i18n="sheet.quit">Terminer la partie</button>
         </div>
       </div>
     </div>
@@ -2710,6 +2995,808 @@ function fillMolkkyRules(host){
   deroule.appendChild(list);
   host.appendChild(deroule);
 }
+/* Fléchettes.
+
+   501 et 301, fin obligatoire sur un double, en une seule manche. Chacun
+   lance trois fléchettes par volée, dont le total est retiré de son score.
+   Passer sous 0, tomber à 1 ou atteindre 0 sans double annule la volée :
+   le score revient à celui de son début.
+
+   La saisie se fait sur une cible dessinée : on pose le doigt, on glisse
+   pour ajuster, et la fléchette compte au lever du doigt. Les anneaux
+   double et triple sont élargis : aux vraies proportions, ils ne feraient
+   que quelques pixels sur un téléphone. */
+declarerJeu({
+  id:"flechettes",
+  famille:"tours",
+  categorie:"interieur",
+  nom:function(){ return t("fl.name"); },
+  regles:fillFlechettesRules,
+  ecrans:["fsetup","fgame"],
+  lienPalmares:"flHall",
+  retour:{
+    fiches:[["flSheetWrap","flSheetClose"]],
+    ecrans:[["s-fsetup","flToGames"]]
+  },
+
+  auChangementDEcran:function(nom){
+    if(nom!=="fgame") flFermerFeuille();
+    if(nom==="fsetup") refreshHallLink();
+  },
+  sauver:function(o){ o.fs=FS; o.f=F; },
+  charger:function(d){
+    if(d && d.fs && d.fs.players && d.fs.players.length===FL_MAX) FS=flNormFS(d.fs);
+    if(d && d.f && d.f.players && d.f.players.length>=FL_MIN){ F=flNormF(d.f); FE=flRejouer(); }
+    renderFSetup();
+  },
+  importer:function(d){
+    FS = flNormFS((d.fs && d.fs.players && d.fs.players.length===FL_MAX) ? d.fs : {players:flJoueursVides()});
+    F = (d.f && d.f.players && d.f.players.length>=FL_MIN) ? flNormF(d.f) : null;
+    FE = F ? flRejouer() : null;
+    renderFSetup();
+  },
+  reprendre:function(){
+    if(!F || !FE || FE.gagnant>=0) return false;
+    show("fgame");
+    renderFGame();
+    keepAwake();
+    return true;
+  },
+  changementDeLangue:function(){
+    renderFSetup();
+    if(F && $("s-fgame").classList.contains("on")) renderFGame();
+  },
+
+  ouvrir:function(){
+    if(!S.tgt) S.tgt=ciblesParDefaut();
+    if(jeu(S.game).famille==="duel"){
+      S.tgt[S.game]=S.target;
+      TOUR[S.game]=T;
+      DRAFT[S.game]=TS;
+    }
+    S.game="flechettes";
+    T=null;
+    fillRules("rulesBody");
+    save();
+    show("fsetup");
+    renderFSetup();
+  }
+});
+
+var FL_MIN = 2;
+var FL_MAX = 8;
+var FL_PER_MIN = 2;
+var FL_PER_MAX = 4;
+var FL_DEPARTS = [501, 301];
+var FL_TEINTES = ["rouge","bleu","vert","ambre","violet","sarcelle","rose","or"];
+
+/* L'ordre des secteurs, dans le sens des aiguilles d'une montre depuis le
+   20, et les rayons des anneaux en fraction du rayon extérieur du double. */
+var FL_ORDRE = [20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
+var FL_ANNEAUX = {db:.085, bull:.17, tIn:.44, tOut:.60, dIn:.80};
+
+function flJoueursVides(){
+  var a=[];
+  for(var i=0;i<FL_MAX;i++) a.push({name:"", color:FL_TEINTES[i], mates:["","","",""]});
+  return a;
+}
+var FS = { count:2, mode:"solo", per:2, depart:501, open:-1, players:flJoueursVides() };
+var F  = null;      /* la partie : ses joueurs et ses fléchettes, rien d'autre */
+var FE = null;      /* ce qui s'en déduit, recalculé à chaque changement */
+var FEDIT = null;   /* la fléchette en cours de correction */
+
+function flNom(i){
+  var v=(FS.players[i].name||"").trim();
+  return v || tf(FS.mode==="team" ? "fl.teamn" : "fl.playern",{n:i+1});
+}
+function flCoequipier(i,j){
+  var v=((FS.players[i].mates||[])[j]||"").trim();
+  return v || (t("team.player")+" "+(j+1));
+}
+
+/* Le nom d'une fléchette : 20, D20, T20, 25, 50, ou Raté. */
+function flLib(d){
+  if(!d.m) return t("fl.miss");
+  if(d.s===25) return String(d.v);
+  return (d.m===3 ? "T" : d.m===2 ? "D" : "")+d.s;
+}
+
+/* --- préparation ------------------------------------------------- */
+function renderFSetup(){
+  var eq = FS.mode==="team";
+  var kids=$("flMode").children, i;
+  for(i=0;i<kids.length;i++) kids[i].classList.toggle("on", kids[i].dataset.mode===FS.mode);
+  fillChips($("flDepart"), FL_DEPARTS, FS.depart, "depart");
+
+  $("flCountLab").textContent=t(eq ? "fl.teams" : "fl.players");
+  $("flNote").textContent=tf(eq ? "fl.note.team" : "fl.note",{n:FS.count, d:FS.depart});
+  $("flVal").textContent=FS.count;
+  $("flMinus").disabled = FS.count<=FL_MIN;
+  $("flPlus").disabled  = FS.count>=FL_MAX;
+
+  $("flPerBlock").hidden = !eq;
+  $("flPerVal").textContent=FS.per;
+  $("flPerMinus").disabled = FS.per<=FL_PER_MIN;
+  $("flPerPlus").disabled  = FS.per>=FL_PER_MAX;
+
+  renderFRows();
+}
+
+function renderFRows(){
+  var host=$("flRows");
+  host.innerHTML="";
+  host.style.display="flex";
+  host.style.flexDirection="column";
+  host.style.gap="0";
+  var eq = FS.mode==="team";
+
+  for(var k=0;k<FS.count;k++){
+    (function(k){
+      var pl=FS.players[k];
+      var row=el("div","trow");
+      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
+
+      var pick=el("button","pick");
+      pick.type="button";
+      pick.style.setProperty("--c",color(pl.color).hex);
+      pick.setAttribute("aria-label",tf("fl.color.aria",{n:k+1}));
+      pick.setAttribute("aria-expanded", FS.open===k ? "true":"false");
+      pick.appendChild(el("i"));
+      pick.addEventListener("click",function(){
+        FS.open = FS.open===k ? -1 : k;
+        renderFRows();
+      });
+      row.appendChild(pick);
+
+      var name=el("input","field-input");
+      name.type="text";
+      name.value=pl.name;
+      name.maxLength=22;
+      name.placeholder=tf(eq ? "fl.teamn" : "fl.playern",{n:k+1});
+      name.setAttribute("aria-label",tf(eq ? "fl.team.aria" : "fl.player.aria",{n:k+1}));
+      name.addEventListener("input",function(){ pl.name=name.value; save(); });
+      row.appendChild(name);
+      host.appendChild(row);
+
+      if(eq){
+        if(!pl.mates) pl.mates=["","","",""];
+        var mates=el("div","mates fl-mates");
+        for(var j=0;j<FS.per;j++){
+          (function(j){
+            var mi=el("input","field-input");
+            mi.type="text";
+            mi.value=pl.mates[j]||"";
+            mi.maxLength=16;
+            mi.placeholder=t("team.player")+" "+(j+1);
+            mi.setAttribute("aria-label",tf("fl.mate.aria",{j:j+1, n:k+1}));
+            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
+            mates.appendChild(mi);
+          })(j);
+        }
+        host.appendChild(mates);
+      }
+
+      var sw=el("div","trow-sw swatches");
+      sw.hidden = FS.open!==k;
+      COLORS.forEach(function(col){
+        var b=el("button","sw");
+        b.type="button";
+        b.style.setProperty("--c",col.hex);
+        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
+        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
+        b.addEventListener("click",function(){
+          pl.color=col.id; FS.open=-1;
+          renderFRows(); save();
+        });
+        sw.appendChild(b);
+      });
+      host.appendChild(sw);
+    })(k);
+  }
+}
+
+/* --- décompte ---------------------------------------------------- */
+function flNouvellePartie(){
+  F={ depart:FS.depart, mode:FS.mode, players:[], darts:[] };
+  for(var i=0;i<FS.count;i++){
+    var mates=[];
+    if(FS.mode==="team"){ for(var j=0;j<FS.per;j++) mates.push(flCoequipier(i,j)); }
+    F.players.push({ label:flNom(i), hex:color(FS.players[i].color).hex, mates:mates });
+  }
+  FE=flRejouer();
+  FEDIT=null;
+  show("fgame");
+  renderFGame();
+  save();
+  keepAwake();
+}
+
+/* En équipe, les membres lancent à tour de rôle, une volée chacun ; celui
+   qui lance se déduit du nombre de volées déjà jouées par l'équipe. */
+function flMembre(p, rang){
+  var pl=F.players[p];
+  if(F.mode!=="team" || !pl || !pl.mates || !pl.mates.length) return null;
+  return pl.mates[rang % pl.mates.length];
+}
+
+/* Tout se déduit des fléchettes : qui lance, les volées, les busts, le
+   vainqueur. Corriger une fléchette d'il y a dix volées rejoue la suite. */
+function flRejouer(){
+  var n=F.players.length, score=[], parJoueur=[], i;
+  for(i=0;i<n;i++){ score.push(F.depart); parJoueur.push(0); }
+  var e={ score:score, volees:[], gagnant:-1 };
+  var j=0, debut=F.depart, volee=[];
+  for(var k=0;k<F.darts.length;k++){
+    var d=F.darts[k];
+    volee.push(k);
+    var reste=score[j]-d.v;
+    var bust = reste<0 || reste===1 || (reste===0 && d.m!==2);
+    score[j] = bust ? debut : reste;
+    var gagne = !bust && reste===0;
+    if(bust || gagne || volee.length===3){
+      e.volees.push({ joueur:j, membre:flMembre(j, parJoueur[j]), darts:volee, bust:bust, debut:debut, reste:score[j] });
+      parJoueur[j]++;
+      if(gagne){ e.gagnant=j; break; }
+      j=(j+1)%n;
+      debut=score[j];
+      volee=[];
+    }
+  }
+  e.joueur=j;
+  e.debut=debut;
+  e.volee=e.gagnant>=0 ? [] : volee;
+  e.membre=e.gagnant>=0 ? null : flMembre(j, parJoueur[j]);
+  return e;
+}
+
+function flLancer(d){
+  if(!F || !FE || FE.gagnant>=0) return;
+  F.darts.push({ s:d.s, m:d.m, v:d.v });
+  flApresChangement(d.v ? 12 : 6);
+}
+
+function flApresChangement(vibration){
+  var avant = FE ? FE.gagnant : -1;
+  FE=flRejouer();
+  var der=FE.volees[FE.volees.length-1];
+  var bust = der && der.bust && der.darts[der.darts.length-1]===F.darts.length-1;
+  buzz(bust ? [20,50,20] : vibration);
+  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de
+     victoire ne doit pas faire perdre la partie au palmarès */
+  if(FE.gagnant>=0 && avant<0){
+    flFermerFeuille();
+    flArchiver();
+    save();
+    renderFGame();
+    setTimeout(renderFOver, 620);
+  }else{
+    save();
+    renderFGame();
+    if($("flSheetWrap").classList.contains("on")) renderFSheet();
+  }
+}
+
+/* --- la cible ---------------------------------------------------- */
+var FL_NS = "http://www.w3.org/2000/svg";
+function flPoint(r,deg){ var a=(deg-90)*Math.PI/180; return [r*Math.cos(a), r*Math.sin(a)]; }
+function flSecteur(r0,r1,d0,d1){
+  var A=flPoint(r1,d0), B=flPoint(r1,d1), C=flPoint(r0,d1), D=flPoint(r0,d0);
+  return "M"+A[0].toFixed(2)+" "+A[1].toFixed(2)+"A"+r1+" "+r1+" 0 0 1 "+B[0].toFixed(2)+" "+B[1].toFixed(2)+
+         "L"+C[0].toFixed(2)+" "+C[1].toFixed(2)+"A"+r0+" "+r0+" 0 0 0 "+D[0].toFixed(2)+" "+D[1].toFixed(2)+"Z";
+}
+function flDisque(r){ return "M"+(-r)+" 0A"+r+" "+r+" 0 1 0 "+r+" 0A"+r+" "+r+" 0 1 0 "+(-r)+" 0Z"; }
+function flBandes(){
+  var a=FL_ANNEAUX;
+  return [[a.bull*100,a.tIn*100,1],[a.tIn*100,a.tOut*100,3],[a.tOut*100,a.dIn*100,1],[a.dIn*100,100,2]];
+}
+function flForme(tag, attrs){
+  var e=document.createElementNS(FL_NS,tag);
+  for(var k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+/* Le segment sous un point du plan de la cible, ou null hors cible. */
+function flSegment(x,y){
+  var r=Math.hypot(x,y)/100, a=FL_ANNEAUX;
+  if(r>1) return null;
+  if(r<=a.db)   return {s:25, m:2, v:50, forme:flDisque(a.db*100)};
+  if(r<=a.bull) return {s:25, m:1, v:25, forme:flDisque(a.bull*100)+flDisque(a.db*100)};
+  var deg=(Math.atan2(x,-y)*180/Math.PI+369)%360;
+  var i=Math.floor(deg/18), n=FL_ORDRE[i], d0=i*18-9;
+  var b=flBandes().filter(function(z){ return r<=z[1]/100; })[0];
+  return {s:n, m:b[2], v:n*b[2], forme:flSecteur(b[0],b[1],d0,d0+18)};
+}
+/* Le contour d'une fléchette déjà choisie, pour la montrer sur la cible. */
+function flFormeDe(d){
+  if(!d || !d.m) return "";
+  var a=FL_ANNEAUX;
+  if(d.s===25) return d.m===2 ? flDisque(a.db*100) : flDisque(a.bull*100)+flDisque(a.db*100);
+  var i=FL_ORDRE.indexOf(d.s), d0=i*18-9;
+  var bande = d.m===2 ? flBandes()[3] : d.m===3 ? flBandes()[1] : flBandes()[2];
+  return flSecteur(bande[0],bande[1],d0,d0+18);
+}
+
+/* Dessine une cible dans `hote`. Pendant l'appui, `suivre` reçoit le
+   segment visé ; au lever du doigt, `choisir` reçoit celui où il se trouve,
+   ou null s'il est sorti de la cible. */
+function flCible(hote, suivre, choisir){
+  var svg=flForme("svg",{viewBox:"-121 -121 242 242","class":"fl-plan","aria-hidden":"true"});
+  svg.appendChild(flForme("circle",{r:120,"class":"cadre"}));
+  FL_ORDRE.forEach(function(n,i){
+    var d0=i*18-9, clair=i%2===1;
+    flBandes().forEach(function(b){
+      svg.appendChild(flForme("path",{
+        d:flSecteur(b[0],b[1],d0,d0+18),
+        "class":"seg "+(b[2]===1 ? (clair ? "creme" : "noir") : (clair ? "vert" : "rouge"))
+      }));
+    });
+    var q=flPoint(110,i*18);
+    var tx=flForme("text",{x:q[0].toFixed(2), y:q[1].toFixed(2), dy:"0.35em", "class":"n"});
+    tx.textContent=n;
+    svg.appendChild(tx);
+  });
+  svg.appendChild(flForme("circle",{r:FL_ANNEAUX.bull*100,"class":"seg vert"}));
+  svg.appendChild(flForme("circle",{r:FL_ANNEAUX.db*100,"class":"seg rouge"}));
+  var choix=flForme("path",{d:"","class":"choix"});
+  var surb=flForme("path",{d:"","class":"surb"});
+  svg.appendChild(choix);
+  svg.appendChild(surb);
+  hote.appendChild(svg);
+
+  var appui=false;
+  function lire(e){
+    var m=svg.getScreenCTM();
+    if(!m) return null;
+    var p=new DOMPoint(e.clientX,e.clientY).matrixTransform(m.inverse());
+    return flSegment(p.x,p.y);
+  }
+  hote.addEventListener("pointerdown",function(e){
+    if(hote.classList.contains("fini")) return;
+    appui=true;
+    try{ hote.setPointerCapture(e.pointerId); }catch(x){}
+    var d=lire(e);
+    surb.setAttribute("d", d ? d.forme : "");
+    suivre(d);
+  });
+  hote.addEventListener("pointermove",function(e){
+    if(!appui) return;
+    var d=lire(e);
+    surb.setAttribute("d", d ? d.forme : "");
+    suivre(d);
+  });
+  hote.addEventListener("pointerup",function(e){
+    if(!appui) return;
+    appui=false;
+    surb.setAttribute("d","");
+    choisir(lire(e));
+  });
+  hote.addEventListener("pointercancel",function(){
+    appui=false;
+    surb.setAttribute("d","");
+    suivre(null);
+  });
+  return {
+    enAppui:function(){ return appui; },
+    montrer:function(d){ choix.setAttribute("d", flFormeDe(d)); }
+  };
+}
+
+/* --- rendu de la partie ------------------------------------------ */
+var flMinuterie=null;
+function flViser(d){
+  var v=$("flVise");
+  clearTimeout(flMinuterie);
+  flMinuterie=null;
+  if(d){ v.className=""; v.textContent=flLib(d)+" · "+d.v; }
+  else { v.className="attente"; v.textContent=t("fl.aim"); }
+}
+
+/* Le nom de la fléchette reste un instant, le temps de le lire : il est
+   affiché, et sa minuterie armée, avant que la partie ne se redessine. */
+var FL_CIBLE = flCible($("flCible"), flViser, function(d){
+  if(!d){ flViser(null); return; }
+  flViser(d);
+  flMinuterie=setTimeout(function(){
+    flMinuterie=null;
+    if(!FL_CIBLE.enAppui()) flViser(null);
+  }, 900);
+  flLancer(d);
+});
+
+function renderFGame(){
+  if(!F) return;
+  if(!FE) FE=flRejouer();
+  var e=FE, fini=e.gagnant>=0, j=fini ? e.gagnant : e.joueur, pl=F.players[j];
+
+  $("flTurn").textContent = fini ? t("fl.done")
+    : (e.membre ? tf("fl.turn.team",{team:pl.label, name:e.membre}) : tf("fl.turn",{name:pl.label}));
+  $("flStartLabel").textContent = tf("fl.start",{n:F.depart});
+
+  var host=$("flScores");
+  host.innerHTML="";
+  F.players.forEach(function(p,i){
+    var row=el("div","fl-score"+(i===j && !fini ? " on" : "")+(i===e.gagnant ? " win" : ""));
+    row.style.setProperty("--c",p.hex);
+    row.appendChild(el("i","dot"));
+    row.appendChild(el("span","who",p.label));
+    row.appendChild(el("span","sc num",String(e.score[i])));
+    host.appendChild(row);
+  });
+  var actif=host.children[j];
+  if(actif && host.scrollWidth>host.clientWidth) actif.scrollIntoView({block:"nearest", inline:"nearest"});
+
+  var der=e.volees[e.volees.length-1];
+  var darts = fini ? der.darts : e.volee;
+  var V=$("flVolee"), total=0;
+  V.innerHTML="";
+  for(var s=0;s<3;s++){
+    var d = darts[s]!==undefined ? F.darts[darts[s]] : null;
+    var slot=el("div","fl-slot"+(d ? "" : " vide"));
+    slot.appendChild(el("b",null, d ? flLib(d) : "—"));
+    slot.appendChild(el("small",null, d ? String(d.v) : ""));
+    if(d) total+=d.v;
+    V.appendChild(slot);
+  }
+  var tot=el("div","fl-total");
+  tot.appendChild(el("span","eyebrow",t("fl.total")));
+  tot.appendChild(el("b","num",String(total)));
+  V.appendChild(tot);
+
+  var msg=$("flMsg");
+  msg.className="fl-msg";
+  msg.textContent="";
+  var toutDerniere = der && der.darts[der.darts.length-1]===F.darts.length-1;
+  if(fini){
+    msg.classList.add("gagne");
+    msg.textContent=tf("fl.won",{name:pl.label, lib:flLib(F.darts[der.darts[der.darts.length-1]])});
+  }else if(toutDerniere && der.bust){
+    msg.classList.add("bust");
+    msg.textContent=tf("fl.bust",{name:F.players[der.joueur].label, n:der.debut});
+  }
+
+  if(!FL_CIBLE.enAppui() && !flMinuterie) flViser(null);
+  $("flCible").classList.toggle("fini",fini);
+  $("flMiss").disabled=fini;
+  $("flCancel").disabled = fini || !F.darts.length;
+}
+
+/* --- feuille de match -------------------------------------------- */
+var FL_ED_CIBLE = flCible($("flEdCible"), function(){}, function(d){
+  if(!d || !FEDIT) return;
+  FEDIT.d={ s:d.s, m:d.m, v:d.v };
+  renderFSheet();
+});
+
+function renderFSheet(){
+  var body=$("flSheetBody");
+  body.innerHTML="";
+  $("flEditeur").hidden = !FEDIT;
+  $("flEdSave").hidden  = !FEDIT;
+  $("flEdDel").hidden   = !FEDIT;
+  $("flQuit").hidden    = !!FEDIT;
+  if(FEDIT){ renderFEditeur(body); return; }
+
+  if(!F.darts.length){
+    body.appendChild(el("p","empty",t("fl.sheet.empty")));
+    return;
+  }
+  var table=el("table","fl-log");
+  var thead=el("thead"), tr=el("tr");
+  tr.appendChild(el("th",null,"#"));
+  tr.appendChild(el("th",null,t(F.mode==="team" ? "fl.teams" : "fl.players")));
+  tr.appendChild(el("th",null,t("fl.col.volee")));
+  tr.appendChild(el("th",null,t("fl.col.left")));
+  thead.appendChild(tr);
+  table.appendChild(thead);
+
+  var tbody=el("tbody");
+  var liste=FE.volees.slice();
+  if(FE.volee.length) liste.push({ joueur:FE.joueur, membre:FE.membre, darts:FE.volee, bust:false, enCours:true });
+  liste.forEach(function(v,idx){
+    var row=el("tr", v.bust ? "bust" : null);
+    row.appendChild(el("td","nv",String(idx+1).padStart(2,"0")));
+    var p=F.players[v.joueur];
+    var qui=el("span","qui", p.label+(v.membre ? " · "+v.membre : ""));
+    qui.style.color=teamInk(p.hex);
+    var tdq=el("td"); tdq.appendChild(qui); row.appendChild(tdq);
+
+    var tdd=el("td"), box=el("div","darts");
+    v.darts.forEach(function(k,pos){
+      var b=el("button","fl-dart",flLib(F.darts[k]));
+      b.type="button";
+      b.setAttribute("aria-label",tf("fl.fix.aria",{n:k+1}));
+      b.addEventListener("click",function(){ flOuvrirEditeur(k, idx+1, pos+1); });
+      box.appendChild(b);
+    });
+    tdd.appendChild(box);
+    row.appendChild(tdd);
+    row.appendChild(el("td","reste", v.enCours ? "…" : (v.bust ? "Bust · "+v.reste : String(v.reste))));
+    tbody.appendChild(row);
+  });
+  table.appendChild(tbody);
+  body.appendChild(table);
+  body.appendChild(el("p","hint",t("fl.sheet.hint")));
+}
+
+function flOuvrirEditeur(k, volee, position){
+  var d=F.darts[k];
+  if(!d) return;
+  FEDIT={ k:k, volee:volee, position:position, d:{ s:d.s, m:d.m, v:d.v } };
+  renderFSheet();
+}
+function flFermerEditeur(){ FEDIT=null; renderFSheet(); }
+
+function renderFEditeur(body){
+  var head=el("div","ed-head");
+  head.appendChild(el("p","eyebrow",tf("fl.edit.title",{v:String(FEDIT.volee).padStart(2,"0"), n:FEDIT.position})));
+  var back=el("button","ed-back",t("edit.cancel"));
+  back.type="button";
+  back.addEventListener("click",flFermerEditeur);
+  head.appendChild(back);
+  body.appendChild(head);
+  var avant=F.darts[FEDIT.k];
+  body.appendChild(el("p","fl-choix", flLib(avant)+" → "+flLib(FEDIT.d)+" · "+FEDIT.d.v));
+  FL_ED_CIBLE.montrer(FEDIT.d);
+  $("flEdMiss").classList.toggle("on", !FEDIT.d.m);
+}
+
+function flOuvrirFeuille(){
+  FEDIT=null;
+  renderFSheet();
+  flArmerQuitter(false);
+  $("flSheetWrap").classList.add("on");
+}
+function flFermerFeuille(){
+  $("flSheetWrap").classList.remove("on");
+  FEDIT=null;
+}
+function flArmerQuitter(on){
+  var b=$("flQuit");
+  b.dataset.armed = on ? "1" : "0";
+  b.textContent = on ? t("sheet.quit.confirm") : t("sheet.quit");
+}
+
+/* --- archivage et fin de partie ---------------------------------- */
+/* Le palmarès garde les points marqués — 501 contre 260 se lit mieux
+   que 0 contre 241. */
+function flArchiver(){
+  if(!F || F.archived || !FE || FE.gagnant<0) return;
+  H.unshift({
+    d:Date.now(), g:"flechettes",
+    n:F.players.map(function(p){ return p.label; }),
+    c:F.players.map(function(p){ return p.hex; }),
+    s:FE.score.map(function(r){ return F.depart-r; }),
+    w:FE.gagnant, r:FE.volees.length, t:false
+  });
+  if(H.length>200) H.length=200;
+  F.archived=true;
+}
+
+function flClassement(){
+  var w=FE.gagnant;
+  return F.players.map(function(p,i){ return i; }).sort(function(a,b){
+    if(a===w) return -1;
+    if(b===w) return 1;
+    return FE.score[a]-FE.score[b];
+  });
+}
+
+/* Moyenne sur trois fléchettes : points marqués rapportés aux fléchettes
+   lancées, une volée annulée comptant pour rien. */
+function flStats(){
+  var st=F.players.map(function(){ return { points:0, darts:0, meilleure:0, busts:0 }; });
+  FE.volees.forEach(function(v){
+    var s=st[v.joueur], total=0;
+    v.darts.forEach(function(k){ total+=F.darts[k].v; });
+    s.darts+=v.darts.length;
+    if(v.bust){ s.busts++; return; }
+    s.points+=total;
+    if(total>s.meilleure) s.meilleure=total;
+  });
+  return st;
+}
+
+function renderFOver(){
+  if(!F || !FE || FE.gagnant<0) return;
+  var e=FE, w=e.gagnant, box=$("over");
+  box.innerHTML="";
+  box.style.setProperty("--team",F.players[w].hex);
+  var der=e.volees[e.volees.length-1];
+
+  var head=el("div","over-head reveal");
+  head.appendChild(el("p","eyebrow",tn("fl.done.volees", e.volees.length)));
+  head.appendChild(el("h2",null,tf("over.wins",{name:F.players[w].label})));
+  var fin=el("div","final");
+  fin.appendChild(el("span","a", flLib(F.darts[der.darts[der.darts.length-1]])));
+  fin.appendChild(el("span","s", tf("fl.checkout",{n:der.debut})));
+  head.appendChild(fin);
+  box.appendChild(head);
+
+  var card=el("div","tale reveal");
+  card.style.animationDelay="80ms";
+  var top=el("div","tale-top");
+  top.appendChild(el("p","eyebrow",t("fl.rank")));
+  top.appendChild(el("p","eyebrow",tf("fl.start",{n:F.depart})));
+  card.appendChild(top);
+
+  var st=flStats();
+  var dec=(LANG==="en") ? "." : ",";
+  var table=el("table","fl-rang"), thead=el("thead"), htr=el("tr");
+  ["", t("fl.left"), t("fl.avg"), t("fl.best"), t("fl.busts")].forEach(function(x){ htr.appendChild(el("th",null,x)); });
+  thead.appendChild(htr);
+  table.appendChild(thead);
+  var tbody=el("tbody");
+  flClassement().forEach(function(i,rang){
+    var p=F.players[i], s=st[i];
+    var tr=el("tr", i===w ? "win" : null);
+    var td=el("td"), who=el("div","who"), dot=el("i");
+    dot.style.background=p.hex;
+    who.appendChild(dot);
+    who.appendChild(el("span",null,(rang+1)+". "+p.label));
+    td.appendChild(who);
+    tr.appendChild(td);
+    tr.appendChild(el("td","reste",String(e.score[i])));
+    tr.appendChild(el("td",null, s.darts ? (s.points/s.darts*3).toFixed(1).replace(".",dec) : "—"));
+    tr.appendChild(el("td",null, s.meilleure ? String(s.meilleure) : "—"));
+    tr.appendChild(el("td",null, String(s.busts)));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  card.appendChild(table);
+  box.appendChild(card);
+
+  var acts=el("div","over-acts reveal");
+  acts.style.animationDelay="160ms";
+  var share=el("button","share-btn",t("share.result"));
+  share.type="button";
+  share.addEventListener("click",flPartager);
+  acts.appendChild(share);
+  var again=el("button","cta",t("over.rematch"));
+  again.type="button";
+  again.addEventListener("click",flNouvellePartie);
+  acts.appendChild(again);
+  var back=el("button","cta ghost",t("over.newsetup"));
+  back.type="button";
+  back.addEventListener("click",function(){ F=null; FE=null; save(); show("fsetup"); renderFSetup(); });
+  acts.appendChild(back);
+  box.appendChild(acts);
+
+  show("over");
+  buzz([14,60,26]);
+}
+
+function flPartager(){
+  if(!F || !FE || FE.gagnant<0) return;
+  var lignes=[t("fl.name")+" · "+tf("fl.start",{n:F.depart})];
+  flClassement().forEach(function(i,rang){
+    lignes.push((rang+1)+". "+F.players[i].label+" — "+FE.score[i]);
+  });
+  lignes.push("ScoreToss");
+  shareText(lignes.join("\n"));
+}
+
+/* --- état enregistré --------------------------------------------- */
+function flNormFS(fs){
+  fs.open=-1;
+  if(fs.mode!=="team") fs.mode="solo";
+  if(FL_DEPARTS.indexOf(fs.depart)<0) fs.depart=FL_DEPARTS[0];
+  if(!fs.count || fs.count<FL_MIN || fs.count>FL_MAX) fs.count=FL_MIN;
+  if(!fs.per || fs.per<FL_PER_MIN || fs.per>FL_PER_MAX) fs.per=FL_PER_MIN;
+  fs.players.forEach(function(pl){ if(!pl.mates) pl.mates=["","","",""]; });
+  return fs;
+}
+function flNormF(f){
+  if(!f.darts) f.darts=[];
+  if(FL_DEPARTS.indexOf(f.depart)<0) f.depart=FL_DEPARTS[0];
+  if(f.mode!=="team") f.mode="solo";
+  return f;
+}
+
+/* --- commandes --------------------------------------------------- */
+$("flToGames").addEventListener("click",retourAuxJeux);
+$("flHall").addEventListener("click",function(){ HALL_BACK="fsetup"; renderHall(); show("hall"); });
+$("flMode").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-mode]");
+  if(!b || b.dataset.mode===FS.mode) return;
+  FS.mode=b.dataset.mode;
+  /* un joueur n'est pas une équipe : ce qui était nommé n'a plus de sens */
+  FS.players.forEach(function(pl){ pl.name=""; pl.mates=["","","",""]; });
+  FS.open=-1;
+  renderFSetup(); save();
+});
+$("flDepart").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-depart]");
+  if(!b) return;
+  FS.depart=+b.dataset.depart;
+  renderFSetup(); save();
+});
+$("flMinus").addEventListener("click",function(){
+  if(FS.count>FL_MIN){ FS.count--; FS.open=-1; renderFSetup(); save(); }
+});
+$("flPlus").addEventListener("click",function(){
+  if(FS.count<FL_MAX){ FS.count++; FS.open=-1; renderFSetup(); save(); }
+});
+$("flPerMinus").addEventListener("click",function(){
+  if(FS.per>FL_PER_MIN){ FS.per--; FS.open=-1; renderFSetup(); save(); }
+});
+$("flPerPlus").addEventListener("click",function(){
+  if(FS.per<FL_PER_MAX){ FS.per++; FS.open=-1; renderFSetup(); save(); }
+});
+$("flOpenRules").addEventListener("click",openRules);
+$("flOpenAbout").addEventListener("click",openAbout);
+$("flStart").addEventListener("click",flNouvellePartie);
+
+$("flMiss").addEventListener("click",function(){ flLancer({ s:0, m:0, v:0 }); });
+$("flCancel").addEventListener("click",function(){
+  if(!F || !F.darts.length || (FE && FE.gagnant>=0)) return;
+  F.darts.pop();
+  flApresChangement(10);
+});
+
+$("flSheetBtn").addEventListener("click",flOuvrirFeuille);
+$("flSheetClose").addEventListener("click",flFermerFeuille);
+$("flScrim").addEventListener("click",flFermerFeuille);
+$("flEdMiss").addEventListener("click",function(){
+  if(!FEDIT) return;
+  FEDIT.d={ s:0, m:0, v:0 };
+  renderFSheet();
+});
+$("flEdSave").addEventListener("click",function(){
+  if(!FEDIT) return;
+  F.darts[FEDIT.k]=FEDIT.d;
+  FEDIT=null;
+  flApresChangement(10);
+});
+$("flEdDel").addEventListener("click",function(){
+  if(!FEDIT) return;
+  F.darts.splice(FEDIT.k,1);
+  FEDIT=null;
+  flApresChangement(10);
+});
+$("flQuit").addEventListener("click",function(){
+  var b=$("flQuit");
+  if(b.dataset.armed!=="1"){
+    flArmerQuitter(true);
+    setTimeout(function(){ if(b.dataset.armed==="1") flArmerQuitter(false); },4000);
+    return;
+  }
+  flFermerFeuille();
+  F=null;
+  FE=null;
+  buzz(12);
+  save();
+  show("fsetup");
+  renderFSetup();
+});
+
+/* --- fiche de règles --------------------------------------------- */
+function fillFlechettesRules(host){
+  var comptage=el("div","block");
+  comptage.appendChild(el("p","eyebrow",t("frules.count")));
+  var pts=el("div","pts");
+  [["×1",t("frules.single")],["×2",t("frules.double")],["×3",t("frules.triple")],
+   ["25",t("frules.bull")],["50",t("frules.dbull")]].forEach(function(r){
+    var row=el("div","pt-row");
+    row.appendChild(el("b",null,r[0]));
+    row.appendChild(el("span",null,r[1]));
+    pts.appendChild(row);
+  });
+  comptage.appendChild(pts);
+  host.appendChild(comptage);
+
+  var deroule=el("div","block");
+  deroule.appendChild(el("p","eyebrow",t("frules.flow")));
+  var list=el("ul","rulist");
+  [1,2,3,4,5].forEach(function(k){
+    var li=document.createElement("li");
+    li.appendChild(document.createTextNode(t("frules."+k+"a")));
+    li.appendChild(el("b",null,t("frules."+k+"b")));
+    li.appendChild(document.createTextNode(t("frules."+k+"c")));
+    list.appendChild(li);
+  });
+  deroule.appendChild(list);
+  host.appendChild(deroule);
+}
 
 /* ------------------------------------------------------------------
    Catégories de jeux
@@ -3581,6 +4668,216 @@ es:{
   "mk.mate.aria":"Jugador {j} del equipo {n}",
   "mk.note.team":"{n} equipos · el primero en 50 exactos",
   "mk.turn.team":"Turno de {team} · {name}"
+}
+});
+/* Textes des fléchettes. */
+ajouterTextes({
+fr:{
+  "fl.name":"Fléchettes",
+  "fl.tile.sub":"501 et 301, fin sur un double",
+  "fl.mode.solo":"Individuel",
+  "fl.mode.solo.sub":"Chacun pour soi",
+  "fl.mode.team":"Équipes",
+  "fl.mode.team.sub":"Score commun",
+  "fl.depart":"Score de départ",
+  "fl.depart.hint":"Fin obligatoire sur un double, en une seule manche.",
+  "fl.players":"Joueurs",
+  "fl.teams":"Équipes",
+  "fl.per":"Joueurs par équipe",
+  "fl.note":"{n} joueurs · {d} double out",
+  "fl.note.team":"{n} équipes · {d} double out",
+  "fl.playern":"Joueur {n}",
+  "fl.teamn":"Équipe {n}",
+  "fl.player.aria":"Nom du joueur {n}",
+  "fl.team.aria":"Nom de l'équipe {n}",
+  "fl.mate.aria":"Joueur {j} de l'équipe {n}",
+  "fl.color.aria":"Couleur du joueur {n}",
+  "fl.start":"{n} · double out",
+  "fl.turn":"À {name}",
+  "fl.turn.team":"À {team} · {name}",
+  "fl.done":"Partie terminée",
+  "fl.total":"Total",
+  "fl.aim":"Visez, puis levez le doigt",
+  "fl.miss":"Raté",
+  "fl.cancel":"Annuler la fléchette",
+  "fl.bust":"Bust · {name} revient à {n}",
+  "fl.won":"{name} gagne sur {lib}",
+  "fl.board.aria":"Cible : posez le doigt sur un segment, glissez pour ajuster, levez pour valider",
+  "fl.sheet.empty":"Aucune fléchette lancée pour l'instant.",
+  "fl.sheet.hint":"Touchez une fléchette pour la corriger : la partie est rejouée depuis elle.",
+  "fl.col.volee":"Volée",
+  "fl.col.left":"Reste",
+  "fl.edit.title":"Correction · volée {v} · fléchette {n}",
+  "fl.edit.delete":"Supprimer cette fléchette",
+  "fl.fix.aria":"Corriger la fléchette {n}",
+  "fl.done.volees":"Partie terminée en {n} volée",
+  "fl.done.volees_p":"Partie terminée en {n} volées",
+  "fl.checkout":"pour finir {n}",
+  "fl.rank":"Classement",
+  "fl.left":"Reste",
+  "fl.avg":"Moy. 3 fl.",
+  "fl.best":"Meilleure",
+  "fl.busts":"Busts",
+  "frules.count":"Comptage",
+  "frules.single":"Simple : la valeur du secteur",
+  "frules.double":"Double : l'anneau extérieur",
+  "frules.triple":"Triple : l'anneau intérieur, T20 = 60",
+  "frules.bull":"Demi-centre, vert",
+  "frules.dbull":"Centre, rouge — compte comme un double",
+  "frules.flow":"Déroulé",
+  "frules.1a":"Chacun part de ",
+  "frules.1b":"501 ou 301",
+  "frules.1c":" et doit tomber à 0 pile avant les autres.",
+  "frules.2a":"Une volée, ce sont ",
+  "frules.2b":"trois fléchettes",
+  "frules.2c":" : leur total est retiré du score. Une fléchette tombée ne compte pas.",
+  "frules.3a":"La dernière fléchette doit être ",
+  "frules.3b":"un double",
+  "frules.3c":" ou le centre : s'il reste 32, il faut le double 16.",
+  "frules.4a":"Passer sous 0, tomber à 1 ou finir sans double, c'est ",
+  "frules.4b":"un bust",
+  "frules.4c":" : le score revient à celui du début de la volée.",
+  "frules.5a":"En équipes, les membres ",
+  "frules.5b":"lancent à tour de rôle",
+  "frules.5c":" et partagent un score."
+},
+en:{
+  "fl.name":"Darts",
+  "fl.tile.sub":"501 and 301, double out",
+  "fl.mode.solo":"Individual",
+  "fl.mode.solo.sub":"Each on their own",
+  "fl.mode.team":"Teams",
+  "fl.mode.team.sub":"Shared score",
+  "fl.depart":"Starting score",
+  "fl.depart.hint":"Finish on a double, in a single leg.",
+  "fl.players":"Players",
+  "fl.teams":"Teams",
+  "fl.per":"Players per team",
+  "fl.note":"{n} players · {d} double out",
+  "fl.note.team":"{n} teams · {d} double out",
+  "fl.playern":"Player {n}",
+  "fl.teamn":"Team {n}",
+  "fl.player.aria":"Name of player {n}",
+  "fl.team.aria":"Name of team {n}",
+  "fl.mate.aria":"Player {j} of team {n}",
+  "fl.color.aria":"Colour of player {n}",
+  "fl.start":"{n} · double out",
+  "fl.turn":"{name} to throw",
+  "fl.turn.team":"{team} · {name} to throw",
+  "fl.done":"Game over",
+  "fl.total":"Total",
+  "fl.aim":"Aim, then lift your finger",
+  "fl.miss":"Missed",
+  "fl.cancel":"Undo dart",
+  "fl.bust":"Bust · {name} back to {n}",
+  "fl.won":"{name} wins on {lib}",
+  "fl.board.aria":"Dartboard: touch a segment, slide to adjust, lift to confirm",
+  "fl.sheet.empty":"No darts thrown yet.",
+  "fl.sheet.hint":"Tap a dart to correct it: the game replays from there.",
+  "fl.col.volee":"Visit",
+  "fl.col.left":"Left",
+  "fl.edit.title":"Correction · visit {v} · dart {n}",
+  "fl.edit.delete":"Delete this dart",
+  "fl.fix.aria":"Correct dart {n}",
+  "fl.done.volees":"Game over in {n} visit",
+  "fl.done.volees_p":"Game over in {n} visits",
+  "fl.checkout":"to finish {n}",
+  "fl.rank":"Standings",
+  "fl.left":"Left",
+  "fl.avg":"3-dart avg",
+  "fl.best":"Best",
+  "fl.busts":"Busts",
+  "frules.count":"Scoring",
+  "frules.single":"Single: the segment's number",
+  "frules.double":"Double: the outer ring",
+  "frules.triple":"Treble: the inner ring, T20 = 60",
+  "frules.bull":"Outer bull, green",
+  "frules.dbull":"Bullseye, red — counts as a double",
+  "frules.flow":"How it goes",
+  "frules.1a":"Everyone starts on ",
+  "frules.1b":"501 or 301",
+  "frules.1c":" and must reach exactly 0 before the others.",
+  "frules.2a":"A visit is ",
+  "frules.2b":"three darts",
+  "frules.2c":": their total comes off the score. A dart that falls out does not count.",
+  "frules.3a":"The last dart must be ",
+  "frules.3b":"a double",
+  "frules.3c":" or the bullseye: on 32, you need double 16.",
+  "frules.4a":"Going below 0, landing on 1 or reaching 0 without a double is ",
+  "frules.4b":"a bust",
+  "frules.4c":": the score goes back to where the visit started.",
+  "frules.5a":"In teams, members ",
+  "frules.5b":"throw in turn",
+  "frules.5c":" and share one score."
+},
+es:{
+  "fl.name":"Dardos",
+  "fl.tile.sub":"501 y 301, cierre con doble",
+  "fl.mode.solo":"Individual",
+  "fl.mode.solo.sub":"Cada uno por su cuenta",
+  "fl.mode.team":"Equipos",
+  "fl.mode.team.sub":"Puntuación común",
+  "fl.depart":"Puntuación inicial",
+  "fl.depart.hint":"Cierre obligatorio con doble, en una sola manga.",
+  "fl.players":"Jugadores",
+  "fl.teams":"Equipos",
+  "fl.per":"Jugadores por equipo",
+  "fl.note":"{n} jugadores · {d} doble salida",
+  "fl.note.team":"{n} equipos · {d} doble salida",
+  "fl.playern":"Jugador {n}",
+  "fl.teamn":"Equipo {n}",
+  "fl.player.aria":"Nombre del jugador {n}",
+  "fl.team.aria":"Nombre del equipo {n}",
+  "fl.mate.aria":"Jugador {j} del equipo {n}",
+  "fl.color.aria":"Color del jugador {n}",
+  "fl.start":"{n} · doble salida",
+  "fl.turn":"Turno de {name}",
+  "fl.turn.team":"Turno de {team} · {name}",
+  "fl.done":"Partida terminada",
+  "fl.total":"Total",
+  "fl.aim":"Apunta y levanta el dedo",
+  "fl.miss":"Fallo",
+  "fl.cancel":"Anular el dardo",
+  "fl.bust":"Bust · {name} vuelve a {n}",
+  "fl.won":"{name} gana con {lib}",
+  "fl.board.aria":"Diana: toca un sector, desliza para ajustar, levanta para validar",
+  "fl.sheet.empty":"Aún no se ha lanzado ningún dardo.",
+  "fl.sheet.hint":"Toca un dardo para corregirlo: la partida se recalcula desde ahí.",
+  "fl.col.volee":"Tirada",
+  "fl.col.left":"Quedan",
+  "fl.edit.title":"Corrección · tirada {v} · dardo {n}",
+  "fl.edit.delete":"Eliminar este dardo",
+  "fl.fix.aria":"Corregir el dardo {n}",
+  "fl.done.volees":"Partida terminada en {n} tirada",
+  "fl.done.volees_p":"Partida terminada en {n} tiradas",
+  "fl.checkout":"para cerrar {n}",
+  "fl.rank":"Clasificación",
+  "fl.left":"Quedan",
+  "fl.avg":"Media 3 d.",
+  "fl.best":"Mejor",
+  "fl.busts":"Busts",
+  "frules.count":"Puntuación",
+  "frules.single":"Simple: el número del sector",
+  "frules.double":"Doble: el anillo exterior",
+  "frules.triple":"Triple: el anillo interior, T20 = 60",
+  "frules.bull":"Diana exterior, verde",
+  "frules.dbull":"Diana central, roja — cuenta como doble",
+  "frules.flow":"Desarrollo",
+  "frules.1a":"Todos empiezan en ",
+  "frules.1b":"501 o 301",
+  "frules.1c":" y deben llegar a 0 justo antes que los demás.",
+  "frules.2a":"Una tirada son ",
+  "frules.2b":"tres dardos",
+  "frules.2c":": su total se resta de la puntuación. Un dardo que cae no cuenta.",
+  "frules.3a":"El último dardo debe ser ",
+  "frules.3b":"un doble",
+  "frules.3c":" o la diana central: con 32, hace falta el doble 16.",
+  "frules.4a":"Bajar de 0, quedarse en 1 o llegar a 0 sin doble es ",
+  "frules.4b":"un bust",
+  "frules.4c":": la puntuación vuelve a la del inicio de la tirada.",
+  "frules.5a":"En equipos, los miembros ",
+  "frules.5b":"lanzan por turnos",
+  "frules.5c":" y comparten la puntuación."
 }
 });
 
@@ -4851,7 +6148,9 @@ function duels(){
     var m=map[id];
     m.n=[g.n[f],g.n[1-f]];
     m.c=[g.c[f],g.c[1-f]];
-    if(g.mode==="double") m.duo=true; else m.solo=true;
+    /* le mölkky et les fléchettes ne se jouent ni en simple ni en double :
+       leurs confrontations ne reçoivent aucune marque */
+    if(g.mode==="double") m.duo=true; else if(g.mode) m.solo=true;
     if(g.w===f) m.w[0]++; else m.w[1]++;
   });
   var list=order.map(function(k){ return map[k]; });

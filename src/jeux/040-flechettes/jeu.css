@@ -1,0 +1,122 @@
+/* ============ FLÉCHETTES ============ */
+.fl-mates{margin-top:8px}
+.fl-mates + .trow,.fl-mates + .trow-sw{margin-top:8px}
+
+/* Les scores : un par joueur ou par équipe, celui qui lance ressort. À
+   plus de trois, la rangée défile plutôt que d'écraser la cible. */
+.fl-scores{display:flex;gap:7px;overflow-x:auto;padding:0 14px 12px;scrollbar-width:none}
+.fl-scores::-webkit-scrollbar{display:none}
+.fl-score{
+  --c:#E14434;
+  flex:1 0 116px;min-width:0;
+  display:grid;grid-template-columns:auto 1fr;column-gap:7px;row-gap:2px;align-items:center;
+  padding:9px 12px 8px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+  transition:border-color .16s ease,background .16s ease;
+}
+.fl-score i.dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.fl-score .who{font-size:13px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fl-score .sc{grid-column:1 / -1;font-size:30px;line-height:1.05;color:var(--ink)}
+.fl-score.on{
+  background:color-mix(in oklab,var(--c) 12%,var(--panel));
+  border-color:color-mix(in oklab,var(--c) 55%,transparent);
+}
+.fl-score.on .sc,.fl-score.win .sc{color:color-mix(in oklab,var(--c) 62%,var(--tone))}
+
+.fl-console{
+  flex:1;min-height:0;display:flex;flex-direction:column;gap:9px;
+  padding:0 14px calc(14px + env(safe-area-inset-bottom));
+}
+.fl-console > *{flex:0 0 auto}
+
+/* la volée en cours, fléchette par fléchette */
+.fl-volee{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:6px}
+.fl-slot{
+  background:var(--panel-2);border-radius:11px;min-height:48px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+}
+.fl-slot b{font-family:var(--fm);font-size:15px;font-weight:700}
+.fl-slot small{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;min-height:13px}
+.fl-slot.vide b{color:var(--muted);font-weight:500}
+.fl-total{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px;padding:0 4px 0 8px}
+.fl-total b{font-size:22px}
+
+.fl-vise{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-height:24px}
+.fl-vise b{font-family:var(--fm);font-size:18px;font-weight:700}
+.fl-vise b.attente{font-family:var(--ff);font-size:13px;font-weight:600;color:var(--muted)}
+.fl-msg{font-size:12.5px;font-weight:600;text-align:right}
+.fl-msg.bust{color:var(--danger)}
+.fl-msg.gagne{color:var(--live)}
+
+/* La cible prend toute la place restante, sans jamais sortir de l'écran. */
+.fl-console > .fl-zone{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
+.fl-cible{
+  height:100%;max-width:100%;aspect-ratio:1/1;
+  touch-action:none;user-select:none;-webkit-user-select:none;
+}
+.fl-cible svg{display:block;width:100%;height:100%}
+.fl-cible.fini{opacity:.45;pointer-events:none}
+
+.fl-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fl-btn{
+  height:46px;border-radius:11px;background:transparent;border:1px solid var(--line-2);
+  font-size:14px;font-weight:600;color:var(--ink);transition:background .12s ease,color .12s ease;
+}
+.fl-btn:active{background:color-mix(in oklab,var(--ink) 8%,transparent)}
+.fl-btn:disabled{opacity:.32}
+.fl-rate{color:var(--muted)}
+.fl-rate:active{background:color-mix(in oklab,var(--danger) 14%,transparent);color:var(--danger)}
+.fl-rate.on{border-color:var(--danger);color:var(--danger)}
+
+/* La cible est un objet : ses couleurs ne suivent pas le thème. */
+.fl-plan .cadre{fill:#0F1315}
+.fl-plan .noir{fill:#1B2022}
+.fl-plan .creme{fill:#E8E0CB}
+.fl-plan .rouge{fill:#C8443A}
+.fl-plan .vert{fill:#2E8C5A}
+.fl-plan .seg{stroke:rgba(0,0,0,.45);stroke-width:.5}
+.fl-plan .n{fill:#E8E0CB;font-family:var(--ff);font-size:10.5px;font-weight:700;text-anchor:middle}
+.fl-plan .surb{fill:rgba(255,255,255,.38);fill-rule:evenodd;stroke:#E2892C;stroke-width:1.8;pointer-events:none}
+.fl-plan .choix{fill:rgba(255,255,255,.22);fill-rule:evenodd;stroke:#E2892C;stroke-width:1.2;stroke-dasharray:3 2;pointer-events:none}
+
+/* feuille de match : une ligne par volée, chaque fléchette se corrige */
+.fl-log{width:100%;border-collapse:collapse}
+.fl-log th{
+  font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);text-align:left;padding:0 0 8px;
+}
+.fl-log th:last-child,.fl-log td:last-child{text-align:right}
+.fl-log td{padding:7px 0;border-top:1px solid var(--line);vertical-align:middle;font-size:13.5px}
+.fl-log td.nv{font-family:var(--fm);font-size:11px;color:var(--muted);width:28px}
+.fl-log .qui{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:104px}
+.fl-log .darts{display:flex;gap:4px}
+.fl-dart{
+  min-width:40px;height:32px;padding:0 6px;border-radius:8px;background:var(--panel-2);
+  font-family:var(--fm);font-size:12.5px;font-weight:700;
+}
+.fl-dart:active{background:color-mix(in oklab,var(--ink) 14%,var(--panel-2))}
+.fl-log td.reste{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap;padding-left:8px}
+.fl-log tr.bust td.reste{color:var(--danger)}
+.fl-log tr.bust .fl-dart{text-decoration:line-through;color:var(--muted)}
+
+.fl-editeur{display:flex;flex-direction:column;align-items:center;gap:8px;padding:2px 20px 10px}
+.fl-editeur[hidden]{display:none}      /* sinon `display:flex` l'emporte sur `hidden` */
+.fl-editeur .fl-cible{width:min(100%,240px);height:auto}
+.fl-editeur .fl-cible svg{height:auto}
+.fl-editeur .fl-btn{width:min(100%,240px)}
+.fl-choix{font-family:var(--fm);font-size:20px;font-weight:700;padding:4px 0 2px}
+
+/* le classement de fin de partie */
+.fl-rang{width:100%;border-collapse:collapse;margin-top:4px}
+.fl-rang th{
+  font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);text-align:right;padding:0 0 6px 8px;
+}
+.fl-rang th:first-child{text-align:left;padding-left:0}
+.fl-rang td{padding:9px 0 9px 8px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px}
+.fl-rang td:first-child{text-align:left;padding-left:0}
+.fl-rang .who{display:flex;align-items:center;gap:7px;min-width:0;font-weight:600}
+.fl-rang .who i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.fl-rang .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fl-rang td.reste{font-weight:800}
+.fl-rang tr.win td.reste{color:var(--live)}

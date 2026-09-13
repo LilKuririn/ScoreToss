@@ -85,7 +85,9 @@ function duels(){
     var m=map[id];
     m.n=[g.n[f],g.n[1-f]];
     m.c=[g.c[f],g.c[1-f]];
-    if(g.mode==="double") m.duo=true; else m.solo=true;
+    /* le mölkky et les fléchettes ne se jouent ni en simple ni en double :
+       leurs confrontations ne reçoivent aucune marque */
+    if(g.mode==="double") m.duo=true; else if(g.mode) m.solo=true;
     if(g.w===f) m.w[0]++; else m.w[1]++;
   });
   var list=order.map(function(k){ return map[k]; });

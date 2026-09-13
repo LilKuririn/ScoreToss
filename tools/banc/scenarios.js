@@ -34,6 +34,30 @@ async function cleEditeur(a, v){
   await a.attendre(40);
 }
 
+/* Vise un segment de la cible des fléchettes, aux anneaux élargis de
+   l'application : pose, glisse et lève le doigt au centre du segment. */
+var FL_BANC_ANNEAUX = {db:.085, bull:.17, tIn:.44, tOut:.60, dIn:.80};
+var FL_BANC_ORDRE = [20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
+async function flechette(a, lib, hote){
+  if(lib==="R"){ await a.clic(hote==="#flEdCible" ? "#flEdMiss" : "#flMiss"); return; }
+  var q=a.q(hote || "#flCible"), svg=q.querySelector("svg"), w=a.d.defaultView;
+  var A=FL_BANC_ANNEAUX, r, deg=0;
+  if(lib==="50") r=0;
+  else if(lib==="25") r=(A.db+A.bull)/2*100;
+  else {
+    var m = lib[0]==="T" ? 3 : lib[0]==="D" ? 2 : 1;
+    var n = +(m===1 ? lib : lib.slice(1));
+    deg = FL_BANC_ORDRE.indexOf(n)*18;
+    r = (m===3 ? (A.tIn+A.tOut)/2 : m===2 ? (A.dIn+1)/2 : (A.tOut+A.dIn)/2)*100;
+  }
+  var p=new w.DOMPoint(r*Math.sin(deg*Math.PI/180), -r*Math.cos(deg*Math.PI/180)).matrixTransform(svg.getScreenCTM());
+  ["pointerdown","pointermove","pointerup"].forEach(function(type){
+    q.dispatchEvent(new w.PointerEvent(type, {bubbles:true, clientX:p.x, clientY:p.y, pointerId:1, isPrimary:true}));
+  });
+  await a.attendre(40);
+}
+async function volee(a, libs){ for(var i=0;i<libs.length;i++) await flechette(a, libs[i]); }
+
 /* --- parcours ---------------------------------------------------- */
 scenario("accueil-et-preparation", async function(a){
   a.point("accueil");
@@ -240,7 +264,7 @@ scenario("petit-ecran", async function(a){
 
 scenario("categories", async function(a){
   a.point("accueil");
-  await a.clic('#categories [data-categorie="interieur"]');    a.point("catégorie sans jeu : rien ne s'ouvre");
+  await a.clic('#categories [data-categorie="societe"]');      a.point("catégorie sans jeu : rien ne s'ouvre");
   await a.clic('#categories [data-categorie="exterieur"]');    a.point("liste de l'extérieur");
   await a.clic("#playPalet");
   await a.clic("#backToGames");                                a.point("changer de jeu depuis le palet");
@@ -248,3 +272,47 @@ scenario("categories", async function(a){
   await a.clic("#mkToGames");                                  a.point("changer de jeu depuis le mölkky");
   await a.clic("#catBack");                                    a.point("retour aux catégories");
 });
+
+/* Le nom de la dernière fléchette reste affiché 900 ms : chaque point est
+   pris soit juste après un lancer, soit une fois ce délai écoulé. */
+scenario("flechettes-partie", async function(a){
+  await a.clic('#categories [data-categorie="interieur"]');    a.point("liste de l'intérieur");
+  await a.clic("#playFlechettes");                             a.point("préparation");
+  await a.clic('#flDepart button[data-depart="301"]');          a.point("301");
+  await a.clic("#flOpenRules");                                a.point("règles");
+  await a.clic("#rulesClose");
+  await a.clic("#flStart");                                    a.point("partie neuve");
+  await flechette(a,"T20");                                    a.point("une T20");
+  await volee(a,["T20","T20"]);                                a.point("180, main au joueur 2");
+  await volee(a,["20","5","R"]);
+  await volee(a,["T20","T20"]);                                a.point("bust : reste à 1");
+  await volee(a,["R","R","R"]);
+  await flechette(a,"T19");
+  await a.clic("#flCancel");                                   a.point("fléchette annulée");
+  await a.clic("#flSheetBtn");                                 a.point("feuille de match");
+  await a.clicN("#flSheetBody .fl-dart", 0);                   a.point("éditeur");
+  await flechette(a,"D20","#flEdCible");                       a.point("éditeur : D20 visé");
+  await a.clic("#flEdSave"); await a.attendre(80);             a.point("correction rejouée");
+  await a.clic("#flSheetClose");
+  await a.attendre(1000);                                      a.point("partie après correction");
+  await volee(a,["R","1","D10"]); await finDePartie(a);        a.point("victoire sur D10");
+  await a.clic("#over .cta.ghost");
+  await a.clic("#flHall");                                     a.point("palmarès des fléchettes");
+});
+
+scenario("flechettes-equipes", async function(a){
+  await a.clic('#categories [data-categorie="interieur"]');
+  await a.clic("#playFlechettes");
+  await a.clic('#flMode button[data-mode="team"]');            a.point("équipes");
+  await a.clic("#flStart");                                    a.point("partie en équipes");
+  await volee(a,["T20","T20","T20"]);
+  await volee(a,["T19","T19","T19"]);
+  await volee(a,["25","50","R"]);                              a.point("rotation des membres");
+}, [360,640]);
+
+scenario("flechettes-huit", async function(a){
+  await a.clic('#categories [data-categorie="interieur"]');
+  await a.clic("#playFlechettes");
+  await a.clic("#flPlus", 6);                                  a.point("8 joueurs");
+  await a.clic("#flStart");                                    a.point("partie à 8 sur petit écran");
+}, [360,640]);

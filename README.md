@@ -4,7 +4,8 @@
 
 # ScoreToss
 
-Compteur de points pour les jeux d'extérieur : **cornhole**, **palet breton** et **mölkky**.
+Compteur de points pour les jeux d'extérieur — **cornhole**, **palet breton**, **mölkky** — et
+d'intérieur — **fléchettes**.
 
 Conçu pour être lu d'un coup d'œil depuis l'autre planche, et utilisé debout dans un jardin : deux
 grands chiffres, chacun dans la couleur de son équipe, et rien d'autre qui réclame l'attention
@@ -25,9 +26,11 @@ En local, ouvrir [`index.html`](index.html) dans un navigateur suffit.
 
 ## Compter une partie
 
-L'accueil liste les jeux. Le cornhole et le palet partagent tout : manches successives, honneur au
+L'accueil propose d'abord une catégorie — extérieur, intérieur, société —, puis ses jeux. Le
+cornhole et le palet partagent tout : manches successives, honneur au
 vainqueur de la précédente, correction après coup, tournois et palmarès — seules la saisie d'une
-manche et les règles changent. Le mölkky, qui ne se joue pas à deux camps, a ses propres écrans.
+manche et les règles changent. Le mölkky et les fléchettes, qui ne se jouent pas à deux camps, ont
+chacun leurs propres écrans.
 
 **Simple (1v1) ou double (2v2).** Nom d'équipe, noms des joueurs, couleur au choix parmi neuf.
 Passer d'un mode à l'autre repart de noms vides, un joueur n'étant pas une équipe.
@@ -64,7 +67,7 @@ Le tournoi et la partie en cours sont sauvegardés séparément : un 1v1 improvi
 le tableau commencé. Et rien n'oblige à aller au bout — on peut repartir d'un nouveau tableau ou
 abandonner, en deux appuis pour éviter la fausse manœuvre.
 
-Le mölkky n'a pas de tableau. **Chacun des deux autres a le sien**, et son brouillon. Un tournoi de cornhole en cours n'allume
+Le mölkky et les fléchettes n'ont pas de tableau. **Chacun des deux autres a le sien**, et son brouillon. Un tournoi de cornhole en cours n'allume
 pas la pastille du bouton quand on passe au palet, et les noms d'équipes saisis d'un côté ne
 réapparaissent pas de l'autre. Les deux peuvent tourner en même temps sans se gêner.
 
@@ -77,10 +80,10 @@ entre deux barbecues : **qui mène**.
 - **Classement** — victoires, défaites, ratio
 - **Dernières parties** — date, vainqueur, score
 
-Une petite marque `1v1` ou `2v2` distingue les joueurs des équipes. Un nom apparu dans les deux
+Au cornhole et au palet, une petite marque `1v1` ou `2v2` distingue les joueurs des équipes. Un nom apparu dans les deux
 formats n'en reçoit aucune : elle mentirait.
 
-Chaque jeu a son palmarès, mölkky compris : les victoires ne voyagent pas de l'un à l'autre.
+Chaque jeu a son palmarès, mölkky et fléchettes compris : les victoires ne voyagent pas de l'un à l'autre.
 
 ## Les règles appliquées
 
@@ -143,6 +146,29 @@ le maximum qu'une manche peut rapporter.
 La saisie s'en trouve simplifiée : une seule réglette par équipe, puisqu'une seule marque. Deux zéros
 valent manche nulle.
 
+### Fléchettes
+
+**501 ou 301, double out**, en une seule manche, de **2 à 8 participants**. Chacun part du score
+choisi et doit tomber à **0 pile** avant les autres. Une volée, ce sont trois fléchettes ; une
+fléchette tombée ne compte pas. Simple, double ×2, triple ×3 ; le demi-centre vaut 25, le centre 50
+et compte comme un double.
+
+La dernière fléchette doit être **un double** ou le centre. Passer sous 0, tomber à 1 ou atteindre 0
+sans double, c'est **un bust** : le score revient à celui du début de la volée, qui s'arrête là.
+
+**La saisie se fait sur la cible elle-même.** On pose le doigt sur le segment touché, on glisse pour
+ajuster — le segment visé s'éclaire et son nom s'affiche —, on lève pour valider. Les anneaux double
+et triple sont **élargis** par rapport à une vraie cible, pour rester visables du pouce. Un bouton
+*Raté* compte une fléchette hors cible, un autre annule la dernière.
+
+La partie est **rejouée depuis la liste des fléchettes** : la feuille de match montre chaque volée,
+et toucher une fléchette ancienne ouvre une petite cible pour la corriger ou la supprimer. Les busts
+et les tours qui suivent se recalculent.
+
+**En individuel ou en équipes**, comme au mölkky : les membres lancent à tour de rôle et partagent un
+score. L'écran de fin classe les participants au score restant, avec la moyenne sur trois
+fléchettes, la meilleure volée et le nombre de busts.
+
 ## Vos données restent chez vous
 
 Aucune donnée ne quitte le téléphone. Pas de compte, pas de serveur, pas de traceur, pas de
@@ -161,7 +187,7 @@ Le **thème clair ou sombre** se règle au même endroit, avec la même position
 défaut. Un choix explicite est posé avant le premier rendu, sans clignotement, et s'impose à la
 couleur de la barre système.
 
-Le vocabulaire est **commun aux trois jeux** : on parle de manche partout, quel que soit ce que dit
+Le vocabulaire est **commun à tous les jeux** : on parle de manche partout, quel que soit ce que dit
 la fédération. En anglais, *frame* désigne la manche et *round* le tour de tournoi — deux mots que
 le français confond.
 
@@ -220,5 +246,5 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 
 ## Ce qui viendra
 
-La pétanque et le bibock, puis les premiers jeux d'intérieur et de société — fléchettes, Tossit, yams —, rangés par catégories.
+La pétanque et le bibock en extérieur, le Tossit en intérieur, et le yams pour ouvrir les jeux de société.
 Les tournois en poules, quand l'élimination directe montrera ses limites.
