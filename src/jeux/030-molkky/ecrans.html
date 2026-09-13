@@ -89,3 +89,62 @@
     </footer>
   </section>
 
+  <!-- ============ MÖLKKY : PARTIE ============ -->
+  <section class="screen" id="s-mgame">
+    <header class="top">
+      <p class="eyebrow" id="mkTurn">À vous</p>
+      <div class="sep"></div>
+      <p class="eyebrow" id="mkTargetLabel">Objectif 50</p>
+      <button type="button" class="icon-btn" id="mkLayoutBtn" data-i18n-aria="mk.layout">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <circle cx="5" cy="4.5" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="9" cy="4.5" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="13" cy="4.5" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="7" cy="9" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="11" cy="9" r="1.7" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M2.5 14.5h13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button type="button" class="icon-btn" id="mkSheetBtn" data-i18n-aria="sheet.title">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M2.5 4h13M2.5 9h13M2.5 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="mk-list" id="mkList"></div>
+    <p class="eyebrow mk-notice" id="mkNotice" hidden data-i18n="mk.back25">Dépassement — retour à 25</p>
+
+    <section class="console">
+      <div class="console-head">
+        <p class="eyebrow" data-i18n="mrules.count">Comptage</p>
+        <p class="eyebrow"><span data-i18n="mk.pins.one">1 quille</span> <b data-i18n="mk.pins.one.v">son n°</b></p>
+        <p class="eyebrow"><span>2+</span> <b data-i18n="mk.pins.many.v">leur nombre</b></p>
+      </div>
+      <div class="mk-pad" id="mkPad"></div>
+      <button type="button" class="mk-miss" id="mkMissBtn" data-i18n="mk.miss">Raté</button>
+    </section>
+
+    <!-- feuille de match -->
+    <div class="sheet-wrap" id="mkSheetWrap">
+      <div class="scrim" id="mkScrim"></div>
+      <div class="sheet" role="dialog" aria-modal="true" data-i18n-aria="sheet.title">
+        <div class="sheet-head">
+          <h3 data-i18n="sheet.title">Feuille de match</h3>
+          <button type="button" class="icon-btn" id="mkSheetClose" data-i18n-aria="nav.close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="sheet-body" id="mkSheetBody"></div>
+        <div class="sheet-acts">
+          <button type="button" class="act" id="mkEdSave" hidden data-i18n="edit.save">Enregistrer la correction</button>
+          <button type="button" class="act danger" id="mkEdDel" hidden data-i18n="edit.delete">Supprimer ce lancer</button>
+          <button type="button" class="act" id="mkUndo" data-i18n="mk.undo">Annuler le dernier lancer</button>
+          <button type="button" class="act danger" id="mkQuit" data-i18n="sheet.quit">Terminer la partie</button>
+        </div>
+      </div>
+    </div>
+  </section>
+

@@ -23,7 +23,9 @@ function exportName(){
 
 function exportData(){
   TOUR[S.game]=T; DRAFT[S.game]=TS;
-  var payload=JSON.stringify({v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H, ms:MS, m:M}, null, 1);
+  var contenu={v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H};
+  pourChaqueJeu("sauver", contenu);
+  var payload=JSON.stringify(contenu, null, 1);
   var name=exportName();
   var b=bridge();
   if(b && b.saveFile){
@@ -53,10 +55,7 @@ function applyImport(text){
   TOUR=carteVide(); DRAFT=carteVide();
   adoptTour(d);
   H = (d.h && d.h.length) ? d.h : [];
-  MS = normMS((d.ms && d.ms.players && d.ms.players.length===MK_MAX) ? d.ms : {count:4, players:mFreshPlayers()});
-  M = (d.m && d.m.players && d.m.players.length>=MK_MIN) ? normM(d.m) : null;
-  if(M) mRecompute();
-  renderMSetup();
+  pourChaqueJeu("importer", d);
   G = (d.g && d.g.teams) ? normG(d.g) : null;
   if(G) recompute();
 
@@ -142,7 +141,6 @@ $("rulesScrim").addEventListener("click",closeRules);
 
 var HALL_BACK="setup";
 $("openHall").addEventListener("click",function(){ HALL_BACK="setup"; renderHall(); show("hall"); });
-$("mkHall").addEventListener("click",function(){ HALL_BACK="msetup"; renderHall(); show("hall"); });
 $("hallBack").addEventListener("click",function(){ show(HALL_BACK); });
 $("hallClear").addEventListener("click",function(){
   var b=$("hallClear");

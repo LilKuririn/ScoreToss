@@ -39,6 +39,18 @@
      auChoix(), auChangementDeMode(), peindrePreparation()
                                ses propres réglages sur l'écran de préparation
 
+   Tout jeu peut aussi fournir, s'il garde ses propres écrans ou son
+   propre état :
+     ouvrir()                  son ouverture depuis l'accueil
+     ecrans                    ses écrans, identifiants sans le préfixe s-
+     lienPalmares              l'identifiant de son bouton vers le palmarès
+     auChangementDEcran(nom)   ce qu'il ferme ou rafraîchit quand l'écran change
+     sauver(o)                 ce qu'il ajoute à l'état enregistré
+     charger(d), importer(d)   le relire au démarrage, ou d'une sauvegarde
+     reprendre()               reprendre sa partie en cours au démarrage ;
+                               vrai s'il l'a fait
+     changementDeLangue()      se redessiner dans la nouvelle langue
+
    Le HTML et le CSS propres à un jeu vivent dans son dossier et entrent
    par des repères @@jeux:fichier@@ ; ses éléments portent
    data-propre="identifiant", et le code commun ne les affiche que pour lui.
@@ -84,6 +96,21 @@ function ciblesParDefaut(){
   var o={};
   jeuxDuel().forEach(function(id){ o[id]=JEUX[id].cible; });
   return o;
+}
+
+/* Appelle la fonction `nom` de chaque jeu qui la fournit, dans l'ordre. */
+function pourChaqueJeu(nom, arg){
+  ORDRE_JEUX.forEach(function(id){
+    if(JEUX[id][nom]) JEUX[id][nom](arg);
+  });
+}
+function ecransDesJeux(){
+  var e=[];
+  ORDRE_JEUX.forEach(function(id){ e=e.concat(JEUX[id].ecrans||[]); });
+  return e;
+}
+function liensPalmares(){
+  return ORDRE_JEUX.map(function(id){ return JEUX[id].lienPalmares; }).filter(Boolean);
 }
 
 /* Les éléments propres à un jeu ne s'affichent que pour lui. */

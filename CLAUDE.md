@@ -20,6 +20,31 @@ Les fichiers de `src/js/` s'exécutent dans une seule fonction englobante : ils 
 portée, et rien ne devient global. **L'ordre des fichiers compte** — en CSS la règle la plus
 tardive l'emporte, en JS les écouteurs sont posés dans l'ordre de lecture.
 
+## Ajouter un jeu
+
+Chaque jeu vit dans `src/jeux/NNN-identifiant/` — le préfixe fixe l'ordre des tuiles de l'accueil.
+Le code commun ne nomme aucun jeu : il interroge le registre, `src/js/015-registre.js`, dont
+l'en-tête décrit le contrat complet.
+
+- `jeu.js`, obligatoire : `declarerJeu({...})`, puis le code propre au jeu. Il s'exécute tôt,
+  avant la plupart des fichiers partagés : n'y lire aucune variable partagée au chargement,
+  seulement à l'intérieur des fonctions.
+- `tuile.html` : sa tuile d'accueil, un bouton portant `data-jeu="identifiant"`.
+- `jeu.css`, et des fragments HTML que des repères `@@jeux:fichier@@` insèrent à leur place :
+  `ecrans.html`, `fiches.html`, `console.html`, `reglages.html`… Un élément qui ne doit
+  s'afficher que pour ce jeu porte `data-propre="identifiant"`.
+
+Un jeu à deux camps (famille `duel`) réutilise préparation, console, feuille de match, écran de
+fin et tournois en fournissant ses calculs, comme le cornhole et le palet. Un jeu à tour de rôle
+apporte ses propres écrans et son état, comme le mölkky.
+
+Restent partagés pour l'instant, et donc à toucher pour certains jeux : les textes (dictionnaire
+de `src/js/020-langues.js`), le format enregistré des parties à deux camps (`S.palets`, `G.max`),
+les seuls formats simple et double, et les identifiants que connaît le bouton retour Android
+(`MainActivity.java`).
+
+Un nouveau jeu ajoute enfin son parcours au banc, dans `tools/banc/scenarios.js`.
+
 ## Vérifier une refonte : le banc de comparaison
 
 `tools/banc/` joue onze parcours réels — les trois jeux, tournois, palmarès, réglages, reprise,

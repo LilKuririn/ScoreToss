@@ -752,9 +752,9 @@ function setLang(l){
   LANG = (l===null) ? detectLang() : l;
   document.documentElement.lang=LANG;
   applyStaticText();
-  renderCards(); renderRules(); renderTSetup(); renderMSetup();
+  renderCards(); renderRules(); renderTSetup();
+  pourChaqueJeu("changementDeLangue");
   fillRules("rulesBody");
-  if(M && $("s-mgame").classList.contains("on")) renderMGame();
   refreshTourBtn(); refreshHallLink();
   if(G) renderGame(true);
   if(T && $("s-bracket").classList.contains("on")) renderBracket();
@@ -787,33 +787,6 @@ function detectLang(){
 function color(id){
   for(var i=0;i<COLORS.length;i++){ if(COLORS[i].id===id) return COLORS[i]; }
   return COLORS[0];
-}
-
-function fillMolkkyRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("mrules.count")));
-  var pts=el("div","pts");
-  [["1",t("mrules.one")],["2+",t("mrules.many")]].forEach(function(r){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,r[0]));
-    row.appendChild(el("span",null,r[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("mrules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("mrules."+k+"a")));
-    li.appendChild(el("b",null,t("mrules."+k+"b")));
-    li.appendChild(document.createTextNode(t("mrules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
 }
 
 /* Fiche des règles, ouverte par-dessus l'écran courant depuis l'accueil

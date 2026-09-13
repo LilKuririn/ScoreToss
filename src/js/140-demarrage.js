@@ -14,66 +14,6 @@ document.querySelector("#s-games .games").addEventListener("click",function(e){
   var b=e.target.closest("button[data-jeu]");
   if(b) ouvrirJeu(b.dataset.jeu);
 });
-$("mkToGames").addEventListener("click",function(){ show("games"); });
-$("mkMinus").addEventListener("click",function(){
-  if(MS.count>MK_MIN){ MS.count--; MS.open=-1; renderMSetup(); save(); }
-});
-$("mkPlus").addEventListener("click",function(){
-  if(MS.count<MK_MAX){ MS.count++; MS.open=-1; renderMSetup(); save(); }
-});
-$("mkMode").addEventListener("click",function(e){
-  var b=e.target.closest("button[data-mode]");
-  if(!b || b.dataset.mode===MS.mode) return;
-  MS.mode=b.dataset.mode;
-  /* un joueur n'est pas une équipe : ce qui était nommé n'a plus de sens */
-  MS.players.forEach(function(pl){ pl.name=""; pl.mates=["","","",""]; });
-  MS.open=-1;
-  renderMSetup(); save();
-});
-$("mkPerMinus").addEventListener("click",function(){
-  if(MS.per>MK_PER_MIN){ MS.per--; MS.open=-1; renderMSetup(); save(); }
-});
-$("mkPerPlus").addEventListener("click",function(){
-  if(MS.per<MK_PER_MAX){ MS.per++; MS.open=-1; renderMSetup(); save(); }
-});
-$("mkStart").addEventListener("click",mNewGame);
-$("mkOpenLayout").addEventListener("click",mOpenLayout);
-$("mkLayoutBtn").addEventListener("click",mOpenLayout);
-$("mkLayoutClose").addEventListener("click",mCloseLayout);
-$("mkLayoutScrim").addEventListener("click",mCloseLayout);
-$("mkOpenRules").addEventListener("click",openRules);
-$("mkOpenAbout").addEventListener("click",openAbout);
-$("mkSheetBtn").addEventListener("click",mOpenSheet);
-$("mkSheetClose").addEventListener("click",mCloseSheet);
-$("mkScrim").addEventListener("click",mCloseSheet);
-$("mkMissBtn").addEventListener("click",function(){ mThrow(0); });
-$("mkUndo").addEventListener("click",mUndo);
-$("mkEdSave").addEventListener("click",function(){
-  if(!MEDIT) return;
-  M.throws[MEDIT.idx].v = MEDIT.v;
-  MEDIT=null;
-  mAfterChange();
-});
-$("mkEdDel").addEventListener("click",function(){
-  if(!MEDIT) return;
-  M.throws.splice(MEDIT.idx,1);
-  MEDIT=null;
-  mAfterChange();
-});
-$("mkQuit").addEventListener("click",function(){
-  var b=$("mkQuit");
-  if(b.dataset.armed!=="1"){
-    mArmQuit(true);
-    setTimeout(function(){ if(b.dataset.armed==="1") mArmQuit(false); },4000);
-    return;
-  }
-  mCloseSheet();
-  M=null;
-  buzz(12);
-  save();
-  show("msetup");
-  renderMSetup();
-});
 $("backToGames").addEventListener("click",function(){ show("games"); });
 
 $("openTour").addEventListener("click",function(){
@@ -154,44 +94,32 @@ function refreshTourBtn(){
 }
 
 function show(name){
-  ["games","setup","tsetup","bracket","hall","game","over","msetup","mgame"].forEach(function(n){
+  ["games","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
   if(name!=="game") closeSheet();
-  if(name!=="mgame") mCloseSheet();
+  pourChaqueJeu("auChangementDEcran", name);
   if(name==="setup"){ refreshTourBtn(); refreshHallLink(); }
-  if(name==="msetup") refreshHallLink();
 }
 
 function save(){
   TOUR[S.game]=T; DRAFT[S.game]=TS;   /* le jeu courant avant d'ecrire */
-  try{ localStorage.setItem(KEY, JSON.stringify({s:S,g:G,tg:TOUR,ds:DRAFT,h:H,ms:MS,m:M})); }catch(e){}
+  var o={s:S,g:G,tg:TOUR,ds:DRAFT,h:H};
+  pourChaqueJeu("sauver", o);
+  try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){}
 }
 
 /* Un état enregistré peut venir de n'importe quelle version : celui du
    téléphone au démarrage, comme une sauvegarde importée. Les deux chemins
-   passent par ces fonctions. Recopiées de part et d'autre, elles avaient
-   divergé : importer une sauvegarde d'avant le mölkky en équipes laissait
-   le nombre de joueurs par équipe vide, et ses boutons sans effet. */
+   passent par ces fonctions : recopiées de part et d'autre, elles avaient
+   divergé. Un jeu qui garde son propre état fournit les siennes, par
+   charger et importer. */
 function normS(s){
   if(!JEUX[s.game]) s.game=jeuHistorique();
   if(!s.tgt) s.tgt=ciblesParDefaut();
   if(!s.palets) s.palets=paletDefault(s.mode);
   if(!s.teams || s.teams.length!==2) s.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
   return s;
-}
-function normMS(ms){
-  ms.open=-1;
-  if(ms.mode!=="team") ms.mode="solo";
-  if(!ms.per || ms.per<MK_PER_MIN || ms.per>MK_PER_MAX) ms.per=MK_PER_MIN;
-  ms.players.forEach(function(pl){ if(!pl.mates) pl.mates=["","","",""]; });
-  return ms;
-}
-function normM(m){
-  if(!m.throws) m.throws=[];
-  if(!m.mode) m.mode="solo";
-  if(!m.per) m.per=MK_PER_MIN;
-  return m;
 }
 function normG(g){
   if(!g.game) g.game=jeuHistorique();
@@ -223,20 +151,14 @@ function load(){
   if(d && d.s) S=normS(d.s);
   adoptTour(d);
   renderTSetup();
-  if(d && d.ms && d.ms.players && d.ms.players.length===MK_MAX) MS=normMS(d.ms);
-  if(d && d.m && d.m.players && d.m.players.length>=MK_MIN){ M=normM(d.m); mRecompute(); }
-  renderMSetup();
+  pourChaqueJeu("charger", d);
   if(d && d.h && d.h.length) H=d.h;
   refreshTourBtn();
   refreshHallLink();
 
-  /* le mölkky reprend d'abord : il a son propre écran de partie */
-  if(S.game==="molkky" && M && !M.over){
-    show("mgame");
-    buildMPad();
-    renderMGame();
-    keepAwake();
-  }else if(d && d.g && d.g.teams){
+  /* un jeu qui a son propre écran de partie la reprend lui-même */
+  var courant=jeu(S.game);
+  if(!(courant.reprendre && courant.reprendre()) && d && d.g && d.g.teams){
     G=normG(d.g);
     recompute();
     if(G.over){ renderOver(); }

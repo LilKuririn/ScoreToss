@@ -215,7 +215,7 @@ function renderHall(){
 
 function refreshHallLink(){
   var n=HG().length, titre=t("hall.aria")+" · "+tn("hall.count",n);
-  ["openHall","mkHall"].forEach(function(id){
+  ["openHall"].concat(liensPalmares()).forEach(function(id){
     var btn=$(id);
     if(!btn) return;
     btn.hidden = !n;

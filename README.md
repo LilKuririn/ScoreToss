@@ -179,6 +179,10 @@ ne demande que Node. `index.html` ne se modifie donc jamais à la main :
 node tools/build.js
 ```
 
+Chaque jeu a son dossier dans `src/jeux/`, et le code commun ne nomme aucun jeu : il interroge un
+registre où chacun se déclare. Ajouter un jeu revient, pour l'essentiel, à ajouter un dossier —
+les textes vivent encore dans le dictionnaire commun.
+
 À chaque push, la CI vérifie que `index.html` correspond bien à `src/`. Un fichier source modifié
 sans réassembler, ou un `index.html` retouché directement, la fait échouer.
 
@@ -203,7 +207,8 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 | Chemin | Rôle |
 | --- | --- |
 | `index.html` | Toute l'application, **générée** — ne pas modifier |
-| `src/` | Les sources : squelette, styles, écrans et script |
+| `src/` | Les sources : squelette, styles, écrans et script communs |
+| `src/jeux/` | Un dossier par jeu : sa déclaration, son code, ses écrans, ses styles, ses règles |
 | `tools/build.js` | Assemble `index.html` depuis `src/`, ou vérifie qu'il correspond |
 | `tools/banc/` | Banc de comparaison : rejoue des parcours réels sur deux versions et compare l'affichage |
 | `sw.js`, `manifest.webmanifest` | Installation sur l'écran d'accueil et fonctionnement hors ligne |
