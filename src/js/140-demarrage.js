@@ -176,6 +176,39 @@ function save(){
   try{ localStorage.setItem(KEY, JSON.stringify({s:S,g:G,tg:TOUR,ds:DRAFT,h:H,ms:MS,m:M})); }catch(e){}
 }
 
+/* Un état enregistré peut venir de n'importe quelle version : celui du
+   téléphone au démarrage, comme une sauvegarde importée. Les deux chemins
+   passent par ces fonctions. Recopiées de part et d'autre, elles avaient
+   divergé : importer une sauvegarde d'avant le mölkky en équipes laissait
+   le nombre de joueurs par équipe vide, et ses boutons sans effet. */
+function normS(s){
+  if(s.game!=="palet" && s.game!=="molkky") s.game="cornhole";
+  if(!s.tgt) s.tgt={cornhole:21, palet:12};
+  if(!s.palets) s.palets=paletDefault(s.mode);
+  if(!s.teams || s.teams.length!==2) s.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
+  return s;
+}
+function normMS(ms){
+  ms.open=-1;
+  if(ms.mode!=="team") ms.mode="solo";
+  if(!ms.per || ms.per<MK_PER_MIN || ms.per>MK_PER_MAX) ms.per=MK_PER_MIN;
+  ms.players.forEach(function(pl){ if(!pl.mates) pl.mates=["","","",""]; });
+  return ms;
+}
+function normM(m){
+  if(!m.throws) m.throws=[];
+  if(!m.mode) m.mode="solo";
+  if(!m.per) m.per=MK_PER_MIN;
+  return m;
+}
+function normG(g){
+  if(!g.game) g.game="cornhole";
+  if(!g.max) g.max=4;
+  if(g.mpass===undefined) g.mpass=0;
+  if(!g.entry) g.entry=newEntry(g.game);
+  return g;
+}
+
 /* Les enregistrements d'avant le palet ne connaissent qu'un tableau et
    qu'un brouillon : ils reviennent au cornhole. */
 function adoptTour(d){
@@ -195,28 +228,11 @@ function load(){
   if(!raw) return;
   var d;
   try{ d=JSON.parse(raw); }catch(e){ return; }
-  if(d && d.s){
-    S=d.s;
-    if(S.game!=="palet" && S.game!=="molkky") S.game="cornhole";
-    if(!S.tgt) S.tgt={cornhole:21, palet:12};
-    if(!S.palets) S.palets=paletDefault(S.mode);
-    if(!S.teams || S.teams.length!==2) S.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
-  }
+  if(d && d.s) S=normS(d.s);
   adoptTour(d);
   renderTSetup();
-  if(d && d.ms && d.ms.players && d.ms.players.length===MK_MAX){
-    MS=d.ms; MS.open=-1;
-    if(MS.mode!=="team") MS.mode="solo";
-    if(!MS.per || MS.per<MK_PER_MIN || MS.per>MK_PER_MAX) MS.per=MK_PER_MIN;
-    MS.players.forEach(function(pl){ if(!pl.mates) pl.mates=["","","",""]; });
-  }
-  if(d && d.m && d.m.players && d.m.players.length>=MK_MIN){
-    M=d.m;
-    if(!M.throws) M.throws=[];
-    if(!M.mode) M.mode="solo";
-    if(!M.per) M.per=MK_PER_MIN;
-    mRecompute();
-  }
+  if(d && d.ms && d.ms.players && d.ms.players.length===MK_MAX) MS=normMS(d.ms);
+  if(d && d.m && d.m.players && d.m.players.length>=MK_MIN){ M=normM(d.m); mRecompute(); }
   renderMSetup();
   if(d && d.h && d.h.length) H=d.h;
   refreshTourBtn();
@@ -229,11 +245,7 @@ function load(){
     renderMGame();
     keepAwake();
   }else if(d && d.g && d.g.teams){
-    G=d.g;
-    if(!G.game) G.game="cornhole";
-    if(!G.max) G.max=4;
-    if(G.mpass===undefined) G.mpass=0;
-    if(!G.entry) G.entry=newEntry(G.game);
+    G=normG(d.g);
     recompute();
     if(G.over){ renderOver(); }
     else { show("game"); renderGame(true); keepAwake(); }

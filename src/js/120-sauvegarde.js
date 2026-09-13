@@ -49,24 +49,16 @@ function applyImport(text){
   if(!window.confirm(t("data.confirm"))) return;
 
   if(d.s && d.s.teams && d.s.teams.length===2) S=d.s;
-  if(S.game!=="palet" && S.game!=="molkky") S.game="cornhole";
-  if(!S.tgt) S.tgt={cornhole:21, palet:12};
+  normS(S);
   TOUR={cornhole:null, palet:null}; DRAFT={cornhole:null, palet:null};
   adoptTour(d);
   H = (d.h && d.h.length) ? d.h : [];
-  if(d.ms && d.ms.players && d.ms.players.length===MK_MAX){ MS=d.ms; MS.open=-1; }
-  else { MS={count:4, open:-1, players:mFreshPlayers()}; }
-  M = (d.m && d.m.players && d.m.players.length>=MK_MIN) ? d.m : null;
-  if(M){ if(!M.throws) M.throws=[]; mRecompute(); }
+  MS = normMS((d.ms && d.ms.players && d.ms.players.length===MK_MAX) ? d.ms : {count:4, players:mFreshPlayers()});
+  M = (d.m && d.m.players && d.m.players.length>=MK_MIN) ? normM(d.m) : null;
+  if(M) mRecompute();
   renderMSetup();
-  G = (d.g && d.g.teams) ? d.g : null;
-  if(G){
-    if(!G.game) G.game="cornhole";
-    if(!G.max) G.max=4;
-    if(G.mpass===undefined) G.mpass=0;
-    if(!G.entry) G.entry=newEntry(G.game);
-    recompute();
-  }
+  G = (d.g && d.g.teams) ? normG(d.g) : null;
+  if(G) recompute();
 
   save();
   closeAbout();
