@@ -87,6 +87,7 @@ jobs:
           git push || true
 
       - name: Renommer
+        id: renommer
         run: cp android/app/build/outputs/apk/debug/app-debug.apk cornscore.apk
 
       - name: Déposer dans les artefacts
@@ -94,19 +95,6 @@ jobs:
         with:
           name: cornscore-apk
           path: cornscore.apk
-
-      - name: Publier la release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          titre="ScoreToss — APK"
-          notes="Dernier APK installable, reconstruit à chaque modification de l'application. Fichier : cornscore.apk"
-          if gh release view apk > /dev/null 2>&1; then
-            gh release edit apk --title "$titre" --notes "$notes"
-          else
-            gh release create apk --title "$titre" --notes "$notes"
-          fi
-          gh release upload apk cornscore.apk --clobber
 
       # ---- Paquet destiné au Play Store -------------------------------
       # Ne s'active qu'une fois les quatre secrets renseignés. L'AAB n'est
@@ -145,3 +133,24 @@ jobs:
           name: cornscore-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
+
+      # La release de téléchargement direct vient en dernier : une erreur de
+      # l'API GitHub à cet endroit ne prive plus la console Play de son bundle.
+      # Elle part dès que l'APK existe, bundle construit ou non. Le titre n'est
+      # réécrit que s'il a changé : la réécriture à chaque passage a échoué
+      # deux fois de suite en HTTP 500 côté GitHub.
+      - name: Publier la release
+        if: ${{ !cancelled() && steps.renommer.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          titre="ScoreToss — APK"
+          notes="Dernier APK installable, reconstruit à chaque modification de l'application. Fichier : cornscore.apk"
+          if actuel=$(gh release view apk --json name --jq .name 2>/dev/null); then
+            if [ "$actuel" != "$titre" ]; then
+              gh release edit apk --title "$titre" --notes "$notes"
+            fi
+          else
+            gh release create apk --title "$titre" --notes "$notes"
+          fi
+          gh release upload apk cornscore.apk --clobber
