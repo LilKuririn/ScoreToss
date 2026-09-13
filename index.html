@@ -14,7 +14,7 @@ try{
 }catch(e){}
 </script>
 <meta name="theme-color" content="#EFF2F2" media="(prefers-color-scheme: light)">
-<meta name="description" content="Compteur de points pour les jeux d'extérieur : cornhole, palet breton et mölkky, en simple, en double, en équipes et en tournoi.">
+<meta name="description" content="ScoreToss — Compteur de points pour les jeux d'extérieur, d'intérieur et de société : cornhole, palet breton, mölkky et fléchettes, en simple, en double, en équipes et en tournoi.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -1009,6 +1009,7 @@ a.hall-link{text-decoration:none;color:inherit}
 
 .about-id{display:flex;flex-direction:column;gap:6px;padding-top:16px}
 .about-id h4{margin:0;font-size:26px;font-weight:800;letter-spacing:-.035em}
+.about-tag{display:block;margin-top:2px;font-size:15px;font-weight:600;letter-spacing:0;color:var(--muted)}
 .about-id p{font-size:13.5px;line-height:1.55;color:var(--muted)}
 .about-ver{font-family:var(--fm);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .about-links{display:flex;flex-direction:column;gap:9px;padding-top:18px}
@@ -3872,7 +3873,7 @@ fr:{
   "cat.count":"{n} jeu", "cat.count_p":"{n} jeux",
   "games.soon":"En chantier", "games.soon.sub":"Pétanque, bibock…",
   "games.change":"Changer de jeu",
-  "app.desc":"Compteur de points pour les jeux d'extérieur. Cornhole, palet breton et mölkky, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
+  "app.desc":"Compteur de points pour les jeux d'extérieur, d'intérieur et de société. Cornhole, palet breton, mölkky et fléchettes, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
   "nav.home":"Accueil", "nav.close":"Fermer",
   "mode.single":"Simple", "mode.single.sub":"1 v 1",
   "mode.double":"Double", "mode.double.sub":"2 v 2",
@@ -4001,7 +4002,7 @@ en:{
   "cat.count":"{n} game", "cat.count_p":"{n} games",
   "games.soon":"In the works", "games.soon.sub":"Pétanque, Bibock…",
   "games.change":"Change game",
-  "app.desc":"A score keeper for outdoor games. Cornhole, Breton palet and Mölkky, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
+  "app.desc":"A score keeper for outdoor, indoor and board games. Cornhole, Breton palet, Mölkky and darts, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
   "nav.home":"Home", "nav.close":"Close",
   "mode.single":"Singles", "mode.single.sub":"1 v 1",
   "mode.double":"Doubles", "mode.double.sub":"2 v 2",
@@ -4124,13 +4125,13 @@ en:{
   "color.rose":"Pink","color.ardoise":"Slate"
 },
 es:{
-  "app.tagline":"Marcador",
+  "app.tagline":"Marcador de puntos",
   "cat.eyebrow":"Elige una categoría", "cat.back":"Categorías", "cat.soon":"Próximamente",
   "cat.exterieur":"Exterior", "cat.interieur":"Interior", "cat.societe":"Juegos de mesa",
   "cat.count":"{n} juego", "cat.count_p":"{n} juegos",
   "games.soon":"En preparación", "games.soon.sub":"Petanca, bibock…",
   "games.change":"Cambiar de juego",
-  "app.desc":"Marcador para juegos de exterior. Cornhole, palet bretón y mölkky, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
+  "app.desc":"Marcador de puntos para juegos de exterior, de interior y de mesa. Cornhole, palet bretón, mölkky y dardos, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
   "nav.home":"Inicio", "nav.close":"Cerrar",
   "mode.single":"Individual", "mode.single.sub":"1 v 1",
   "mode.double":"Parejas", "mode.double.sub":"2 v 2",
@@ -6334,7 +6335,9 @@ function fillAbout(){
   body.innerHTML="";
 
   var id=el("div","about-id");
-  id.appendChild(el("h4",null,"ScoreToss"));
+  var nom=el("h4",null,"ScoreToss");
+  nom.appendChild(el("span","about-tag",t("app.tagline")));
+  id.appendChild(nom);
   id.appendChild(el("p",null,t("app.desc")));
   id.appendChild(el("p","about-ver",tf("about.version",{v:APP_VERSION})));
   body.appendChild(id);

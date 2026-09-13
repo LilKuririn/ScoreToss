@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="store/feature-graphic-1024x500.png" alt="ScoreToss" width="640">
+  <img src="store/feature-graphic-1024x500.png" alt="ScoreToss — Compteur de points" width="640">
 </p>
 
-# ScoreToss
+# ScoreToss — Compteur de points
 
 Compteur de points pour les jeux d'extérieur — **cornhole**, **palet breton**, **mölkky** — et
 d'intérieur — **fléchettes**.

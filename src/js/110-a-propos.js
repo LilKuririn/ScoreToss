@@ -43,7 +43,9 @@ function fillAbout(){
   body.innerHTML="";
 
   var id=el("div","about-id");
-  id.appendChild(el("h4",null,"ScoreToss"));
+  var nom=el("h4",null,"ScoreToss");
+  nom.appendChild(el("span","about-tag",t("app.tagline")));
+  id.appendChild(nom);
   id.appendChild(el("p",null,t("app.desc")));
   id.appendChild(el("p","about-ver",tf("about.version",{v:APP_VERSION})));
   body.appendChild(id);

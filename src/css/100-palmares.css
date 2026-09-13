@@ -26,6 +26,7 @@ a.hall-link{text-decoration:none;color:inherit}
 
 .about-id{display:flex;flex-direction:column;gap:6px;padding-top:16px}
 .about-id h4{margin:0;font-size:26px;font-weight:800;letter-spacing:-.035em}
+.about-tag{display:block;margin-top:2px;font-size:15px;font-weight:600;letter-spacing:0;color:var(--muted)}
 .about-id p{font-size:13.5px;line-height:1.55;color:var(--muted)}
 .about-ver{font-family:var(--fm);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .about-links{display:flex;flex-direction:column;gap:9px;padding-top:18px}
