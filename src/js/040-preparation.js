@@ -91,10 +91,7 @@ function applyGame(id){
   var d = jeuDuel(id);
   S.target = S.tgt[id] || d.cible;   /* et on ressort le sien */
   if(d.cibles.indexOf(S.target)<0) S.target = d.cible;
-  if(id==="palet" && !S.palets) S.palets = paletDefault(S.mode);
-  var h1=$("setupTitle");
-  if(h1 && h1.firstChild) h1.firstChild.nodeValue = (id==="palet") ? t("palet.name") : "Cornhole";
-  $("paletOpt").hidden = (id!=="palet");
+  if(d.auChoix) d.auChoix();
   renderRules();
   renderCards();
   fillRules("rulesBody");
@@ -109,11 +106,10 @@ function renderRules(){
   var gd=jeuDuel(S.game);
   if(gd.cibles.indexOf(S.target)<0) S.target=gd.cible;
   var h1=$("setupTitle");
-  if(h1 && h1.firstChild) h1.firstChild.nodeValue = (S.game==="palet") ? t("palet.name") : "Cornhole";
+  if(h1 && h1.firstChild) h1.firstChild.nodeValue = gd.nom();
   fillChips($("target"), gd.cibles, S.target, "target");
-  fillChips($("palets"), [2,3,4], S.palets, "palets");
-  $("paletOpt").hidden = (S.game!=="palet");
-  $("targetHint").hidden = (S.game!=="palet");
+  montrerPropres($("s-setup"), S.game);
+  if(gd.peindrePreparation) gd.peindrePreparation();
   var i;
   /* le mode n'était synchronisé qu'au clic : au rechargement d'une partie
      en double, la bascule restait affichée sur Simple. */
@@ -134,20 +130,14 @@ $("mode").addEventListener("click",function(e){
     team.mates=["",""];
   });
 
-  /* quatre palets par équipe quel que soit le format */
-  if(S.game==="palet") S.palets = paletDefault(S.mode);
+  var d=jeuDuel(S.game);
+  if(d.auChangementDeMode) d.auChangementDeMode();
 
   var kids=$("mode").children;
   for(var i=0;i<kids.length;i++) kids[i].classList.toggle("on", kids[i]===b);
   renderCards();
   renderRules();
   save();
-});
-$("palets").addEventListener("click",function(e){
-  var b=e.target.closest("button[data-palets]");
-  if(!b) return;
-  S.palets=+b.dataset.palets;
-  renderRules(); save();
 });
 $("target").addEventListener("click",function(e){
   var b=e.target.closest("button[data-target]");

@@ -505,7 +505,7 @@ h1,h2,h3,p{margin:0}
 }
 .mtr button:active{background:var(--line-2);color:var(--ink)}
 
-/* au palet une seule reglette par equipe : elle occupe la place des deux */
+/* un seul compte par équipe : la réglette occupe la place des deux */
 .crow.solo{grid-template-columns:1fr 120px}
 .crow .who{display:flex;align-items:center;gap:7px;min-width:0}
 .crow .who span{
@@ -1085,9 +1085,9 @@ a.hall-link{text-decoration:none;color:inherit}
         <div class="opt">
           <p class="eyebrow" data-i18n="setup.target">Score à atteindre</p>
           <div class="opt-row" id="target"></div>
-          <p class="hint" id="targetHint" hidden data-i18n="setup.palet.hint">La partie se joue en 12 points, la belle en 15.</p>
+          <p class="hint" id="targetHint" data-propre="palet" hidden data-i18n="setup.palet.hint">La partie se joue en 12 points, la belle en 15.</p>
         </div>
-        <div class="opt" id="paletOpt" hidden>
+        <div class="opt" id="paletOpt" data-propre="palet" hidden>
           <p class="eyebrow" data-i18n="setup.palets">Palets par joueur</p>
           <div class="opt-row" id="palets">
             <button type="button" class="chip" data-palets="2">2</button>
@@ -1308,11 +1308,11 @@ a.hall-link{text-decoration:none;color:inherit}
     <section class="console">
       <div class="console-head">
         <p class="eyebrow" id="consoleTitle">4 sacs par équipe</p>
-        <p class="eyebrow ch-corn"><span data-i18n="game.hole">Trou</span> <b data-i18n="game.hole.pts">3 pts</b></p>
-        <p class="eyebrow ch-corn"><span data-i18n="game.board">Planche</span> <b data-i18n="game.board.pts">1 pt</b></p>
-        <p class="eyebrow ch-palet" hidden><b data-i18n="game.perpalet">1 pt par palet</b></p>
+        <p class="eyebrow ch-corn" data-propre="cornhole"><span data-i18n="game.hole">Trou</span> <b data-i18n="game.hole.pts">3 pts</b></p>
+        <p class="eyebrow ch-corn" data-propre="cornhole"><span data-i18n="game.board">Planche</span> <b data-i18n="game.board.pts">1 pt</b></p>
+        <p class="eyebrow ch-palet" data-propre="palet" hidden><b data-i18n="game.perpalet">1 pt par palet</b></p>
       </div>
-      <div class="mtr" id="mtr" hidden>
+      <div class="mtr" id="mtr" data-propre="palet" hidden>
         <i id="mtrDot"></i>
         <span class="lab" data-i18n="game.master">Maître</span>
         <span class="who" id="mtrWho"></span>
@@ -1540,7 +1540,6 @@ var COLORS = [
 ];
 var KEY = "cornhole.v1";
 var LANG_KEY = "cornhole.lang";
-var BAGS = 4;              /* sacs lancés par équipe et par manche */
 
 /* Au palet, le nombre de palets par joueur varie d'une fédération à
    l'autre : on en fait un réglage plutôt qu'un dogme. Quatre palets par
@@ -1552,7 +1551,7 @@ function curGame(){
   if(jeu(S.game).famille!=="duel") return S.game;
   return (G && !G.over) ? G.game : S.game;
 }
-function newEntry(g){ return g==="palet" ? [{p:0},{p:0}] : [{h:0,b:0},{h:0,b:0}]; }
+function newEntry(g){ return jeuDuel(g).entreeVide(); }
 
 
 /* ------------------------------------------------------------------
@@ -1567,6 +1566,37 @@ function newEntry(g){ return g==="palet" ? [{p:0},{p:0}] : [{h:0,b:0},{h:0,b:0}]
    Familles : "duel", deux camps qui jouent des manches et peuvent
    s'affronter en tournoi ; "tours", des participants qui lancent chacun
    à leur tour.
+
+   Un jeu de la famille "duel" fournit :
+     cibles, cible             les scores proposés, et celui par défaut
+     nom()                     le titre de l'écran de préparation
+     regles(hote)              la fiche de règles
+     saisie                    les colonnes de saisie d'une manche :
+                               { types, retirer, ajouter, entetes } — les
+                               deux derniers et entetes sont des clés de texte
+     entreeVide()              une saisie à zéro pour les deux camps
+     entreeDeManche(manche)    la saisie qui a produit une manche enregistrée
+     gain(entree)              ce qu'elle rapporte à chaque camp, [a, b]
+     manche(entree, gain)      la manche telle qu'elle est enregistrée
+     ajuster(entree, i, type, d, max)
+                               applique +1 ou −1, et répond faux si c'est interdit
+     plein(entree, i, type, max)
+                               vrai quand le bouton + doit être désactivé
+     annonceNulle(entree)      le texte d'une saisie qui ne rapporte rien
+     titreConsole(max)         l'en-tête de la console de saisie
+     statistiques(f, w, l, fmt)
+                               les lignes du face-à-face de fin de partie
+   et, s'il en a besoin :
+     historique                reprend les enregistrements sans nom de jeu
+     compteNulles              annonce le nombre de manches nulles en fin de partie
+     main()                    l'équipe qui a la main, si ce n'est pas l'honneur
+     peindre()                 ce qu'il affiche en plus dans la console
+     auChoix(), auChangementDeMode(), peindrePreparation()
+                               ses propres réglages sur l'écran de préparation
+
+   Le HTML et le CSS propres à un jeu vivent dans son dossier et entrent
+   par des repères @@jeux:fichier@@ ; ses éléments portent
+   data-propre="identifiant", et le code commun ne les affiche que pour lui.
 ------------------------------------------------------------------ */
 var JEUX = {};
 var ORDRE_JEUX = [];
@@ -1611,23 +1641,210 @@ function ciblesParDefaut(){
   return o;
 }
 
+/* Les éléments propres à un jeu ne s'affichent que pour lui. */
+function montrerPropres(racine, id){
+  var n=racine.querySelectorAll("[data-propre]");
+  for(var i=0;i<n.length;i++) n[i].hidden = n[i].getAttribute("data-propre")!==id;
+}
+
 /* Cornhole.
+
    Le premier jeu de l'application : les enregistrements d'avant l'arrivée
-   des autres, qui ne portent aucun nom de jeu, sont les siens. */
+   des autres, qui ne portent aucun nom de jeu, sont les siens.
+
+   Chaque équipe lance quatre sacs par manche, 3 points dans le trou et 1
+   sur la planche. Les deux équipes lancent, mais seule la différence est
+   marquée : 5 contre 3 rapportent 2 points à la première, rien à l'autre. */
+var BAGS = 4;              /* sacs lancés par équipe et par manche */
+
 declarerJeu({
   id:"cornhole",
   famille:"duel",
   historique:true,
   cibles:[11,15,21], cible:21,
-  regles:fillCornholeRules
+  nom:function(){ return "Cornhole"; },
+  regles:fillCornholeRules,
+
+  saisie:{
+    types:["h","b"],
+    retirer:{h:"game.rm.hole", b:"game.rm.board"},
+    ajouter:{h:"game.add.hole", b:"game.add.board"},
+    entetes:["game.hole","game.board"]
+  },
+  entreeVide:function(){ return [{h:0,b:0},{h:0,b:0}]; },
+  entreeDeManche:function(rd){ return [{h:rd.h[0],b:rd.b[0]},{h:rd.h[1],b:rd.b[1]}]; },
+  gain:function(e){
+    var d=(e[0].h*3+e[0].b)-(e[1].h*3+e[1].b);
+    return d>0 ? [d,0] : [0,-d];
+  },
+  manche:function(e,gain){ return { h:[e[0].h,e[1].h], b:[e[0].b,e[1].b], gain:gain }; },
+  ajuster:function(e,i,kind,d){
+    if(e[i].h+e[i].b+d>BAGS) return false;
+    e[i][kind]+=d;
+    return true;
+  },
+  plein:function(e,i){ return (e[i].h+e[i].b)>=BAGS; },
+  annonceNulle:function(e){ return t((e[0].h+e[0].b+e[1].h+e[1].b) ? "game.tie" : "game.none"); },
+  titreConsole:function(){ return tf("game.bags",{n:BAGS}); },
+
+  statistiques:function(f,w,l,fmt){
+    var trous=[0,0], planches=[0,0];
+    G.rounds.forEach(function(rd){
+      for(var i=0;i<2;i++){
+        trous[i]+=(rd.h && rd.h[i]) || 0;
+        planches[i]+=(rd.b && rd.b[i]) || 0;
+      }
+    });
+    return [
+      [t("over.points"), G.scores[w],  G.scores[l],  fmt.plain],
+      [t("over.won"),    f.won[w],     f.won[l],     fmt.plain],
+      [t("over.holes"),  trous[w],     trous[l],     fmt.plain],
+      [t("over.board"),  planches[w],  planches[l],  fmt.plain],
+      [t("over.best"),   f.best[w],    f.best[l],    fmt.gain]
+    ];
+  }
 });
-/* Palet breton. La partie se joue en 12 points, la belle en 15. */
+
+function fillCornholeRules(host){
+  var comptage=el("div","block");
+  comptage.appendChild(el("p","eyebrow",t("rules.count")));
+  var pts=el("div","pts");
+  [["3",t("rules.hole")],["1",t("rules.board")]].forEach(function(p){
+    var row=el("div","pt-row");
+    row.appendChild(el("b",null,p[0]));
+    row.appendChild(el("span",null,p[1]));
+    pts.appendChild(row);
+  });
+  comptage.appendChild(pts);
+  host.appendChild(comptage);
+
+  var deroule=el("div","block");
+  deroule.appendChild(el("p","eyebrow",t("rules.flow")));
+  var list=el("ul","rulist");
+  [
+    [t("rules.1a"),t("rules.1b"),t("rules.1c")],
+    [t("rules.2a"),t("rules.2b"),t("rules.2c")],
+    [t("rules.3a"),t("rules.3b"),t("rules.3c")],
+    [t("rules.4a"),t("rules.4b"),t("rules.4c")]
+  ].forEach(function(r){
+    var li=document.createElement("li");
+    li.appendChild(document.createTextNode(r[0]));
+    li.appendChild(el("b",null,r[1]));
+    li.appendChild(document.createTextNode(r[2]));
+    list.appendChild(li);
+  });
+  deroule.appendChild(list);
+  host.appendChild(deroule);
+}
+/* Palet breton.
+
+   Sur planche, au laiton. Seule l'équipe la plus proche du maître marque,
+   un point par palet mieux placé que le meilleur adverse : la saisie tient
+   en un seul compte par équipe, et saisir pour l'une remet l'autre à zéro.
+   Deux zéros valent manche nulle. La partie se joue en 12 points, la belle
+   en 15. */
 declarerJeu({
   id:"palet",
   famille:"duel",
   cibles:[12,15], cible:12,
-  regles:fillPaletRules
+  nom:function(){ return t("palet.name"); },
+  regles:fillPaletRules,
+
+  saisie:{ types:["p"], retirer:{p:"game.rm.pt"}, ajouter:{p:"game.add.pt"}, entetes:["over.points"] },
+  entreeVide:function(){ return [{p:0},{p:0}]; },
+  entreeDeManche:function(rd){ return [{p:(rd.p?rd.p[0]:rd.gain[0])},{p:(rd.p?rd.p[1]:rd.gain[1])}]; },
+  gain:function(e){ return [e[0].p, e[1].p]; },
+  manche:function(e,gain){ return { p:[e[0].p,e[1].p], gain:gain }; },
+  ajuster:function(e,i,kind,d,max){
+    var next=e[i].p+d;
+    if(next>max) return false;
+    e[i].p=next;
+    if(next>0) e[1-i].p=0;
+    return true;
+  },
+  plein:function(e,i,kind,max){ return e[i].p>=max; },
+  annonceNulle:function(){ return t("game.void"); },
+  titreConsole:function(max){ return tf("game.palets",{n:max}); },
+
+  compteNulles:true,
+  statistiques:function(f,w,l,fmt){
+    return [
+      [t("over.points"), G.scores[w],    G.scores[l],    fmt.plain],
+      [t("over.won"),    f.won[w],       f.won[l],       fmt.plain],
+      [t("over.best"),   f.best[w],      f.best[l],      fmt.gain],
+      [t("over.avg"),    fmt.moyenne(w), fmt.moyenne(l), fmt.plain]
+    ];
+  },
+
+  /* quatre palets par équipe quel que soit le format */
+  auChoix:function(){ if(!S.palets) S.palets=paletDefault(S.mode); },
+  auChangementDeMode:function(){ S.palets=paletDefault(S.mode); },
+  peindrePreparation:function(){ fillChips($("palets"), [2,3,4], S.palets, "palets"); },
+
+  main:function(){ return G.first ^ ((G.mpass||0) & 1); },
+  peindre:paintMaitre
 });
+
+$("palets").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-palets]");
+  if(!b) return;
+  S.palets=+b.dataset.palets;
+  renderRules(); save();
+});
+
+/* --- le maître --------------------------------------------------- */
+/* Au palet, c'est celui qui pose le maitre qui a la main. Trois essais
+   manques et le lancer passe a l'adversaire, qui prend la main s'il y
+   parvient — et la rend sinon, indefiniment. Seule la parite des passes
+   compte, l'ecran n'ayant a dire qu'une chose : a qui revient le lancer.
+   `G.first` reste l'honneur herite de la mene precedente ; les passes le
+   decalent pour la mene en cours, et repartent de zero a la validation. */
+function paintMaitre(){
+  var row=$("mtr");
+  var montrer = G && !G.over && (G.tossed || G.rounds.length);
+  row.hidden = !montrer;
+  if(!montrer) return;
+  var k=handTeam();
+  $("mtrDot").style.background = G.teams[k].hex;
+  $("mtrWho").textContent = G.teams[k].label;
+  $("mtrMiss").setAttribute("aria-label", tf("game.missed.aria",{name:G.teams[1-k].label}));
+}
+
+function maitreMiss(){
+  if(!G || G.over) return;
+  G.mpass = (G.mpass||0)+1;
+  buzz(10);
+  paintHonor(); paintMaitre();
+  save();
+}
+$("mtrMiss").addEventListener("click",maitreMiss);
+
+/* Le palet compte autrement : pas de bareme a deux valeurs, mais un point
+   par palet mieux place. La fiche suit donc une autre trame. */
+function fillPaletRules(host){
+  var comptage=el("div","block");
+  comptage.appendChild(el("p","eyebrow",t("prules.count")));
+  var pts=el("div","pts");
+  var row=el("div","pt-row");
+  row.appendChild(el("b",null,"1"));
+  row.appendChild(el("span",null,t("prules.pt")));
+  pts.appendChild(row);
+  comptage.appendChild(pts);
+  host.appendChild(comptage);
+
+  var deroule=el("div","block");
+  deroule.appendChild(el("p","eyebrow",t("prules.flow")));
+  var list=el("ul","rulist");
+  [1,2,3,4,5,6].forEach(function(k){
+    var li=document.createElement("li");
+    li.appendChild(document.createTextNode(t("prules."+k+"a")));
+    li.appendChild(el("b",null,t("prules."+k+"b")));
+    li.appendChild(document.createTextNode(t("prules."+k+"c")));
+    list.appendChild(li);
+  });
+  deroule.appendChild(list);
+  host.appendChild(deroule);
+}
 /* Mölkky.
    Il ne partage ni l'écran de préparation ni le moteur à deux camps : il
    ouvre les siens. Le jeu courant bascule quand même, pour que le palmarès
@@ -2442,34 +2659,6 @@ function color(id){
   for(var i=0;i<COLORS.length;i++){ if(COLORS[i].id===id) return COLORS[i]; }
   return COLORS[0];
 }
-/* Fiche des règles, ouverte par-dessus l'écran courant depuis l'accueil
-   comme depuis la préparation d'un tournoi. */
-/* Le palet compte autrement : pas de bareme a deux valeurs, mais un point
-   par palet mieux place. La fiche suit donc une autre trame. */
-function fillPaletRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("prules.count")));
-  var pts=el("div","pts");
-  var row=el("div","pt-row");
-  row.appendChild(el("b",null,"1"));
-  row.appendChild(el("span",null,t("prules.pt")));
-  pts.appendChild(row);
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("prules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5,6].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("prules."+k+"a")));
-    li.appendChild(el("b",null,t("prules."+k+"b")));
-    li.appendChild(document.createTextNode(t("prules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
-}
 
 function fillMolkkyRules(host){
   var comptage=el("div","block");
@@ -2498,7 +2687,9 @@ function fillMolkkyRules(host){
   host.appendChild(deroule);
 }
 
-/* La fiche suit le jeu en cours : chaque jeu fournit la sienne. */
+/* Fiche des règles, ouverte par-dessus l'écran courant depuis l'accueil
+   comme depuis la préparation d'un tournoi. Elle suit le jeu en cours :
+   chaque jeu fournit la sienne. */
 function fillRules(id){
   var host=$(id);
   if(!host) return;
@@ -2506,41 +2697,9 @@ function fillRules(id){
   jeu(curGame()).regles(host);
 }
 
-function fillCornholeRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("rules.count")));
-  var pts=el("div","pts");
-  [["3",t("rules.hole")],["1",t("rules.board")]].forEach(function(p){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,p[0]));
-    row.appendChild(el("span",null,p[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("rules.flow")));
-  var list=el("ul","rulist");
-  [
-    [t("rules.1a"),t("rules.1b"),t("rules.1c")],
-    [t("rules.2a"),t("rules.2b"),t("rules.2c")],
-    [t("rules.3a"),t("rules.3b"),t("rules.3c")],
-    [t("rules.4a"),t("rules.4b"),t("rules.4c")]
-  ].forEach(function(r){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(r[0]));
-    li.appendChild(el("b",null,r[1]));
-    li.appendChild(document.createTextNode(r[2]));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
-}
-
 /* état de préparation */
 var S = {
-  game:"cornhole", mode:"simple", target:21, palets:4,
+  game:jeuxDuel()[0], mode:"simple", target:21, palets:4,
   /* un score par jeu : jouer une belle au palet ne doit pas ramener
      le cornhole a 15 au retour */
   tgt:ciblesParDefaut(),
@@ -2729,10 +2888,7 @@ function applyGame(id){
   var d = jeuDuel(id);
   S.target = S.tgt[id] || d.cible;   /* et on ressort le sien */
   if(d.cibles.indexOf(S.target)<0) S.target = d.cible;
-  if(id==="palet" && !S.palets) S.palets = paletDefault(S.mode);
-  var h1=$("setupTitle");
-  if(h1 && h1.firstChild) h1.firstChild.nodeValue = (id==="palet") ? t("palet.name") : "Cornhole";
-  $("paletOpt").hidden = (id!=="palet");
+  if(d.auChoix) d.auChoix();
   renderRules();
   renderCards();
   fillRules("rulesBody");
@@ -2747,11 +2903,10 @@ function renderRules(){
   var gd=jeuDuel(S.game);
   if(gd.cibles.indexOf(S.target)<0) S.target=gd.cible;
   var h1=$("setupTitle");
-  if(h1 && h1.firstChild) h1.firstChild.nodeValue = (S.game==="palet") ? t("palet.name") : "Cornhole";
+  if(h1 && h1.firstChild) h1.firstChild.nodeValue = gd.nom();
   fillChips($("target"), gd.cibles, S.target, "target");
-  fillChips($("palets"), [2,3,4], S.palets, "palets");
-  $("paletOpt").hidden = (S.game!=="palet");
-  $("targetHint").hidden = (S.game!=="palet");
+  montrerPropres($("s-setup"), S.game);
+  if(gd.peindrePreparation) gd.peindrePreparation();
   var i;
   /* le mode n'était synchronisé qu'au clic : au rechargement d'une partie
      en double, la bascule restait affichée sur Simple. */
@@ -2772,20 +2927,14 @@ $("mode").addEventListener("click",function(e){
     team.mates=["",""];
   });
 
-  /* quatre palets par équipe quel que soit le format */
-  if(S.game==="palet") S.palets = paletDefault(S.mode);
+  var d=jeuDuel(S.game);
+  if(d.auChangementDeMode) d.auChangementDeMode();
 
   var kids=$("mode").children;
   for(var i=0;i<kids.length;i++) kids[i].classList.toggle("on", kids[i]===b);
   renderCards();
   renderRules();
   save();
-});
-$("palets").addEventListener("click",function(e){
-  var b=e.target.closest("button[data-palets]");
-  if(!b) return;
-  S.palets=+b.dataset.palets;
-  renderRules(); save();
 });
 $("target").addEventListener("click",function(e){
   var b=e.target.closest("button[data-target]");
@@ -2835,22 +2984,13 @@ function recompute(){
   G.scores=s; G.first=first; G.over=over; G.winner=winner;
 }
 
-function roundPoints(i){ return G.entry[i].h*3 + G.entry[i].b; }
-
-/* Au cornhole les deux équipes lancent et seule la différence est marquée.
-   Au palet une seule équipe marque, et le compte saisi est déjà son gain. */
-function pending(){
-  if(G.game==="palet") return [G.entry[0].p, G.entry[1].p];
-  var d=roundPoints(0)-roundPoints(1);
-  return d>0 ? [d,0] : [0,-d];
-}
+/* Ce que rapporte la saisie en cours : chaque jeu compte à sa manière. */
+function pending(){ return jeuDuel(G.game).gain(G.entry); }
 
 function validateRound(){
   if(!G || G.over) return;
   var gain=pending();
-  G.rounds.push(G.game==="palet"
-    ? { p:[G.entry[0].p,G.entry[1].p], gain:gain }
-    : { h:[G.entry[0].h,G.entry[1].h], b:[G.entry[0].b,G.entry[1].b], gain:gain });
+  G.rounds.push(jeuDuel(G.game).manche(G.entry, gain));
   var before=[G.scores[0],G.scores[1]];
   recompute();
   G.entry=newEntry(G.game);
@@ -2912,10 +3052,9 @@ function buildRows(){
   wrap.style.flexDirection="column";
   wrap.style.gap="8px";
 
-  if(G.game==="palet") return buildPaletRows(wrap);
-
+  var s=jeuDuel(G.game).saisie;
   G.teams.forEach(function(team,i){
-    var row=el("div","crow");
+    var row=el("div","crow"+(s.types.length===1 ? " solo" : ""));
     var who=el("div","who");
     var dot=el("span","dot");
     dot.style.background=team.hex;
@@ -2923,16 +3062,16 @@ function buildRows(){
     who.appendChild(el("span",null,team.label));
     row.appendChild(who);
 
-    ["h","b"].forEach(function(kind){
+    s.types.forEach(function(kind){
       var st=el("div","step");
       st.style.setProperty("--team",team.hex);
       var minus=el("button",null,"−");
       minus.type="button";
-      minus.setAttribute("aria-label",t(kind==="h"?"game.rm.hole":"game.rm.board")+" — "+team.label);
+      minus.setAttribute("aria-label",t(s.retirer[kind])+" — "+team.label);
       var val=el("div","v","0");
       var plus=el("button",null,"+");
       plus.type="button";
-      plus.setAttribute("aria-label",t(kind==="h"?"game.add.hole":"game.add.board")+" — "+team.label);
+      plus.setAttribute("aria-label",t(s.ajouter[kind])+" — "+team.label);
       minus.addEventListener("click",function(){ bump(i,kind,-1); });
       plus.addEventListener("click",function(){ bump(i,kind,1); });
       st.appendChild(minus); st.appendChild(val); st.appendChild(plus);
@@ -2944,63 +3083,20 @@ function buildRows(){
   });
 }
 
-/* Au palet, le compte saisi est le nombre de palets mieux places que le
-   meilleur adverse : une seule equipe peut en avoir, saisir pour l'une
-   remet donc l'autre a zero. Deux zeros valent mene nulle. */
-function buildPaletRows(wrap){
-  G.teams.forEach(function(team,i){
-    var row=el("div","crow solo");
-    var who=el("div","who");
-    var dot=el("span","dot");
-    dot.style.background=team.hex;
-    who.appendChild(dot);
-    who.appendChild(el("span",null,team.label));
-    row.appendChild(who);
-
-    var st=el("div","step");
-    st.style.setProperty("--team",team.hex);
-    var minus=el("button",null,"−");
-    minus.type="button";
-    minus.setAttribute("aria-label",t("game.rm.pt")+" — "+team.label);
-    var val=el("div","v","0");
-    var plus=el("button",null,"+");
-    plus.type="button";
-    plus.setAttribute("aria-label",t("game.add.pt")+" — "+team.label);
-    minus.addEventListener("click",function(){ bump(i,"p",-1); });
-    plus.addEventListener("click",function(){ bump(i,"p",1); });
-    st.appendChild(minus); st.appendChild(val); st.appendChild(plus);
-    st.dataset.team=String(i); st.dataset.kind="p";
-    row.appendChild(st);
-    wrap.appendChild(row);
-  });
-}
-
 function bump(i,kind,d){
-  var e=G.entry[i];
-  var next=e[kind]+d;
-  if(next<0) return;
-  if(G.game==="palet"){
-    if(next>G.max) return;
-    e.p=next;
-    if(next>0) G.entry[1-i].p=0;
-  }else{
-    if(e.h+e.b+d>BAGS) return;
-    e[kind]=next;
-  }
+  if(G.entry[i][kind]+d<0) return;
+  if(!jeuDuel(G.game).ajuster(G.entry, i, kind, d, G.max)) return;
   buzz(6);
   renderConsole();
   save();
 }
 
 /* --- tirage au sort du premier lanceur -------------------------- */
-/* Au palet, c'est celui qui pose le maitre qui a la main. Trois essais
-   manques et le lancer passe a l'adversaire, qui prend la main s'il y
-   parvient — et la rend sinon, indefiniment. Seule la parite des passes
-   compte, l'ecran n'ayant a dire qu'une chose : a qui revient le lancer.
-   `G.first` reste l'honneur herite de la mene precedente ; les passes le
-   decalent pour la mene en cours, et repartent de zero a la validation. */
+/* Qui a la main : l'honneur hérité de la manche précédente, sauf si le
+   jeu en décide autrement. */
 function handTeam(){
-  return (G.game==="palet") ? (G.first ^ ((G.mpass||0) & 1)) : G.first;
+  var d=jeuDuel(G.game);
+  return d.main ? d.main() : G.first;
 }
 
 function paintHonor(){
@@ -3012,24 +3108,6 @@ function paintHonor(){
   }
 }
 
-function paintMaitre(){
-  var row=$("mtr");
-  var montrer = G && G.game==="palet" && !G.over && (G.tossed || G.rounds.length);
-  row.hidden = !montrer;
-  if(!montrer) return;
-  var k=handTeam();
-  $("mtrDot").style.background = G.teams[k].hex;
-  $("mtrWho").textContent = G.teams[k].label;
-  $("mtrMiss").setAttribute("aria-label", tf("game.missed.aria",{name:G.teams[1-k].label}));
-}
-
-function maitreMiss(){
-  if(!G || G.over) return;
-  G.mpass = (G.mpass||0)+1;
-  buzz(10);
-  paintHonor(); paintMaitre();
-  save();
-}
 var CELL=72;          /* hauteur d'une case du rouleau, cf. .cell */
 var tossLanded=false;
 
@@ -3129,19 +3207,14 @@ function renderConsole(){
     val.textContent=v;
     val.classList.toggle("hot", v>0);
     st.children[0].disabled = v===0;
-    st.children[2].disabled = (G.game==="palet") ? (v>=G.max) : ((e.h+e.b)>=BAGS);
+    st.children[2].disabled = jeuDuel(G.game).plein(G.entry, i, kind, G.max);
   }
 
   var g=pending();
   var out=$("outcome");
   out.innerHTML="";
   if(!g[0] && !g[1]){
-    if(G.game==="palet"){
-      out.textContent = t("game.void");
-    }else{
-      var any=G.entry[0].h+G.entry[0].b+G.entry[1].h+G.entry[1].b;
-      out.textContent = t(any ? "game.tie" : "game.none");
-    }
+    out.textContent = jeuDuel(G.game).annonceNulle(G.entry);
   }else{
     var w=g[0]?0:1;
     outcomeInto(out, G.teams[w].label, g[w]);
@@ -3163,16 +3236,10 @@ function renderGame(rebuild, gains){
     tb.addEventListener("click",doToss);
     ch.appendChild(tb);
   }else{
-    ch.textContent = (G.game==="palet")
-      ? tf("game.palets",{n:G.max})
-      : tf("game.bags",{n:BAGS});
+    ch.textContent = jeuDuel(G.game).titreConsole(G.max);
   }
-  var pal=(G.game==="palet");
-  var cc=document.querySelectorAll(".ch-corn"), cp=document.querySelectorAll(".ch-palet"), z;
-  for(z=0;z<cc.length;z++) cc[z].hidden=pal;
-  for(z=0;z<cp.length;z++) cp[z].hidden=!pal;
-
-  paintMaitre();
+  montrerPropres($("s-game"), G.game);
+  if(jeuDuel(G.game).peindre) jeuDuel(G.game).peindre();
 
   var main=handTeam();
   var fields=$("fields").children;
@@ -3270,24 +3337,14 @@ var EDIT=null;
 function openEditor(idx){
   var rd=G.rounds[idx];
   if(!rd) return;
-  EDIT={idx:idx, e: (G.game==="palet")
-    ? [{p:(rd.p?rd.p[0]:rd.gain[0])},{p:(rd.p?rd.p[1]:rd.gain[1])}]
-    : [{h:rd.h[0],b:rd.b[0]},{h:rd.h[1],b:rd.b[1]}]};
+  EDIT={idx:idx, e: jeuDuel(G.game).entreeDeManche(rd)};
   renderSheet();
 }
 function closeEditor(){ EDIT=null; renderSheet(); }
 
 function editBump(i,kind,d){
-  var e=EDIT.e[i];
-  if(e[kind]+d<0) return;
-  if(G.game==="palet"){
-    if(e.p+d>G.max) return;
-    e.p+=d;
-    if(e.p>0) EDIT.e[1-i].p=0;
-  }else{
-    if(e.h+e.b+d>BAGS) return;
-    e[kind]+=d;
-  }
+  if(EDIT.e[i][kind]+d<0) return;
+  if(!jeuDuel(G.game).ajuster(EDIT.e, i, kind, d, G.max)) return;
   buzz(6);
   renderSheet();
 }
@@ -3301,19 +3358,14 @@ function renderEditor(body){
   head.appendChild(back);
   body.appendChild(head);
 
-  var pal=(G.game==="palet");
-  var cols=el("div","ed-cols"+(pal?" solo":""));
+  var jd=jeuDuel(G.game), s=jd.saisie, solo=(s.types.length===1);
+  var cols=el("div","ed-cols"+(solo?" solo":""));
   cols.appendChild(el("p","eyebrow",""));
-  if(pal){
-    cols.appendChild(el("p","eyebrow",t("over.points")));
-  }else{
-    cols.appendChild(el("p","eyebrow",t("game.hole")));
-    cols.appendChild(el("p","eyebrow",t("game.board")));
-  }
+  s.entetes.forEach(function(k){ cols.appendChild(el("p","eyebrow",t(k))); });
   body.appendChild(cols);
 
   G.teams.forEach(function(team,i){
-    var row=el("div","crow"+(pal?" solo":""));
+    var row=el("div","crow"+(solo?" solo":""));
     var who=el("div","who");
     var dot=el("span","dot");
     dot.style.background=team.hex;
@@ -3321,20 +3373,20 @@ function renderEditor(body){
     who.appendChild(el("span",null,team.label));
     row.appendChild(who);
 
-    (pal ? ["p"] : ["h","b"]).forEach(function(kind){
+    s.types.forEach(function(kind){
       var e=EDIT.e[i];
       var st=el("div","step");
       st.style.setProperty("--team",team.hex);
       var minus=el("button",null,"−");
       minus.type="button";
       minus.disabled = e[kind]===0;
-      minus.setAttribute("aria-label",t(pal?"game.rm.pt":(kind==="h"?"game.rm.hole":"game.rm.board"))+" — "+team.label);
+      minus.setAttribute("aria-label",t(s.retirer[kind])+" — "+team.label);
       var val=el("div","v",String(e[kind]));
       if(e[kind]>0) val.classList.add("hot");
       var plus=el("button",null,"+");
       plus.type="button";
-      plus.disabled = pal ? (e.p>=G.max) : ((e.h+e.b)>=BAGS);
-      plus.setAttribute("aria-label",t(pal?"game.add.pt":(kind==="h"?"game.add.hole":"game.add.board"))+" — "+team.label);
+      plus.disabled = jd.plein(EDIT.e, i, kind, G.max);
+      plus.setAttribute("aria-label",t(s.ajouter[kind])+" — "+team.label);
       minus.addEventListener("click",function(){ editBump(i,kind,-1); });
       plus.addEventListener("click",function(){ editBump(i,kind,1); });
       st.appendChild(minus); st.appendChild(val); st.appendChild(plus);
@@ -3344,16 +3396,9 @@ function renderEditor(body){
   });
 
   var out=el("p","outcome ed-out");
-  if(pal){
-    var q=[EDIT.e[0].p, EDIT.e[1].p];
-    if(!q[0] && !q[1]) out.textContent = t("game.void");
-    else outcomeInto(out, G.teams[q[0]?0:1].label, q[0]||q[1]);
-  }else{
-    var pts=[EDIT.e[0].h*3+EDIT.e[0].b, EDIT.e[1].h*3+EDIT.e[1].b];
-    var d=pts[0]-pts[1];
-    if(d===0) out.textContent = t((pts[0]+pts[1]) ? "game.tie" : "game.none");
-    else outcomeInto(out, G.teams[d>0?0:1].label, Math.abs(d));
-  }
+  var q=jd.gain(EDIT.e);
+  if(!q[0] && !q[1]) out.textContent = jd.annonceNulle(EDIT.e);
+  else outcomeInto(out, G.teams[q[0]?0:1].label, q[0]||q[1]);
   body.appendChild(out);
 }
 
@@ -3376,18 +3421,8 @@ function afterHistoryChange(){
 
 $("edSave").addEventListener("click",function(){
   if(!EDIT) return;
-  if(G.game==="palet"){
-    var q=[EDIT.e[0].p, EDIT.e[1].p];
-    G.rounds[EDIT.idx]={ p:[q[0],q[1]], gain:[q[0],q[1]] };
-  }else{
-    var pts=[EDIT.e[0].h*3+EDIT.e[0].b, EDIT.e[1].h*3+EDIT.e[1].b];
-    var d=pts[0]-pts[1];
-    G.rounds[EDIT.idx]={
-      h:[EDIT.e[0].h,EDIT.e[1].h],
-      b:[EDIT.e[0].b,EDIT.e[1].b],
-      gain: d>0 ? [d,0] : [0,-d]
-    };
-  }
+  var jd=jeuDuel(G.game);
+  G.rounds[EDIT.idx]=jd.manche(EDIT.e, jd.gain(EDIT.e));
   EDIT=null;
   afterHistoryChange();
 });
@@ -3453,15 +3488,13 @@ function teamInk(hex){ return "color-mix(in oklab,"+hex+" 62%, var(--tone))"; }
 /* Une seule lecture de l'historique sert au graphe et au face-à-face :
    le cumul manche par manche, et les totaux de chaque équipe. */
 function overFacts(){
-  var f={ run:[[0],[0]], holes:[0,0], boards:[0,0], best:[0,0], won:[0,0], voids:0 };
+  var f={ run:[[0],[0]], best:[0,0], won:[0,0], voids:0 };
   var s=[0,0];
   G.rounds.forEach(function(rd){
     if(!rd.gain[0] && !rd.gain[1]) f.voids++;
     for(var i=0;i<2;i++){
       s[i]+=rd.gain[i];
       f.run[i].push(s[i]);
-      f.holes[i]+=(rd.h && rd.h[i]) || 0;
-      f.boards[i]+=(rd.b && rd.b[i]) || 0;
       if(rd.gain[i]>f.best[i]) f.best[i]=rd.gain[i];
       if(rd.gain[i]>0) f.won[i]++;
     }
@@ -3610,7 +3643,7 @@ function overTale(w,l){
   var top=el("div","tale-top");
   top.appendChild(el("p","eyebrow",t(chart ? "over.prog" : "over.stats")));
   top.appendChild(el("p","eyebrow",tf("over.goal",{n:G.target})));
-  if(G.game==="palet" && f.voids) top.appendChild(el("p","eyebrow",t("over.void")+" · "+f.voids));
+  if(jeuDuel(G.game).compteNulles && f.voids) top.appendChild(el("p","eyebrow",t("over.void")+" · "+f.voids));
   card.appendChild(top);
   if(chart) card.appendChild(chart);
 
@@ -3620,26 +3653,13 @@ function overTale(w,l){
   head.appendChild(taleWho(l,true));
   card.appendChild(head);
 
-  var plain=function(v){ return String(v); };
-  var gain =function(v){ return v>0 ? "+"+v : "—"; };
-  /* la moyenne s'ecrit avec la virgule partout sauf en anglais */
-  var dec=(LANG==="en") ? "." : ",";
-  var moy=function(i){ return f.won[i] ? (G.scores[i]/f.won[i]).toFixed(1).replace(".",dec) : "—"; };
-
-  var lignes = (G.game==="palet")
-    ? [
-        [t("over.points"), G.scores[w], G.scores[l], plain],
-        [t("over.won"),   f.won[w],    f.won[l],    plain],
-        [t("over.best"),  f.best[w],   f.best[l],   gain],
-        [t("over.avg"),    moy(w),      moy(l),      plain]
-      ]
-    : [
-        [t("over.points"), G.scores[w],  G.scores[l],  plain],
-        [t("over.won"),   f.won[w],     f.won[l],     plain],
-        [t("over.holes"),  f.holes[w],   f.holes[l],   plain],
-        [t("over.board"),  f.boards[w],  f.boards[l],  plain],
-        [t("over.best"),   f.best[w],    f.best[l],    gain]
-      ];
+  var fmt={
+    plain:function(v){ return String(v); },
+    gain:function(v){ return v>0 ? "+"+v : "—"; },
+    /* la moyenne s'ecrit avec la virgule partout sauf en anglais */
+    moyenne:function(i){ return f.won[i] ? (G.scores[i]/f.won[i]).toFixed(1).replace(".",(LANG==="en") ? "." : ",") : "—"; }
+  };
+  var lignes = jeuDuel(G.game).statistiques(f, w, l, fmt);
   lignes.forEach(function(r){
     card.appendChild(taleRow(r[0],w,l,r[1],r[2],r[3]));
   });
@@ -5222,7 +5242,6 @@ $("mkQuit").addEventListener("click",function(){
   show("msetup");
   renderMSetup();
 });
-$("mtrMiss").addEventListener("click",maitreMiss);
 $("backToGames").addEventListener("click",function(){ show("games"); });
 
 $("openTour").addEventListener("click",function(){

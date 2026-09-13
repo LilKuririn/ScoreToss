@@ -74,7 +74,6 @@ $("mkQuit").addEventListener("click",function(){
   show("msetup");
   renderMSetup();
 });
-$("mtrMiss").addEventListener("click",maitreMiss);
 $("backToGames").addEventListener("click",function(){ show("games"); });
 
 $("openTour").addEventListener("click",function(){

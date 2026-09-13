@@ -9,15 +9,13 @@ function teamInk(hex){ return "color-mix(in oklab,"+hex+" 62%, var(--tone))"; }
 /* Une seule lecture de l'historique sert au graphe et au face-à-face :
    le cumul manche par manche, et les totaux de chaque équipe. */
 function overFacts(){
-  var f={ run:[[0],[0]], holes:[0,0], boards:[0,0], best:[0,0], won:[0,0], voids:0 };
+  var f={ run:[[0],[0]], best:[0,0], won:[0,0], voids:0 };
   var s=[0,0];
   G.rounds.forEach(function(rd){
     if(!rd.gain[0] && !rd.gain[1]) f.voids++;
     for(var i=0;i<2;i++){
       s[i]+=rd.gain[i];
       f.run[i].push(s[i]);
-      f.holes[i]+=(rd.h && rd.h[i]) || 0;
-      f.boards[i]+=(rd.b && rd.b[i]) || 0;
       if(rd.gain[i]>f.best[i]) f.best[i]=rd.gain[i];
       if(rd.gain[i]>0) f.won[i]++;
     }
@@ -166,7 +164,7 @@ function overTale(w,l){
   var top=el("div","tale-top");
   top.appendChild(el("p","eyebrow",t(chart ? "over.prog" : "over.stats")));
   top.appendChild(el("p","eyebrow",tf("over.goal",{n:G.target})));
-  if(G.game==="palet" && f.voids) top.appendChild(el("p","eyebrow",t("over.void")+" · "+f.voids));
+  if(jeuDuel(G.game).compteNulles && f.voids) top.appendChild(el("p","eyebrow",t("over.void")+" · "+f.voids));
   card.appendChild(top);
   if(chart) card.appendChild(chart);
 
@@ -176,26 +174,13 @@ function overTale(w,l){
   head.appendChild(taleWho(l,true));
   card.appendChild(head);
 
-  var plain=function(v){ return String(v); };
-  var gain =function(v){ return v>0 ? "+"+v : "—"; };
-  /* la moyenne s'ecrit avec la virgule partout sauf en anglais */
-  var dec=(LANG==="en") ? "." : ",";
-  var moy=function(i){ return f.won[i] ? (G.scores[i]/f.won[i]).toFixed(1).replace(".",dec) : "—"; };
-
-  var lignes = (G.game==="palet")
-    ? [
-        [t("over.points"), G.scores[w], G.scores[l], plain],
-        [t("over.won"),   f.won[w],    f.won[l],    plain],
-        [t("over.best"),  f.best[w],   f.best[l],   gain],
-        [t("over.avg"),    moy(w),      moy(l),      plain]
-      ]
-    : [
-        [t("over.points"), G.scores[w],  G.scores[l],  plain],
-        [t("over.won"),   f.won[w],     f.won[l],     plain],
-        [t("over.holes"),  f.holes[w],   f.holes[l],   plain],
-        [t("over.board"),  f.boards[w],  f.boards[l],  plain],
-        [t("over.best"),   f.best[w],    f.best[l],    gain]
-      ];
+  var fmt={
+    plain:function(v){ return String(v); },
+    gain:function(v){ return v>0 ? "+"+v : "—"; },
+    /* la moyenne s'ecrit avec la virgule partout sauf en anglais */
+    moyenne:function(i){ return f.won[i] ? (G.scores[i]/f.won[i]).toFixed(1).replace(".",(LANG==="en") ? "." : ",") : "—"; }
+  };
+  var lignes = jeuDuel(G.game).statistiques(f, w, l, fmt);
   lignes.forEach(function(r){
     card.appendChild(taleRow(r[0],w,l,r[1],r[2],r[3]));
   });

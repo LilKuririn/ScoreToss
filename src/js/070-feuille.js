@@ -62,24 +62,14 @@ var EDIT=null;
 function openEditor(idx){
   var rd=G.rounds[idx];
   if(!rd) return;
-  EDIT={idx:idx, e: (G.game==="palet")
-    ? [{p:(rd.p?rd.p[0]:rd.gain[0])},{p:(rd.p?rd.p[1]:rd.gain[1])}]
-    : [{h:rd.h[0],b:rd.b[0]},{h:rd.h[1],b:rd.b[1]}]};
+  EDIT={idx:idx, e: jeuDuel(G.game).entreeDeManche(rd)};
   renderSheet();
 }
 function closeEditor(){ EDIT=null; renderSheet(); }
 
 function editBump(i,kind,d){
-  var e=EDIT.e[i];
-  if(e[kind]+d<0) return;
-  if(G.game==="palet"){
-    if(e.p+d>G.max) return;
-    e.p+=d;
-    if(e.p>0) EDIT.e[1-i].p=0;
-  }else{
-    if(e.h+e.b+d>BAGS) return;
-    e[kind]+=d;
-  }
+  if(EDIT.e[i][kind]+d<0) return;
+  if(!jeuDuel(G.game).ajuster(EDIT.e, i, kind, d, G.max)) return;
   buzz(6);
   renderSheet();
 }
@@ -93,19 +83,14 @@ function renderEditor(body){
   head.appendChild(back);
   body.appendChild(head);
 
-  var pal=(G.game==="palet");
-  var cols=el("div","ed-cols"+(pal?" solo":""));
+  var jd=jeuDuel(G.game), s=jd.saisie, solo=(s.types.length===1);
+  var cols=el("div","ed-cols"+(solo?" solo":""));
   cols.appendChild(el("p","eyebrow",""));
-  if(pal){
-    cols.appendChild(el("p","eyebrow",t("over.points")));
-  }else{
-    cols.appendChild(el("p","eyebrow",t("game.hole")));
-    cols.appendChild(el("p","eyebrow",t("game.board")));
-  }
+  s.entetes.forEach(function(k){ cols.appendChild(el("p","eyebrow",t(k))); });
   body.appendChild(cols);
 
   G.teams.forEach(function(team,i){
-    var row=el("div","crow"+(pal?" solo":""));
+    var row=el("div","crow"+(solo?" solo":""));
     var who=el("div","who");
     var dot=el("span","dot");
     dot.style.background=team.hex;
@@ -113,20 +98,20 @@ function renderEditor(body){
     who.appendChild(el("span",null,team.label));
     row.appendChild(who);
 
-    (pal ? ["p"] : ["h","b"]).forEach(function(kind){
+    s.types.forEach(function(kind){
       var e=EDIT.e[i];
       var st=el("div","step");
       st.style.setProperty("--team",team.hex);
       var minus=el("button",null,"−");
       minus.type="button";
       minus.disabled = e[kind]===0;
-      minus.setAttribute("aria-label",t(pal?"game.rm.pt":(kind==="h"?"game.rm.hole":"game.rm.board"))+" — "+team.label);
+      minus.setAttribute("aria-label",t(s.retirer[kind])+" — "+team.label);
       var val=el("div","v",String(e[kind]));
       if(e[kind]>0) val.classList.add("hot");
       var plus=el("button",null,"+");
       plus.type="button";
-      plus.disabled = pal ? (e.p>=G.max) : ((e.h+e.b)>=BAGS);
-      plus.setAttribute("aria-label",t(pal?"game.add.pt":(kind==="h"?"game.add.hole":"game.add.board"))+" — "+team.label);
+      plus.disabled = jd.plein(EDIT.e, i, kind, G.max);
+      plus.setAttribute("aria-label",t(s.ajouter[kind])+" — "+team.label);
       minus.addEventListener("click",function(){ editBump(i,kind,-1); });
       plus.addEventListener("click",function(){ editBump(i,kind,1); });
       st.appendChild(minus); st.appendChild(val); st.appendChild(plus);
@@ -136,16 +121,9 @@ function renderEditor(body){
   });
 
   var out=el("p","outcome ed-out");
-  if(pal){
-    var q=[EDIT.e[0].p, EDIT.e[1].p];
-    if(!q[0] && !q[1]) out.textContent = t("game.void");
-    else outcomeInto(out, G.teams[q[0]?0:1].label, q[0]||q[1]);
-  }else{
-    var pts=[EDIT.e[0].h*3+EDIT.e[0].b, EDIT.e[1].h*3+EDIT.e[1].b];
-    var d=pts[0]-pts[1];
-    if(d===0) out.textContent = t((pts[0]+pts[1]) ? "game.tie" : "game.none");
-    else outcomeInto(out, G.teams[d>0?0:1].label, Math.abs(d));
-  }
+  var q=jd.gain(EDIT.e);
+  if(!q[0] && !q[1]) out.textContent = jd.annonceNulle(EDIT.e);
+  else outcomeInto(out, G.teams[q[0]?0:1].label, q[0]||q[1]);
   body.appendChild(out);
 }
 
@@ -168,18 +146,8 @@ function afterHistoryChange(){
 
 $("edSave").addEventListener("click",function(){
   if(!EDIT) return;
-  if(G.game==="palet"){
-    var q=[EDIT.e[0].p, EDIT.e[1].p];
-    G.rounds[EDIT.idx]={ p:[q[0],q[1]], gain:[q[0],q[1]] };
-  }else{
-    var pts=[EDIT.e[0].h*3+EDIT.e[0].b, EDIT.e[1].h*3+EDIT.e[1].b];
-    var d=pts[0]-pts[1];
-    G.rounds[EDIT.idx]={
-      h:[EDIT.e[0].h,EDIT.e[1].h],
-      b:[EDIT.e[0].b,EDIT.e[1].b],
-      gain: d>0 ? [d,0] : [0,-d]
-    };
-  }
+  var jd=jeuDuel(G.game);
+  G.rounds[EDIT.idx]=jd.manche(EDIT.e, jd.gain(EDIT.e));
   EDIT=null;
   afterHistoryChange();
 });

@@ -16,16 +16,9 @@
     <section class="console">
       <div class="console-head">
         <p class="eyebrow" id="consoleTitle">4 sacs par équipe</p>
-        <p class="eyebrow ch-corn"><span data-i18n="game.hole">Trou</span> <b data-i18n="game.hole.pts">3 pts</b></p>
-        <p class="eyebrow ch-corn"><span data-i18n="game.board">Planche</span> <b data-i18n="game.board.pts">1 pt</b></p>
-        <p class="eyebrow ch-palet" hidden><b data-i18n="game.perpalet">1 pt par palet</b></p>
+        @@jeux:console-entete.html@@
       </div>
-      <div class="mtr" id="mtr" hidden>
-        <i id="mtrDot"></i>
-        <span class="lab" data-i18n="game.master">Maître</span>
-        <span class="who" id="mtrWho"></span>
-        <button type="button" id="mtrMiss" data-i18n="game.missed">Manqué</button>
-      </div>
+      @@jeux:console.html@@
 
       <div id="rows"></div>
       <div class="settle">

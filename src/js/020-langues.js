@@ -788,34 +788,6 @@ function color(id){
   for(var i=0;i<COLORS.length;i++){ if(COLORS[i].id===id) return COLORS[i]; }
   return COLORS[0];
 }
-/* Fiche des règles, ouverte par-dessus l'écran courant depuis l'accueil
-   comme depuis la préparation d'un tournoi. */
-/* Le palet compte autrement : pas de bareme a deux valeurs, mais un point
-   par palet mieux place. La fiche suit donc une autre trame. */
-function fillPaletRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("prules.count")));
-  var pts=el("div","pts");
-  var row=el("div","pt-row");
-  row.appendChild(el("b",null,"1"));
-  row.appendChild(el("span",null,t("prules.pt")));
-  pts.appendChild(row);
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("prules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5,6].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("prules."+k+"a")));
-    li.appendChild(el("b",null,t("prules."+k+"b")));
-    li.appendChild(document.createTextNode(t("prules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
-}
 
 function fillMolkkyRules(host){
   var comptage=el("div","block");
@@ -844,7 +816,9 @@ function fillMolkkyRules(host){
   host.appendChild(deroule);
 }
 
-/* La fiche suit le jeu en cours : chaque jeu fournit la sienne. */
+/* Fiche des règles, ouverte par-dessus l'écran courant depuis l'accueil
+   comme depuis la préparation d'un tournoi. Elle suit le jeu en cours :
+   chaque jeu fournit la sienne. */
 function fillRules(id){
   var host=$(id);
   if(!host) return;
@@ -852,41 +826,9 @@ function fillRules(id){
   jeu(curGame()).regles(host);
 }
 
-function fillCornholeRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("rules.count")));
-  var pts=el("div","pts");
-  [["3",t("rules.hole")],["1",t("rules.board")]].forEach(function(p){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,p[0]));
-    row.appendChild(el("span",null,p[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("rules.flow")));
-  var list=el("ul","rulist");
-  [
-    [t("rules.1a"),t("rules.1b"),t("rules.1c")],
-    [t("rules.2a"),t("rules.2b"),t("rules.2c")],
-    [t("rules.3a"),t("rules.3b"),t("rules.3c")],
-    [t("rules.4a"),t("rules.4b"),t("rules.4c")]
-  ].forEach(function(r){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(r[0]));
-    li.appendChild(el("b",null,r[1]));
-    li.appendChild(document.createTextNode(r[2]));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
-}
-
 /* état de préparation */
 var S = {
-  game:"cornhole", mode:"simple", target:21, palets:4,
+  game:jeuxDuel()[0], mode:"simple", target:21, palets:4,
   /* un score par jeu : jouer une belle au palet ne doit pas ramener
      le cornhole a 15 au retour */
   tgt:ciblesParDefaut(),

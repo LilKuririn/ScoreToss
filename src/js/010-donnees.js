@@ -15,7 +15,6 @@ var COLORS = [
 ];
 var KEY = "cornhole.v1";
 var LANG_KEY = "cornhole.lang";
-var BAGS = 4;              /* sacs lancés par équipe et par manche */
 
 /* Au palet, le nombre de palets par joueur varie d'une fédération à
    l'autre : on en fait un réglage plutôt qu'un dogme. Quatre palets par
@@ -27,5 +26,5 @@ function curGame(){
   if(jeu(S.game).famille!=="duel") return S.game;
   return (G && !G.over) ? G.game : S.game;
 }
-function newEntry(g){ return g==="palet" ? [{p:0},{p:0}] : [{h:0,b:0},{h:0,b:0}]; }
+function newEntry(g){ return jeuDuel(g).entreeVide(); }
 

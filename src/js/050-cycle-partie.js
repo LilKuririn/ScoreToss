@@ -37,22 +37,13 @@ function recompute(){
   G.scores=s; G.first=first; G.over=over; G.winner=winner;
 }
 
-function roundPoints(i){ return G.entry[i].h*3 + G.entry[i].b; }
-
-/* Au cornhole les deux équipes lancent et seule la différence est marquée.
-   Au palet une seule équipe marque, et le compte saisi est déjà son gain. */
-function pending(){
-  if(G.game==="palet") return [G.entry[0].p, G.entry[1].p];
-  var d=roundPoints(0)-roundPoints(1);
-  return d>0 ? [d,0] : [0,-d];
-}
+/* Ce que rapporte la saisie en cours : chaque jeu compte à sa manière. */
+function pending(){ return jeuDuel(G.game).gain(G.entry); }
 
 function validateRound(){
   if(!G || G.over) return;
   var gain=pending();
-  G.rounds.push(G.game==="palet"
-    ? { p:[G.entry[0].p,G.entry[1].p], gain:gain }
-    : { h:[G.entry[0].h,G.entry[1].h], b:[G.entry[0].b,G.entry[1].b], gain:gain });
+  G.rounds.push(jeuDuel(G.game).manche(G.entry, gain));
   var before=[G.scores[0],G.scores[1]];
   recompute();
   G.entry=newEntry(G.game);

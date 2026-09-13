@@ -40,10 +40,9 @@ function buildRows(){
   wrap.style.flexDirection="column";
   wrap.style.gap="8px";
 
-  if(G.game==="palet") return buildPaletRows(wrap);
-
+  var s=jeuDuel(G.game).saisie;
   G.teams.forEach(function(team,i){
-    var row=el("div","crow");
+    var row=el("div","crow"+(s.types.length===1 ? " solo" : ""));
     var who=el("div","who");
     var dot=el("span","dot");
     dot.style.background=team.hex;
@@ -51,16 +50,16 @@ function buildRows(){
     who.appendChild(el("span",null,team.label));
     row.appendChild(who);
 
-    ["h","b"].forEach(function(kind){
+    s.types.forEach(function(kind){
       var st=el("div","step");
       st.style.setProperty("--team",team.hex);
       var minus=el("button",null,"−");
       minus.type="button";
-      minus.setAttribute("aria-label",t(kind==="h"?"game.rm.hole":"game.rm.board")+" — "+team.label);
+      minus.setAttribute("aria-label",t(s.retirer[kind])+" — "+team.label);
       var val=el("div","v","0");
       var plus=el("button",null,"+");
       plus.type="button";
-      plus.setAttribute("aria-label",t(kind==="h"?"game.add.hole":"game.add.board")+" — "+team.label);
+      plus.setAttribute("aria-label",t(s.ajouter[kind])+" — "+team.label);
       minus.addEventListener("click",function(){ bump(i,kind,-1); });
       plus.addEventListener("click",function(){ bump(i,kind,1); });
       st.appendChild(minus); st.appendChild(val); st.appendChild(plus);
@@ -72,63 +71,20 @@ function buildRows(){
   });
 }
 
-/* Au palet, le compte saisi est le nombre de palets mieux places que le
-   meilleur adverse : une seule equipe peut en avoir, saisir pour l'une
-   remet donc l'autre a zero. Deux zeros valent mene nulle. */
-function buildPaletRows(wrap){
-  G.teams.forEach(function(team,i){
-    var row=el("div","crow solo");
-    var who=el("div","who");
-    var dot=el("span","dot");
-    dot.style.background=team.hex;
-    who.appendChild(dot);
-    who.appendChild(el("span",null,team.label));
-    row.appendChild(who);
-
-    var st=el("div","step");
-    st.style.setProperty("--team",team.hex);
-    var minus=el("button",null,"−");
-    minus.type="button";
-    minus.setAttribute("aria-label",t("game.rm.pt")+" — "+team.label);
-    var val=el("div","v","0");
-    var plus=el("button",null,"+");
-    plus.type="button";
-    plus.setAttribute("aria-label",t("game.add.pt")+" — "+team.label);
-    minus.addEventListener("click",function(){ bump(i,"p",-1); });
-    plus.addEventListener("click",function(){ bump(i,"p",1); });
-    st.appendChild(minus); st.appendChild(val); st.appendChild(plus);
-    st.dataset.team=String(i); st.dataset.kind="p";
-    row.appendChild(st);
-    wrap.appendChild(row);
-  });
-}
-
 function bump(i,kind,d){
-  var e=G.entry[i];
-  var next=e[kind]+d;
-  if(next<0) return;
-  if(G.game==="palet"){
-    if(next>G.max) return;
-    e.p=next;
-    if(next>0) G.entry[1-i].p=0;
-  }else{
-    if(e.h+e.b+d>BAGS) return;
-    e[kind]=next;
-  }
+  if(G.entry[i][kind]+d<0) return;
+  if(!jeuDuel(G.game).ajuster(G.entry, i, kind, d, G.max)) return;
   buzz(6);
   renderConsole();
   save();
 }
 
 /* --- tirage au sort du premier lanceur -------------------------- */
-/* Au palet, c'est celui qui pose le maitre qui a la main. Trois essais
-   manques et le lancer passe a l'adversaire, qui prend la main s'il y
-   parvient — et la rend sinon, indefiniment. Seule la parite des passes
-   compte, l'ecran n'ayant a dire qu'une chose : a qui revient le lancer.
-   `G.first` reste l'honneur herite de la mene precedente ; les passes le
-   decalent pour la mene en cours, et repartent de zero a la validation. */
+/* Qui a la main : l'honneur hérité de la manche précédente, sauf si le
+   jeu en décide autrement. */
 function handTeam(){
-  return (G.game==="palet") ? (G.first ^ ((G.mpass||0) & 1)) : G.first;
+  var d=jeuDuel(G.game);
+  return d.main ? d.main() : G.first;
 }
 
 function paintHonor(){
@@ -140,24 +96,6 @@ function paintHonor(){
   }
 }
 
-function paintMaitre(){
-  var row=$("mtr");
-  var montrer = G && G.game==="palet" && !G.over && (G.tossed || G.rounds.length);
-  row.hidden = !montrer;
-  if(!montrer) return;
-  var k=handTeam();
-  $("mtrDot").style.background = G.teams[k].hex;
-  $("mtrWho").textContent = G.teams[k].label;
-  $("mtrMiss").setAttribute("aria-label", tf("game.missed.aria",{name:G.teams[1-k].label}));
-}
-
-function maitreMiss(){
-  if(!G || G.over) return;
-  G.mpass = (G.mpass||0)+1;
-  buzz(10);
-  paintHonor(); paintMaitre();
-  save();
-}
 var CELL=72;          /* hauteur d'une case du rouleau, cf. .cell */
 var tossLanded=false;
 
@@ -257,19 +195,14 @@ function renderConsole(){
     val.textContent=v;
     val.classList.toggle("hot", v>0);
     st.children[0].disabled = v===0;
-    st.children[2].disabled = (G.game==="palet") ? (v>=G.max) : ((e.h+e.b)>=BAGS);
+    st.children[2].disabled = jeuDuel(G.game).plein(G.entry, i, kind, G.max);
   }
 
   var g=pending();
   var out=$("outcome");
   out.innerHTML="";
   if(!g[0] && !g[1]){
-    if(G.game==="palet"){
-      out.textContent = t("game.void");
-    }else{
-      var any=G.entry[0].h+G.entry[0].b+G.entry[1].h+G.entry[1].b;
-      out.textContent = t(any ? "game.tie" : "game.none");
-    }
+    out.textContent = jeuDuel(G.game).annonceNulle(G.entry);
   }else{
     var w=g[0]?0:1;
     outcomeInto(out, G.teams[w].label, g[w]);
@@ -291,16 +224,10 @@ function renderGame(rebuild, gains){
     tb.addEventListener("click",doToss);
     ch.appendChild(tb);
   }else{
-    ch.textContent = (G.game==="palet")
-      ? tf("game.palets",{n:G.max})
-      : tf("game.bags",{n:BAGS});
+    ch.textContent = jeuDuel(G.game).titreConsole(G.max);
   }
-  var pal=(G.game==="palet");
-  var cc=document.querySelectorAll(".ch-corn"), cp=document.querySelectorAll(".ch-palet"), z;
-  for(z=0;z<cc.length;z++) cc[z].hidden=pal;
-  for(z=0;z<cp.length;z++) cp[z].hidden=!pal;
-
-  paintMaitre();
+  montrerPropres($("s-game"), G.game);
+  if(jeuDuel(G.game).peindre) jeuDuel(G.game).peindre();
 
   var main=handTeam();
   var fields=$("fields").children;
