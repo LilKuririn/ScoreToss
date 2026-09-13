@@ -237,3 +237,14 @@ scenario("petit-ecran", async function(a){
   await a.clic("#mkPlus", 4);                                  a.point("mölkky à 8");
   await a.clic("#mkStart");                                    a.point("partie à 8");
 }, [360,640]);
+
+scenario("categories", async function(a){
+  a.point("accueil");
+  await a.clic('#categories [data-categorie="interieur"]');    a.point("catégorie sans jeu : rien ne s'ouvre");
+  await a.clic('#categories [data-categorie="exterieur"]');    a.point("liste de l'extérieur");
+  await a.clic("#playPalet");
+  await a.clic("#backToGames");                                a.point("changer de jeu depuis le palet");
+  await a.clic("#playMolkky");
+  await a.clic("#mkToGames");                                  a.point("changer de jeu depuis le mölkky");
+  await a.clic("#catBack");                                    a.point("retour aux catégories");
+});

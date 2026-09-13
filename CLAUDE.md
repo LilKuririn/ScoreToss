@@ -49,8 +49,8 @@ Un nouveau jeu ajoute enfin son parcours au banc, dans `tools/banc/scenarios.js`
 
 ## Vérifier une refonte : le banc de comparaison
 
-`tools/banc/` joue onze parcours réels — les trois jeux, tournois, palmarès, réglages, reprise,
-import, petit écran — sur deux versions de l'application, et compare ce qui s'affiche vraiment :
+`tools/banc/` joue douze parcours réels — les trois jeux, tournois, palmarès, réglages, reprise,
+import, petit écran, catégories — sur deux versions de l'application, et compare ce qui s'affiche vraiment :
 chaque élément visible, sa place, ses couleurs, son texte, plus l'état enregistré. Le hasard,
 l'heure et les animations sont figés : une version comparée à elle-même donne zéro différence.
 
@@ -60,7 +60,8 @@ l'heure et les animations sont figés : une version comparée à elle-même donn
 3. Dans la console : `demarrer({})`, puis lire `BANC.resultat`.
 
 Tout changement censé ne rien changer à l'écran doit passer le banc avec zéro différence. Un
-nouveau jeu ajoute son parcours à `tools/banc/scenarios.js`.
+nouveau jeu ajoute son parcours à `tools/banc/scenarios.js` ; recharger ensuite la page du banc
+sans cache, le navigateur gardant volontiers l'ancien fichier.
 
 ## Ce qui ne doit jamais bouger
 
