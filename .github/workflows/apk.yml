@@ -139,11 +139,21 @@ jobs:
       # Elle part dès que l'APK existe, bundle construit ou non. Le titre n'est
       # réécrit que s'il a changé : la réécriture à chaque passage a échoué
       # deux fois de suite en HTTP 500 côté GitHub.
+      #
+      # Un build dépassé par un commit plus récent de main ne publie rien :
+      # resté en file d'attente, il écraserait l'APK du build suivant. Si la
+      # tête de main est illisible, la publication se fait quand même.
       - name: Publier la release
         if: ${{ !cancelled() && steps.renommer.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          dernier=$(git ls-remote origin refs/heads/main 2>/dev/null | cut -f1)
+          if [ -n "$dernier" ] && [ "$dernier" != "$GITHUB_SHA" ]; then
+            echo "::notice::Build de ${GITHUB_SHA:0:7} dépassé par ${dernier:0:7} sur main : la release reste au build le plus récent."
+            exit 0
+          fi
+          [ -n "$dernier" ] || echo "::warning::Tête de main illisible : publication sans vérification."
           titre="ScoreToss — APK"
           notes="Dernier APK installable, reconstruit à chaque modification de l'application. Fichier : cornscore.apk"
           if actuel=$(gh release view apk --json name --jq .name 2>/dev/null); then
