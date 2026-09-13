@@ -1,7 +1,7 @@
 {
   "name": "ScoreToss — Compteur de points",
   "short_name": "ScoreToss",
-  "description": "Compteur de points pour les jeux d'extérieur : cornhole et palet breton, en simple, en double et en tournoi.",
+  "description": "Compteur de points pour les jeux d'extérieur : cornhole, palet breton et mölkky, en simple, en double, en équipes et en tournoi.",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",

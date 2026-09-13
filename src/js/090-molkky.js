@@ -288,7 +288,7 @@ function renderMGame(){
       row.appendChild(el("span","tag",t("mk.out")));
     }else{
       var miss=el("div","miss");
-      miss.setAttribute("aria-label",tf("mk.misses",{n:M.miss[i]}));
+      miss.setAttribute("aria-label",tn("mk.misses",M.miss[i]));
       for(var d=0;d<MK_OUT;d++) miss.appendChild(el("b", d<M.miss[i] ? "f" : null));
       row.appendChild(miss);
       var reste=M.target-M.score[i];
@@ -302,7 +302,7 @@ function renderMGame(){
   var keys=$("mkPad").children;
   for(var k=0;k<keys.length;k++){
     keys[k].disabled=off;
-    keys[k].setAttribute("aria-label", tf("mk.throw.aria",{name:membre||nom, n:k+1}));
+    keys[k].setAttribute("aria-label", tf(k>0 ? "mk.throw.aria_p" : "mk.throw.aria",{name:membre||nom, n:k+1}));
   }
   var lst=$("mkList");
   lst.classList.remove("centre");

@@ -39,7 +39,7 @@ function overChart(f,w,l){
   svg.setAttribute("class","prog");
   svg.setAttribute("viewBox","0 0 "+W+" "+H);
   svg.setAttribute("role","img");
-  svg.setAttribute("aria-label",tf("over.chart.aria",{
+  svg.setAttribute("aria-label",tf(N>1 ? "over.chart.aria_p" : "over.chart.aria",{
     a:G.teams[w].label, sa:G.scores[w],
     b:G.teams[l].label, sb:G.scores[l], n:N
   }));
@@ -212,8 +212,8 @@ function renderOver(){
 
   var head=el("div","over-head reveal");
   head.appendChild(el("p","eyebrow", tour
-    ? roundName(tour.r)+" · "+G.rounds.length+" "+t("over.frames").toLocaleLowerCase(LANG)
-    : tf("over.done",{n:G.rounds.length})));
+    ? roundName(tour.r)+" · "+tn("over.nframes",G.rounds.length)
+    : tn("over.done",G.rounds.length)));
   head.appendChild(el("h2",null,tf("over.wins",{name:G.teams[w].label})));
   var fin=el("div","final");
   fin.appendChild(el("span","a",String(G.scores[w])));

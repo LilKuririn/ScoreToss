@@ -92,7 +92,7 @@ function shareText(text){
 function shareGame(){
   if(!G) return;
   var w=G.winner>=0 ? G.winner : 0, l=1-w;
-  shareText(tf("share.game",{
+  shareText(tf(G.rounds.length>1 ? "share.game_p" : "share.game",{
     a:G.teams[w].label, sa:G.scores[w],
     b:G.teams[l].label, sb:G.scores[l],
     n:G.rounds.length
