@@ -9,6 +9,10 @@ declarerJeu({
   regles:fillMolkkyRules,
   ecrans:["msetup","mgame"],
   lienPalmares:"mkHall",
+  retour:{
+    fiches:[["mkSheetWrap","mkSheetClose"], ["mkLayoutWrap","mkLayoutClose"]],
+    ecrans:[["s-msetup","mkToGames"]]
+  },
 
   auChangementDEcran:function(nom){
     if(nom!=="mgame") mCloseSheet();

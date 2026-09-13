@@ -40,32 +40,15 @@ public class MainActivity extends AppCompatActivity {
     private static final String ORIGIN = "https://" + HOST;
 
     /**
-     * Le bouton retour d'Android s'appuie sur l'interface existante : il ferme
-     * ce qui est ouvert, ou remonte d'un écran, sans rien changer à la page.
+     * Le bouton retour d'Android est confié à l'application, qui sait ce qui
+     * est ouvert : elle ferme une fiche ou remonte d'un écran, et répond "1"
+     * si le geste a servi. La coquille ne connaît ainsi ni les écrans ni les
+     * jeux. Page et coquille voyagent dans le même APK : aucun décalage de
+     * version n'est possible entre les deux.
      */
     private static final String BACK_JS =
         "(function(){" +
-        "  var t=document.getElementById('tossWrap');" +
-        "  if(t && !t.hidden) return '1';" +
-        "  var s=document.getElementById('sheetWrap');" +
-        "  if(s && s.classList.contains('on')){ document.getElementById('closeSheet').click(); return '1'; }" +
-        "  var b=document.getElementById('bkSheetWrap');" +
-        "  if(b && b.classList.contains('on')){ document.getElementById('bkSheetClose').click(); return '1'; }" +
-        "  var mk=document.getElementById('mkSheetWrap');" +
-        "  if(mk && mk.classList.contains('on')){ document.getElementById('mkSheetClose').click(); return '1'; }" +
-        "  var ml=document.getElementById('mkLayoutWrap');" +
-        "  if(ml && ml.classList.contains('on')){ document.getElementById('mkLayoutClose').click(); return '1'; }" +
-        "  var g=document.getElementById('rulesWrap');" +
-        "  if(g && g.classList.contains('on')){ document.getElementById('rulesClose').click(); return '1'; }" +
-        "  var a=document.getElementById('aboutWrap');" +
-        "  if(a && a.classList.contains('on')){ document.getElementById('aboutClose').click(); return '1'; }" +
-        "  function on(id){ var e=document.getElementById(id); return e && e.classList.contains('on'); }" +
-        "  if(on('s-hall')){ document.getElementById('hallBack').click(); return '1'; }" +
-        "  if(on('s-tsetup')){ document.getElementById('tsBack').click(); return '1'; }" +
-        "  if(on('s-bracket')){ document.getElementById('bkHome').click(); return '1'; }" +
-        "  if(on('s-msetup')){ document.getElementById('mkToGames').click(); return '1'; }" +
-        "  if(on('s-setup')){ document.getElementById('backToGames').click(); return '1'; }" +
-        "  return '0';" +
+        "  return (typeof window.scoretossRetour === 'function') ? window.scoretossRetour() : '0';" +
         "})()";
 
     private WebView web;

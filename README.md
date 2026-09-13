@@ -196,8 +196,8 @@ la racine du dépôt. Il n'existe donc qu'une seule version du code.
 
 Deux choix méritent d'être signalés côté Android. Les assets sont servis par une origine `https`
 interne plutôt qu'en `file://`, sans quoi `localStorage` n'est pas fiable selon les versions. Et le
-bouton retour du téléphone s'appuie sur l'interface existante : il ferme la feuille de match ou
-remonte d'un écran avant de proposer de quitter, sans qu'`index.html` ait eu à bouger.
+bouton retour du téléphone est confié à l'application : elle ferme ce qui est ouvert ou remonte
+d'un écran avant de proposer de quitter. La coquille ne connaît ainsi aucun écran ni aucun jeu.
 
 Le build tourne dans GitHub Actions, aucune chaîne d'outils Android n'est nécessaire en local. Le
 site est publié par GitHub Pages depuis `main` : un `git push` suffit à déployer les deux.

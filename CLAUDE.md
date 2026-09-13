@@ -38,11 +38,11 @@ l'en-tête décrit le contrat complet.
 
 Un jeu à deux camps (famille `duel`) réutilise préparation, console, feuille de match, écran de
 fin et tournois en fournissant ses calculs, comme le cornhole et le palet. Un jeu à tour de rôle
-apporte ses propres écrans et son état, comme le mölkky.
+apporte ses propres écrans et son état, comme le mölkky — et déclare, dans `retour`, ce que
+ferme le bouton retour d'Android sur ses fiches et ses écrans.
 
 Restent partagés pour l'instant, et donc à toucher pour certains jeux : le format enregistré des
-parties à deux camps (`S.palets`, `G.max`), les seuls formats simple et double, et les identifiants
-que connaît le bouton retour Android (`MainActivity.java`).
+parties à deux camps (`S.palets`, `G.max`) et les seuls formats simple et double.
 
 Un nouveau jeu ajoute enfin son parcours au banc, dans `tools/banc/scenarios.js`.
 

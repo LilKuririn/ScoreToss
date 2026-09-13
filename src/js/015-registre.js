@@ -50,6 +50,8 @@
      reprendre()               reprendre sa partie en cours au démarrage ;
                                vrai s'il l'a fait
      changementDeLangue()      se redessiner dans la nouvelle langue
+     retour                    ce que ferme ou remonte le bouton retour d'Android :
+                               { fiches:[[fiche, bouton]], ecrans:[[écran, bouton]] }
 
    Le HTML et le CSS propres à un jeu vivent dans son dossier et entrent
    par des repères @@jeux:fichier@@ ; ses éléments portent
