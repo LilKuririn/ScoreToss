@@ -214,5 +214,5 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 
 ## Ce qui viendra
 
-La pétanque et le palet vendéen, sur le même moteur — l'accueil garde une place pour eux.
+La pétanque et le bibock, puis les premiers jeux d'intérieur et de société — fléchettes, Tossit, yams —, rangés par catégories.
 Les tournois en poules, quand l'élimination directe montrera ses limites.
