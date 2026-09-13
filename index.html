@@ -971,7 +971,7 @@ a.hall-link{text-decoration:none;color:inherit}
     </header>
 
     <div class="games">
-      <button type="button" class="tile" id="playCornhole">
+      <button type="button" class="tile" id="playCornhole" data-jeu="cornhole">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
             <rect x="10" y="3.5" width="14" height="27" rx="3" stroke="currentColor" stroke-width="2"/>
@@ -989,7 +989,7 @@ a.hall-link{text-decoration:none;color:inherit}
         </svg>
       </button>
 
-      <button type="button" class="tile" id="playPalet">
+      <button type="button" class="tile" id="playPalet" data-jeu="palet">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
             <rect x="3.5" y="8" width="27" height="19" rx="3" stroke="currentColor" stroke-width="2"/>
@@ -1007,7 +1007,7 @@ a.hall-link{text-decoration:none;color:inherit}
         </svg>
       </button>
 
-      <button type="button" class="tile" id="playMolkky">
+      <button type="button" class="tile" id="playMolkky" data-jeu="molkky">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
             <rect x="5.5" y="15" width="6.4" height="14" rx="2.6" stroke="currentColor" stroke-width="1.8"/>
@@ -1542,23 +1542,116 @@ var KEY = "cornhole.v1";
 var LANG_KEY = "cornhole.lang";
 var BAGS = 4;              /* sacs lancés par équipe et par manche */
 
-/* Ce que chaque jeu impose : les scores proposés, celui par défaut, et
-   pour le palet le nombre de palets par joueur — l'usage varie d'une
-   fédération à l'autre, on en fait un réglage plutôt qu'un dogme. */
-var GAMES = {
-  cornhole:{ targets:[11,15,21], target:21 },
-  palet:   { targets:[12,15], target:12 }
-};
-/* quatre palets par équipe dans les deux formats */
+/* Au palet, le nombre de palets par joueur varie d'une fédération à
+   l'autre : on en fait un réglage plutôt qu'un dogme. Quatre palets par
+   équipe dans les deux formats. */
 function paletDefault(mode){ return mode==="double" ? 2 : 4; }
 function paletMax(mode,per){ return per*(mode==="double" ? 2 : 1); }
 /* le jeu qui fait foi : celui en cours s'il y en a un, sinon la préparation */
 function curGame(){
-  if(S.game==="molkky") return "molkky";
+  if(jeu(S.game).famille!=="duel") return S.game;
   return (G && !G.over) ? G.game : S.game;
 }
 function newEntry(g){ return g==="palet" ? [{p:0},{p:0}] : [{h:0,b:0},{h:0,b:0}]; }
 
+
+/* ------------------------------------------------------------------
+   Registre des jeux
+
+   Chaque jeu se déclare dans src/jeux/ : sa famille, ce qu'il propose,
+   ce qu'il fournit. Le code commun interroge ce registre plutôt que de
+   nommer les jeux — en ajouter un ne touche pas les fichiers partagés.
+   Les déclarations sont insérées juste en dessous, avant tout code qui
+   lit le registre à son chargement.
+
+   Familles : "duel", deux camps qui jouent des manches et peuvent
+   s'affronter en tournoi ; "tours", des participants qui lancent chacun
+   à leur tour.
+------------------------------------------------------------------ */
+var JEUX = {};
+var ORDRE_JEUX = [];
+
+function declarerJeu(def){
+  JEUX[def.id] = def;
+  ORDRE_JEUX.push(def.id);
+}
+function jeu(id){ return JEUX[id] || JEUX[ORDRE_JEUX[0]]; }
+
+function jeuxDuel(){
+  return ORDRE_JEUX.filter(function(id){ return JEUX[id].famille==="duel"; });
+}
+/* Un jeu à deux camps, ou à défaut le premier d'entre eux : l'écran de
+   préparation se redessine aussi quand un autre jeu est choisi. */
+function jeuDuel(id){
+  var d=JEUX[id];
+  return (d && d.famille==="duel") ? d : JEUX[jeuxDuel()[0]];
+}
+/* Les enregistrements d'avant l'arrivée des autres jeux ne portent pas de
+   nom de jeu : celui qui se déclare historique les reprend. */
+function jeuHistorique(){
+  for(var i=0;i<ORDRE_JEUX.length;i++) if(JEUX[ORDRE_JEUX[i]].historique) return ORDRE_JEUX[i];
+  return ORDRE_JEUX[0];
+}
+
+/* Une valeur par jeu à deux camps, dans l'ordre du registre : le score
+   retenu, le tableau de tournoi, son brouillon. */
+function carteVide(){
+  var o={};
+  jeuxDuel().forEach(function(id){ o[id]=null; });
+  return o;
+}
+function reprendreCarte(source){
+  var o=carteVide();
+  for(var id in o) o[id]=source[id]||null;
+  return o;
+}
+function ciblesParDefaut(){
+  var o={};
+  jeuxDuel().forEach(function(id){ o[id]=JEUX[id].cible; });
+  return o;
+}
+
+/* Cornhole.
+   Le premier jeu de l'application : les enregistrements d'avant l'arrivée
+   des autres, qui ne portent aucun nom de jeu, sont les siens. */
+declarerJeu({
+  id:"cornhole",
+  famille:"duel",
+  historique:true,
+  cibles:[11,15,21], cible:21,
+  regles:fillCornholeRules
+});
+/* Palet breton. La partie se joue en 12 points, la belle en 15. */
+declarerJeu({
+  id:"palet",
+  famille:"duel",
+  cibles:[12,15], cible:12,
+  regles:fillPaletRules
+});
+/* Mölkky.
+   Il ne partage ni l'écran de préparation ni le moteur à deux camps : il
+   ouvre les siens. Le jeu courant bascule quand même, pour que le palmarès
+   filtre juste, et le jeu quitté range son score, son tableau et son
+   brouillon. */
+declarerJeu({
+  id:"molkky",
+  famille:"tours",
+  regles:fillMolkkyRules,
+  ouvrir:function(){
+    if(!S.tgt) S.tgt=ciblesParDefaut();
+    if(jeu(S.game).famille==="duel"){
+      S.tgt[S.game]=S.target;
+      TOUR[S.game]=T;
+      DRAFT[S.game]=TS;
+    }
+    S.game="molkky";
+    T=null;
+    fillRules("rulesBody");
+    save();
+    show("msetup");
+    renderMSetup();
+  }
+});
 /* ==================================================================
    Langues — « manche » se dit frame au cornhole, à ne pas confondre
    avec les tours d'un tournoi (rounds).
@@ -2405,14 +2498,15 @@ function fillMolkkyRules(host){
   host.appendChild(deroule);
 }
 
+/* La fiche suit le jeu en cours : chaque jeu fournit la sienne. */
 function fillRules(id){
   var host=$(id);
   if(!host) return;
   host.innerHTML="";
+  jeu(curGame()).regles(host);
+}
 
-  if(curGame()==="molkky") return fillMolkkyRules(host);
-  if(curGame()==="palet") return fillPaletRules(host);
-
+function fillCornholeRules(host){
   var comptage=el("div","block");
   comptage.appendChild(el("p","eyebrow",t("rules.count")));
   var pts=el("div","pts");
@@ -2449,7 +2543,7 @@ var S = {
   game:"cornhole", mode:"simple", target:21, palets:4,
   /* un score par jeu : jouer une belle au palet ne doit pas ramener
      le cornhole a 15 au retour */
-  tgt:{cornhole:21, palet:12},
+  tgt:ciblesParDefaut(),
   teams:[
     {name:"", mates:["",""], color:"rouge"},
     {name:"", mates:["",""], color:"bleu"}
@@ -2624,7 +2718,7 @@ function fillChips(host, vals, cur, attr){
 /* Bascule l'écran de préparation sur un jeu : titre, scores proposés,
    réglage des palets, cartes d'équipe et fiche de règles. */
 function applyGame(id){
-  if(!S.tgt) S.tgt={cornhole:21, palet:12};
+  if(!S.tgt) S.tgt=ciblesParDefaut();
   S.tgt[S.game] = S.target;          /* on range le score du jeu qu'on quitte */
   TOUR[S.game]  = T;                 /* ainsi que son tableau et son brouillon */
   DRAFT[S.game] = TS;
@@ -2632,9 +2726,9 @@ function applyGame(id){
   T  = TOUR[id] || null;
   TS = DRAFT[id] || freshDraft(id);
   TS.open = -1;
-  var d = GAMES[id] || GAMES.cornhole;
-  S.target = S.tgt[id] || d.target;  /* et on ressort le sien */
-  if(d.targets.indexOf(S.target)<0) S.target = d.target;
+  var d = jeuDuel(id);
+  S.target = S.tgt[id] || d.cible;   /* et on ressort le sien */
+  if(d.cibles.indexOf(S.target)<0) S.target = d.cible;
   if(id==="palet" && !S.palets) S.palets = paletDefault(S.mode);
   var h1=$("setupTitle");
   if(h1 && h1.firstChild) h1.firstChild.nodeValue = (id==="palet") ? t("palet.name") : "Cornhole";
@@ -2650,11 +2744,11 @@ function applyGame(id){
 
 function renderRules(){
   /* une cible retenue pour un jeu peut ne plus exister dans l'autre */
-  var gd=GAMES[S.game]||GAMES.cornhole;
-  if(gd.targets.indexOf(S.target)<0) S.target=gd.target;
+  var gd=jeuDuel(S.game);
+  if(gd.cibles.indexOf(S.target)<0) S.target=gd.cible;
   var h1=$("setupTitle");
   if(h1 && h1.firstChild) h1.firstChild.nodeValue = (S.game==="palet") ? t("palet.name") : "Cornhole";
-  fillChips($("target"), (GAMES[S.game]||GAMES.cornhole).targets, S.target, "target");
+  fillChips($("target"), gd.cibles, S.target, "target");
   fillChips($("palets"), [2,3,4], S.palets, "palets");
   $("paletOpt").hidden = (S.game!=="palet");
   $("targetHint").hidden = (S.game!=="palet");
@@ -2697,7 +2791,7 @@ $("target").addEventListener("click",function(e){
   var b=e.target.closest("button[data-target]");
   if(!b) return;
   S.target=+b.dataset.target;
-  if(!S.tgt) S.tgt={cornhole:21, palet:12};
+  if(!S.tgt) S.tgt=ciblesParDefaut();
   S.tgt[S.game]=S.target;
   renderRules(); save();
 });
@@ -4226,7 +4320,7 @@ function archiveGame(){
 /* Une victoire au cornhole et une au palet ne se comparent pas : le
    palmares ne montre que les parties du jeu choisi. */
 function HG(){
-  return H.filter(function(x){ return (x.g||"cornhole")===S.game; });
+  return H.filter(function(x){ return (x.g||jeuHistorique())===S.game; });
 }
 
 function nameKey(s){ return (s||"").trim().toLocaleLowerCase("fr"); }
@@ -4557,7 +4651,7 @@ function applyImport(text){
 
   if(d.s && d.s.teams && d.s.teams.length===2) S=d.s;
   normS(S);
-  TOUR={cornhole:null, palet:null}; DRAFT={cornhole:null, palet:null};
+  TOUR=carteVide(); DRAFT=carteVide();
   adoptTour(d);
   H = (d.h && d.h.length) ? d.h : [];
   MS = normMS((d.ms && d.ms.players && d.ms.players.length===MK_MAX) ? d.ms : {count:4, players:mFreshPlayers()});
@@ -4663,7 +4757,7 @@ $("hallClear").addEventListener("click",function(){
   }
   b.dataset.armed="0";
   b.textContent=t("hall.clear");
-  H=H.filter(function(x){ return (x.g||"cornhole")!==S.game; }); save();
+  H=H.filter(function(x){ return (x.g||jeuHistorique())!==S.game; }); save();
   renderHall(); refreshHallLink();
   show("setup");
 });
@@ -4675,17 +4769,17 @@ $("hallClear").addEventListener("click",function(){
    cornhole en cours allumait la pastille du bouton en passant au palet,
    et le brouillon gardait les noms saisis pour l'autre jeu. `T` et `TS`
    restent les pointeurs actifs, echanges au changement de jeu. */
-var TOUR  = {cornhole:null, palet:null};
-var DRAFT = {cornhole:null, palet:null};
+var TOUR  = carteVide();
+var DRAFT = carteVide();
 
 function freshDraft(id){
   var d = { game:id, count:4, mode:"simple",
-            target:(GAMES[id]||GAMES.cornhole).target, open:-1, teams:[] };
+            target:jeuDuel(id).cible, open:-1, teams:[] };
   for(var i=0;i<16;i++) d.teams.push({name:"", color:COLORS[i%COLORS.length].id});
   return d;
 }
 
-var TS = freshDraft("cornhole");
+var TS = freshDraft(jeuxDuel()[0]);
 
 var T = null;   /* tournoi en cours */
 
@@ -4834,9 +4928,9 @@ function renderTRows(){
   }
 }
 function renderTRules(){
-  var gd=GAMES[S.game]||GAMES.cornhole;
-  if(gd.targets.indexOf(TS.target)<0) TS.target=gd.target;
-  fillChips($("ttarget"), gd.targets, TS.target, "target");
+  var gd=jeuDuel(S.game);
+  if(gd.cibles.indexOf(TS.target)<0) TS.target=gd.cible;
+  fillChips($("ttarget"), gd.cibles, TS.target, "target");
   var a=$("ttarget").children, i;
   for(i=0;i<a.length;i++) a[i].classList.toggle("on", +a[i].dataset.target===TS.target);
   var mm=$("tmode").children;
@@ -5028,9 +5122,9 @@ function playMatch(mid){
     }
   }
   G={
-    game:T.game||"cornhole", mode:T.mode, target:T.target, max:T.max||4,
+    game:T.game||jeuHistorique(), mode:T.mode, target:T.target, max:T.max||4,
     teams:[{label:tName(m.a),mates:"",hex:hexA},{label:tName(m.b),mates:"",hex:hexB}],
-    rounds:[], entry:newEntry(T.game||"cornhole"),
+    rounds:[], entry:newEntry(T.game||jeuHistorique()),
     scores:[0,0], first:0, mpass:0, over:false, winner:-1,
     tour:{mid:mid, recorded:false}
   };
@@ -5055,25 +5149,18 @@ function applyMatchResult(){
 /* ------------------------------------------------------------------
    Navigation, persistance, écran allumé
 ------------------------------------------------------------------ */
-$("playCornhole").addEventListener("click",function(){ applyGame("cornhole"); show("setup"); });
-$("playPalet").addEventListener("click",function(){ applyGame("palet"); show("setup"); });
-
-/* Le mölkky ne partage ni l'écran de préparation ni le moteur : on bascule
-   le jeu courant — pour que le palmarès filtre juste — puis on ouvre les
-   siens. Le tableau de tournoi du jeu quitté est rangé au passage. */
-$("playMolkky").addEventListener("click",function(){
-  if(!S.tgt) S.tgt={cornhole:21, palet:12};
-  if(S.game!=="molkky"){
-    S.tgt[S.game]=S.target;
-    TOUR[S.game]=T;
-    DRAFT[S.game]=TS;
-  }
-  S.game="molkky";
-  T=null;
-  fillRules("rulesBody");
-  save();
-  show("msetup");
-  renderMSetup();
+/* Chaque tuile de l'accueil porte l'identifiant du jeu qu'elle ouvre. Un
+   jeu à deux camps partage l'écran de préparation ; les autres fournissent
+   leur propre ouverture. */
+function ouvrirJeu(id){
+  var d=jeu(id);
+  if(d.ouvrir){ d.ouvrir(); return; }
+  applyGame(id);
+  show("setup");
+}
+document.querySelector("#s-games .games").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-jeu]");
+  if(b) ouvrirJeu(b.dataset.jeu);
 });
 $("mkToGames").addEventListener("click",function(){ show("games"); });
 $("mkMinus").addEventListener("click",function(){
@@ -5236,8 +5323,8 @@ function save(){
    divergé : importer une sauvegarde d'avant le mölkky en équipes laissait
    le nombre de joueurs par équipe vide, et ses boutons sans effet. */
 function normS(s){
-  if(s.game!=="palet" && s.game!=="molkky") s.game="cornhole";
-  if(!s.tgt) s.tgt={cornhole:21, palet:12};
+  if(!JEUX[s.game]) s.game=jeuHistorique();
+  if(!s.tgt) s.tgt=ciblesParDefaut();
   if(!s.palets) s.palets=paletDefault(s.mode);
   if(!s.teams || s.teams.length!==2) s.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
   return s;
@@ -5256,7 +5343,7 @@ function normM(m){
   return m;
 }
 function normG(g){
-  if(!g.game) g.game="cornhole";
+  if(!g.game) g.game=jeuHistorique();
   if(!g.max) g.max=4;
   if(g.mpass===undefined) g.mpass=0;
   if(!g.entry) g.entry=newEntry(g.game);
@@ -5266,11 +5353,11 @@ function normG(g){
 /* Les enregistrements d'avant le palet ne connaissent qu'un tableau et
    qu'un brouillon : ils reviennent au cornhole. */
 function adoptTour(d){
-  if(d.tg) TOUR = {cornhole:d.tg.cornhole||null, palet:d.tg.palet||null};
-  else if(d.t && d.t.matches && d.t.teams) TOUR[d.t.game||"cornhole"] = d.t;
+  if(d.tg) TOUR = reprendreCarte(d.tg);
+  else if(d.t && d.t.matches && d.t.teams) TOUR[d.t.game||jeuHistorique()] = d.t;
 
-  if(d.ds) DRAFT = {cornhole:d.ds.cornhole||null, palet:d.ds.palet||null};
-  else if(d.ts && d.ts.teams && d.ts.teams.length===16) DRAFT[d.ts.game||"cornhole"] = d.ts;
+  if(d.ds) DRAFT = reprendreCarte(d.ds);
+  else if(d.ts && d.ts.teams && d.ts.teams.length===16) DRAFT[d.ts.game||jeuHistorique()] = d.ts;
 
   T  = TOUR[S.game] || null;
   TS = DRAFT[S.game] || freshDraft(S.game);

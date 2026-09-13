@@ -1,25 +1,18 @@
 /* ------------------------------------------------------------------
    Navigation, persistance, écran allumé
 ------------------------------------------------------------------ */
-$("playCornhole").addEventListener("click",function(){ applyGame("cornhole"); show("setup"); });
-$("playPalet").addEventListener("click",function(){ applyGame("palet"); show("setup"); });
-
-/* Le mölkky ne partage ni l'écran de préparation ni le moteur : on bascule
-   le jeu courant — pour que le palmarès filtre juste — puis on ouvre les
-   siens. Le tableau de tournoi du jeu quitté est rangé au passage. */
-$("playMolkky").addEventListener("click",function(){
-  if(!S.tgt) S.tgt={cornhole:21, palet:12};
-  if(S.game!=="molkky"){
-    S.tgt[S.game]=S.target;
-    TOUR[S.game]=T;
-    DRAFT[S.game]=TS;
-  }
-  S.game="molkky";
-  T=null;
-  fillRules("rulesBody");
-  save();
-  show("msetup");
-  renderMSetup();
+/* Chaque tuile de l'accueil porte l'identifiant du jeu qu'elle ouvre. Un
+   jeu à deux camps partage l'écran de préparation ; les autres fournissent
+   leur propre ouverture. */
+function ouvrirJeu(id){
+  var d=jeu(id);
+  if(d.ouvrir){ d.ouvrir(); return; }
+  applyGame(id);
+  show("setup");
+}
+document.querySelector("#s-games .games").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-jeu]");
+  if(b) ouvrirJeu(b.dataset.jeu);
 });
 $("mkToGames").addEventListener("click",function(){ show("games"); });
 $("mkMinus").addEventListener("click",function(){
@@ -182,8 +175,8 @@ function save(){
    divergé : importer une sauvegarde d'avant le mölkky en équipes laissait
    le nombre de joueurs par équipe vide, et ses boutons sans effet. */
 function normS(s){
-  if(s.game!=="palet" && s.game!=="molkky") s.game="cornhole";
-  if(!s.tgt) s.tgt={cornhole:21, palet:12};
+  if(!JEUX[s.game]) s.game=jeuHistorique();
+  if(!s.tgt) s.tgt=ciblesParDefaut();
   if(!s.palets) s.palets=paletDefault(s.mode);
   if(!s.teams || s.teams.length!==2) s.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
   return s;
@@ -202,7 +195,7 @@ function normM(m){
   return m;
 }
 function normG(g){
-  if(!g.game) g.game="cornhole";
+  if(!g.game) g.game=jeuHistorique();
   if(!g.max) g.max=4;
   if(g.mpass===undefined) g.mpass=0;
   if(!g.entry) g.entry=newEntry(g.game);
@@ -212,11 +205,11 @@ function normG(g){
 /* Les enregistrements d'avant le palet ne connaissent qu'un tableau et
    qu'un brouillon : ils reviennent au cornhole. */
 function adoptTour(d){
-  if(d.tg) TOUR = {cornhole:d.tg.cornhole||null, palet:d.tg.palet||null};
-  else if(d.t && d.t.matches && d.t.teams) TOUR[d.t.game||"cornhole"] = d.t;
+  if(d.tg) TOUR = reprendreCarte(d.tg);
+  else if(d.t && d.t.matches && d.t.teams) TOUR[d.t.game||jeuHistorique()] = d.t;
 
-  if(d.ds) DRAFT = {cornhole:d.ds.cornhole||null, palet:d.ds.palet||null};
-  else if(d.ts && d.ts.teams && d.ts.teams.length===16) DRAFT[d.ts.game||"cornhole"] = d.ts;
+  if(d.ds) DRAFT = reprendreCarte(d.ds);
+  else if(d.ts && d.ts.teams && d.ts.teams.length===16) DRAFT[d.ts.game||jeuHistorique()] = d.ts;
 
   T  = TOUR[S.game] || null;
   TS = DRAFT[S.game] || freshDraft(S.game);

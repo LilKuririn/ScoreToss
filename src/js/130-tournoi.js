@@ -5,17 +5,17 @@
    cornhole en cours allumait la pastille du bouton en passant au palet,
    et le brouillon gardait les noms saisis pour l'autre jeu. `T` et `TS`
    restent les pointeurs actifs, echanges au changement de jeu. */
-var TOUR  = {cornhole:null, palet:null};
-var DRAFT = {cornhole:null, palet:null};
+var TOUR  = carteVide();
+var DRAFT = carteVide();
 
 function freshDraft(id){
   var d = { game:id, count:4, mode:"simple",
-            target:(GAMES[id]||GAMES.cornhole).target, open:-1, teams:[] };
+            target:jeuDuel(id).cible, open:-1, teams:[] };
   for(var i=0;i<16;i++) d.teams.push({name:"", color:COLORS[i%COLORS.length].id});
   return d;
 }
 
-var TS = freshDraft("cornhole");
+var TS = freshDraft(jeuxDuel()[0]);
 
 var T = null;   /* tournoi en cours */
 
@@ -164,9 +164,9 @@ function renderTRows(){
   }
 }
 function renderTRules(){
-  var gd=GAMES[S.game]||GAMES.cornhole;
-  if(gd.targets.indexOf(TS.target)<0) TS.target=gd.target;
-  fillChips($("ttarget"), gd.targets, TS.target, "target");
+  var gd=jeuDuel(S.game);
+  if(gd.cibles.indexOf(TS.target)<0) TS.target=gd.cible;
+  fillChips($("ttarget"), gd.cibles, TS.target, "target");
   var a=$("ttarget").children, i;
   for(i=0;i<a.length;i++) a[i].classList.toggle("on", +a[i].dataset.target===TS.target);
   var mm=$("tmode").children;
@@ -358,9 +358,9 @@ function playMatch(mid){
     }
   }
   G={
-    game:T.game||"cornhole", mode:T.mode, target:T.target, max:T.max||4,
+    game:T.game||jeuHistorique(), mode:T.mode, target:T.target, max:T.max||4,
     teams:[{label:tName(m.a),mates:"",hex:hexA},{label:tName(m.b),mates:"",hex:hexB}],
-    rounds:[], entry:newEntry(T.game||"cornhole"),
+    rounds:[], entry:newEntry(T.game||jeuHistorique()),
     scores:[0,0], first:0, mpass:0, over:false, winner:-1,
     tour:{mid:mid, recorded:false}
   };

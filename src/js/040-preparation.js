@@ -80,7 +80,7 @@ function fillChips(host, vals, cur, attr){
 /* Bascule l'écran de préparation sur un jeu : titre, scores proposés,
    réglage des palets, cartes d'équipe et fiche de règles. */
 function applyGame(id){
-  if(!S.tgt) S.tgt={cornhole:21, palet:12};
+  if(!S.tgt) S.tgt=ciblesParDefaut();
   S.tgt[S.game] = S.target;          /* on range le score du jeu qu'on quitte */
   TOUR[S.game]  = T;                 /* ainsi que son tableau et son brouillon */
   DRAFT[S.game] = TS;
@@ -88,9 +88,9 @@ function applyGame(id){
   T  = TOUR[id] || null;
   TS = DRAFT[id] || freshDraft(id);
   TS.open = -1;
-  var d = GAMES[id] || GAMES.cornhole;
-  S.target = S.tgt[id] || d.target;  /* et on ressort le sien */
-  if(d.targets.indexOf(S.target)<0) S.target = d.target;
+  var d = jeuDuel(id);
+  S.target = S.tgt[id] || d.cible;   /* et on ressort le sien */
+  if(d.cibles.indexOf(S.target)<0) S.target = d.cible;
   if(id==="palet" && !S.palets) S.palets = paletDefault(S.mode);
   var h1=$("setupTitle");
   if(h1 && h1.firstChild) h1.firstChild.nodeValue = (id==="palet") ? t("palet.name") : "Cornhole";
@@ -106,11 +106,11 @@ function applyGame(id){
 
 function renderRules(){
   /* une cible retenue pour un jeu peut ne plus exister dans l'autre */
-  var gd=GAMES[S.game]||GAMES.cornhole;
-  if(gd.targets.indexOf(S.target)<0) S.target=gd.target;
+  var gd=jeuDuel(S.game);
+  if(gd.cibles.indexOf(S.target)<0) S.target=gd.cible;
   var h1=$("setupTitle");
   if(h1 && h1.firstChild) h1.firstChild.nodeValue = (S.game==="palet") ? t("palet.name") : "Cornhole";
-  fillChips($("target"), (GAMES[S.game]||GAMES.cornhole).targets, S.target, "target");
+  fillChips($("target"), gd.cibles, S.target, "target");
   fillChips($("palets"), [2,3,4], S.palets, "palets");
   $("paletOpt").hidden = (S.game!=="palet");
   $("targetHint").hidden = (S.game!=="palet");
@@ -153,7 +153,7 @@ $("target").addEventListener("click",function(e){
   var b=e.target.closest("button[data-target]");
   if(!b) return;
   S.target=+b.dataset.target;
-  if(!S.tgt) S.tgt={cornhole:21, palet:12};
+  if(!S.tgt) S.tgt=ciblesParDefaut();
   S.tgt[S.game]=S.target;
   renderRules(); save();
 });

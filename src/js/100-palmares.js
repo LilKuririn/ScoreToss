@@ -22,7 +22,7 @@ function archiveGame(){
 /* Une victoire au cornhole et une au palet ne se comparent pas : le
    palmares ne montre que les parties du jeu choisi. */
 function HG(){
-  return H.filter(function(x){ return (x.g||"cornhole")===S.game; });
+  return H.filter(function(x){ return (x.g||jeuHistorique())===S.game; });
 }
 
 function nameKey(s){ return (s||"").trim().toLocaleLowerCase("fr"); }

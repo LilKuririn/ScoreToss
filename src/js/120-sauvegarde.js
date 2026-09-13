@@ -50,7 +50,7 @@ function applyImport(text){
 
   if(d.s && d.s.teams && d.s.teams.length===2) S=d.s;
   normS(S);
-  TOUR={cornhole:null, palet:null}; DRAFT={cornhole:null, palet:null};
+  TOUR=carteVide(); DRAFT=carteVide();
   adoptTour(d);
   H = (d.h && d.h.length) ? d.h : [];
   MS = normMS((d.ms && d.ms.players && d.ms.players.length===MK_MAX) ? d.ms : {count:4, players:mFreshPlayers()});
@@ -156,7 +156,7 @@ $("hallClear").addEventListener("click",function(){
   }
   b.dataset.armed="0";
   b.textContent=t("hall.clear");
-  H=H.filter(function(x){ return (x.g||"cornhole")!==S.game; }); save();
+  H=H.filter(function(x){ return (x.g||jeuHistorique())!==S.game; }); save();
   renderHall(); refreshHallLink();
   show("setup");
 });
