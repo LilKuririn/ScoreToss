@@ -32,10 +32,21 @@ self.addEventListener("activate", function(e){
   );
 });
 
+/* Seule la page de l'application est mise en cache et servie hors ligne.
+   Sans ce filtre, toute page ouverte dans le périmètre — la politique de
+   confidentialité, par exemple — était rangée sous le nom index.html, et
+   c'est elle qui s'affichait au lancement suivant sans réseau. */
+var RACINE = new URL("./", self.location).pathname;
+function estLApplication(url){
+  var chemin = new URL(url).pathname;
+  return chemin === RACINE || chemin === RACINE + "index.html";
+}
+
 self.addEventListener("fetch", function(e){
   if(e.request.method !== "GET") return;
 
   if(e.request.mode === "navigate"){
+    if(!estLApplication(e.request.url)) return;   /* le navigateur s'en charge */
     e.respondWith(
       fetch(e.request).then(function(res){
         var copy = res.clone();
