@@ -319,13 +319,14 @@ function flFormeDe(d){
   return flSecteur(bande[0],bande[1],d0,d0+18);
 }
 
-/* Décalage de la visée au doigt, en pixels CSS : environ 7 mm en haut à
+/* Décalage de la visée au doigt, en pixels CSS : environ 1 cm en haut à
    gauche du contact sur un téléphone. */
-var FL_DECALAGE = {x:-24, y:-34};
+var FL_DECALAGE = {x:-37, y:-52};
 
 /* Une fléchette dessinée pointe à l'origine, empennage vers +x, sur 100
-   unités ; le fût s'arrête à FL_DARD_FUT, là où se trouve le doigt. */
-var FL_DARD_FUT = 56;
+   unités ; le doigt tient l'ailette, à FL_DARD_DOIGT de la pointe. Rapporté au
+   décalage, ce repère fixe aussi la taille de la fléchette à l'écran. */
+var FL_DARD_DOIGT = 86;
 function flDard(){
   var g=flForme("g",{"class":"fl-dard"}), corps=flForme("g",{"class":"fl-dard-corps"});
   corps.appendChild(flForme("path",{d:"M0 0L31 -1.3L31 1.3Z","class":"pointe"}));
@@ -379,13 +380,13 @@ function flCible(hote, suivre, choisir){
     return {d:flSegment(p.x,p.y), p:p, doigt:doigt ? new DOMPoint(e.clientX,e.clientY).matrixTransform(inv) : null};
   }
   /* La fléchette va du point visé au doigt : sa pointe marque la visée, son
-     fût finit sous le doigt, et l'écart entre les deux paraît naturel. */
+     ailette est sous le doigt, et l'écart entre les deux paraît naturel. */
   function poserDard(v){
     var dx=v.doigt.x-v.p.x, dy=v.doigt.y-v.p.y;
     dard.setAttribute("transform",
       "translate("+v.p.x.toFixed(2)+" "+v.p.y.toFixed(2)+")"+
       " rotate("+(Math.atan2(dy,dx)*180/Math.PI).toFixed(1)+")"+
-      " scale("+(Math.hypot(dx,dy)/FL_DARD_FUT).toFixed(3)+")");
+      " scale("+(Math.hypot(dx,dy)/FL_DARD_DOIGT).toFixed(3)+")");
   }
   function montrerVisee(v){
     surb.setAttribute("d", v.d ? v.d.forme : "");

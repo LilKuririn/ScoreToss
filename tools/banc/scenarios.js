@@ -326,7 +326,7 @@ scenario("flechettes-doigt", async function(a){
   await a.clic("#flStart");
   var q=a.q("#flCible"), svg=q.querySelector("svg"), w=a.d.defaultView, A=FL_BANC_ANNEAUX;
   var r=(A.tIn+A.tOut)/2*100, vise=new w.DOMPoint(0,-r).matrixTransform(svg.getScreenCTM());
-  var o={bubbles:true, clientX:vise.x+24, clientY:vise.y+34, pointerId:2, isPrimary:true, pointerType:"touch"};
+  var o={bubbles:true, clientX:vise.x+37, clientY:vise.y+52, pointerId:2, isPrimary:true, pointerType:"touch"};
   q.dispatchEvent(new w.PointerEvent("pointerdown", o));
   q.dispatchEvent(new w.PointerEvent("pointermove", o));
   await a.attendre(40);                                        a.point("visée au doigt, fléchette affichée");
