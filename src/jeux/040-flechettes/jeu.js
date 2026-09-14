@@ -319,6 +319,23 @@ function flFormeDe(d){
   return flSecteur(bande[0],bande[1],d0,d0+18);
 }
 
+/* Décalage de la visée au doigt, en pixels CSS : environ 7 mm en haut à
+   gauche du contact sur un téléphone. */
+var FL_DECALAGE = {x:-24, y:-34};
+
+/* Une fléchette dessinée pointe à l'origine, empennage vers +x, sur 100
+   unités ; le fût s'arrête à FL_DARD_FUT, là où se trouve le doigt. */
+var FL_DARD_FUT = 56;
+function flDard(){
+  var g=flForme("g",{"class":"fl-dard"}), corps=flForme("g",{"class":"fl-dard-corps"});
+  corps.appendChild(flForme("path",{d:"M0 0L31 -1.3L31 1.3Z","class":"pointe"}));
+  corps.appendChild(flForme("rect",{x:30, y:-3.2, width:27, height:6.4, rx:2.4, "class":"fut"}));
+  corps.appendChild(flForme("rect",{x:56, y:-1.2, width:22, height:2.4, "class":"tige"}));
+  corps.appendChild(flForme("path",{d:"M72 0L86 -10L100 -10L94 0L100 10L86 10Z","class":"ailette"}));
+  g.appendChild(corps);
+  return g;
+}
+
 /* Dessine une cible dans `hote`. Pendant l'appui, `suivre` reçoit le
    segment visé ; au lever du doigt, `choisir` reçoit celui où il se trouve,
    ou null s'il est sorti de la cible. */
@@ -342,40 +359,66 @@ function flCible(hote, suivre, choisir){
   svg.appendChild(flForme("circle",{r:FL_ANNEAUX.db*100,"class":"seg rouge"}));
   var choix=flForme("path",{d:"","class":"choix"});
   var surb=flForme("path",{d:"","class":"surb"});
+  var dard=flDard();
+  /* une fois plantée et effacée, la fléchette quitte l'affichage */
+  dard.addEventListener("animationend",function(){ dard.classList.remove("plante"); });
   svg.appendChild(choix);
   svg.appendChild(surb);
+  svg.appendChild(dard);
   hote.appendChild(svg);
 
   var appui=false;
-  function lire(e){
+  /* Le point visé, dans le plan de la cible. Au doigt, il est décalé en haut
+     à gauche du contact, pour que le segment ne soit pas caché dessous ; la
+     souris et le stylet, eux, visent exactement. */
+  function viser(e){
     var m=svg.getScreenCTM();
-    if(!m) return null;
-    var p=new DOMPoint(e.clientX,e.clientY).matrixTransform(m.inverse());
-    return flSegment(p.x,p.y);
+    if(!m) return {d:null};
+    var inv=m.inverse(), doigt=e.pointerType==="touch";
+    var p=new DOMPoint(e.clientX+(doigt ? FL_DECALAGE.x : 0), e.clientY+(doigt ? FL_DECALAGE.y : 0)).matrixTransform(inv);
+    return {d:flSegment(p.x,p.y), p:p, doigt:doigt ? new DOMPoint(e.clientX,e.clientY).matrixTransform(inv) : null};
+  }
+  /* La fléchette va du point visé au doigt : sa pointe marque la visée, son
+     fût finit sous le doigt, et l'écart entre les deux paraît naturel. */
+  function poserDard(v){
+    var dx=v.doigt.x-v.p.x, dy=v.doigt.y-v.p.y;
+    dard.setAttribute("transform",
+      "translate("+v.p.x.toFixed(2)+" "+v.p.y.toFixed(2)+")"+
+      " rotate("+(Math.atan2(dy,dx)*180/Math.PI).toFixed(1)+")"+
+      " scale("+(Math.hypot(dx,dy)/FL_DARD_FUT).toFixed(3)+")");
+  }
+  function montrerVisee(v){
+    surb.setAttribute("d", v.d ? v.d.forme : "");
+    if(v.doigt) poserDard(v);
+    suivre(v.d);
   }
   hote.addEventListener("pointerdown",function(e){
     if(hote.classList.contains("fini")) return;
     appui=true;
     try{ hote.setPointerCapture(e.pointerId); }catch(x){}
-    var d=lire(e);
-    surb.setAttribute("d", d ? d.forme : "");
-    suivre(d);
+    var v=viser(e);
+    dard.classList.remove("plante");
+    dard.classList.toggle("vise", !!v.doigt);
+    montrerVisee(v);
   });
   hote.addEventListener("pointermove",function(e){
     if(!appui) return;
-    var d=lire(e);
-    surb.setAttribute("d", d ? d.forme : "");
-    suivre(d);
+    montrerVisee(viser(e));
   });
   hote.addEventListener("pointerup",function(e){
     if(!appui) return;
     appui=false;
     surb.setAttribute("d","");
-    choisir(lire(e));
+    var v=viser(e);
+    /* plantée si elle touche la cible, sinon elle disparaît simplement */
+    if(dard.classList.contains("vise") && v.d) dard.classList.add("plante");
+    dard.classList.remove("vise");
+    choisir(v.d);
   });
   hote.addEventListener("pointercancel",function(){
     appui=false;
     surb.setAttribute("d","");
+    dard.classList.remove("vise");
     suivre(null);
   });
   return {

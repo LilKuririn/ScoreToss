@@ -158,8 +158,10 @@ sans double, c'est **un bust** : le score revient à celui du début de la volé
 
 **La saisie se fait sur la cible elle-même.** On pose le doigt sur le segment touché, on glisse pour
 ajuster — le segment visé s'éclaire et son nom s'affiche —, on lève pour valider. Les anneaux double
-et triple sont **élargis** par rapport à une vraie cible, pour rester visables du pouce. Un bouton
-*Raté* compte une fléchette hors cible, un autre annule la dernière.
+et triple sont **élargis** par rapport à une vraie cible, pour rester visables du pouce. Au doigt,
+la visée se fait **quelques millimètres en haut à gauche du contact**, pour que le segment ne soit
+pas caché dessous : une fléchette dessinée relie le doigt à sa pointe, et se plante au lâcher. Un
+bouton *Raté* compte une fléchette hors cible, un autre annule la dernière.
 
 La partie est **rejouée depuis la liste des fléchettes** : la feuille de match montre chaque volée,
 et toucher une fléchette ancienne ouvre une petite cible pour la corriger ou la supprimer. Les busts

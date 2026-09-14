@@ -316,3 +316,20 @@ scenario("flechettes-huit", async function(a){
   await a.clic("#flPlus", 6);                                  a.point("8 joueurs");
   await a.clic("#flStart");                                    a.point("partie à 8 sur petit écran");
 }, [360,640]);
+
+/* Au doigt, la visée est décalée en haut à gauche du contact et une
+   fléchette relie les deux. Le doigt se pose donc en bas à droite du
+   segment voulu, ici la T20. */
+scenario("flechettes-doigt", async function(a){
+  await a.clic('#categories [data-categorie="interieur"]');
+  await a.clic("#playFlechettes");
+  await a.clic("#flStart");
+  var q=a.q("#flCible"), svg=q.querySelector("svg"), w=a.d.defaultView, A=FL_BANC_ANNEAUX;
+  var r=(A.tIn+A.tOut)/2*100, vise=new w.DOMPoint(0,-r).matrixTransform(svg.getScreenCTM());
+  var o={bubbles:true, clientX:vise.x+24, clientY:vise.y+34, pointerId:2, isPrimary:true, pointerType:"touch"};
+  q.dispatchEvent(new w.PointerEvent("pointerdown", o));
+  q.dispatchEvent(new w.PointerEvent("pointermove", o));
+  await a.attendre(40);                                        a.point("visée au doigt, fléchette affichée");
+  q.dispatchEvent(new w.PointerEvent("pointerup", o));
+  await a.attendre(40);                                        a.point("T20 comptée, fléchette plantée");
+}, [360,640]);
