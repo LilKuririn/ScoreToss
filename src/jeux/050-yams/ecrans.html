@@ -71,6 +71,7 @@
       <p class="eyebrow" id="yaTurn">À vous</p>
       <div class="sep"></div>
       <p class="eyebrow" id="yaTourLabel">Tour 1 / 13</p>
+      <button type="button" class="toss" id="yaTirer" hidden data-i18n="ya.draw">Tirer l'ordre au sort</button>
       <button type="button" class="icon-btn" id="yaSheetBtn" data-i18n-aria="sheet.title">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <path d="M2.5 4h13M2.5 9h13M2.5 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
@@ -94,6 +95,22 @@
 
       <button type="button" class="cta ya-valider" id="yaValider" disabled data-i18n="ya.enter">Saisissez les 5 dés</button>
     </section>
+
+    <!-- tirage au sort de l'ordre de jeu -->
+    <div class="toss-wrap ya-tirage" id="yaTirage" hidden>
+      <div class="toss-scrim"></div>
+      <div class="toss-box" role="dialog" aria-modal="true" data-i18n-aria="ya.draw">
+        <p class="eyebrow" data-i18n="ya.draw.who">Ordre de jeu</p>
+        <div class="reel" id="yaReel">
+          <div class="reel-strip" id="yaReelStrip"></div>
+          <span class="notch l"></span>
+          <span class="notch r"></span>
+        </div>
+        <ol class="ya-ordre" id="yaOrdre"></ol>
+        <p class="toss-out" id="yaTirageOut" aria-live="polite" data-i18n="toss.running">Tirage en cours</p>
+        <button type="button" class="cta ya-tirage-ok" id="yaTirageOk" hidden data-i18n="ya.draw.ok">C'est parti</button>
+      </div>
+    </div>
 
     <!-- feuille de match -->
     <div class="sheet-wrap" id="yaSheetWrap">

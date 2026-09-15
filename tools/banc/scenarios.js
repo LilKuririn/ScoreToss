@@ -402,3 +402,12 @@ scenario("yams-seul", async function(a){
   await a.clic("#over .cta.ghost");
   await a.clic("#yaHall");                                     a.point("palmarès d'un joueur seul");
 }, [360,640]);
+
+scenario("yams-tirage", async function(a){
+  await a.clic('#categories [data-categorie="societe"]');
+  await a.clic("#playYams");
+  await a.clic("#yaPlus", 6);
+  await a.clic("#yaStart");                                    a.point("tirage proposé");
+  await a.clic("#yaTirer"); await a.attendre(60);              a.point("ordre tiré");
+  await a.clic("#yaTirageOk");                                 a.point("partie dans l'ordre tiré");
+}, [360,640]);

@@ -197,6 +197,9 @@ dés ; chaque case libre affiche aussitôt ce qu'elle rapporterait, les cases à
 choisit la case, et le bouton dit ce qui sera inscrit — « Inscrire 25 · Full » ou « Barrer Yams · 0 ».
 Toucher un dé saisi le retire.
 
+Avant le premier tour, un bouton **tire l'ordre au sort** : le rouleau du cornhole s'arrête sur un
+joueur, puis sur un autre parmi ceux qui restent, et la liste se construit rang par rang.
+
 La fiche du joueur tient sur un écran : le haut à gauche avec son sous-total vers 63 et le bonus, le
 bas à droite avec le total. La feuille de match montre toutes les fiches côte à côte ; toucher une
 case remplie permet de corriger ses dés ou de la déplacer vers une case libre, et le dernier tour
