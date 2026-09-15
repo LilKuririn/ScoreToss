@@ -279,6 +279,19 @@ function flApresChangement(vibration){
   }
 }
 
+/* L'ordre de jeu se tire au sort avant la première fléchette, une seule
+   fois ; en équipes, ce sont les équipes qui sont tirées. */
+function flTirer(){
+  if(!F || F.tire || F.darts.length) return;
+  tirerOrdre(F.players, function(ordre){
+    F.players=ordre;
+    F.tire=true;
+    FE=flRejouer();
+    save();
+    renderFGame();
+  });
+}
+
 /* --- la cible ---------------------------------------------------- */
 var FL_NS = "http://www.w3.org/2000/svg";
 function flPoint(r,deg){ var a=(deg-90)*Math.PI/180; return [r*Math.cos(a), r*Math.sin(a)]; }
@@ -458,6 +471,10 @@ function renderFGame(){
   $("flTurn").textContent = fini ? t("fl.done")
     : (e.membre ? tf("fl.turn.team",{team:pl.label, name:e.membre}) : tf("fl.turn",{name:pl.label}));
   $("flStartLabel").textContent = tf("fl.start",{n:F.depart});
+  /* l'ordre de jeu se tire au sort avant la première fléchette, une seule fois */
+  var tirable = !fini && !F.tire && !F.darts.length && F.players.length>1;
+  $("flTirer").hidden = !tirable;
+  $("flStartLabel").hidden = tirable;
 
   var host=$("flScores");
   host.innerHTML="";
@@ -736,6 +753,7 @@ function flNormF(f){
   if(!f.darts) f.darts=[];
   if(FL_DEPARTS.indexOf(f.depart)<0) f.depart=FL_DEPARTS[0];
   if(f.mode!=="team") f.mode="solo";
+  f.tire=!!f.tire;
   return f;
 }
 
@@ -772,6 +790,7 @@ $("flPerPlus").addEventListener("click",function(){
 $("flOpenRules").addEventListener("click",openRules);
 $("flOpenAbout").addEventListener("click",openAbout);
 $("flStart").addEventListener("click",flNouvellePartie);
+$("flTirer").addEventListener("click",flTirer);
 
 $("flMiss").addEventListener("click",function(){ flLancer({ s:0, m:0, v:0 }); });
 $("flCancel").addEventListener("click",function(){

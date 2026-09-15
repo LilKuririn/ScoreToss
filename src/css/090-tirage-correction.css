@@ -64,6 +64,35 @@
 }
 .toss-out b{font-weight:800;letter-spacing:-.02em}
 
+/* --- l'ordre de jeu, tiré rang par rang -------------------------
+   Le même rouleau, et sous lui la liste qui se construit. */
+.ordre-wrap .toss-box{gap:16px}
+.ordre-liste{list-style:none;margin:0;padding:0;width:min(304px,84%);display:flex;flex-direction:column;gap:6px}
+.ordre-liste:empty{display:none}
+.ordre-liste li{
+  --c:#E14434;
+  display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:11px;
+  background:color-mix(in oklab,var(--c) 12%,var(--panel));
+  border:1px solid color-mix(in oklab,var(--c) 32%,transparent);
+  animation:ordre-arrive .32s cubic-bezier(.2,.8,.3,1);
+}
+.ordre-liste .n{font-family:var(--fm);font-size:12px;color:var(--muted);min-width:14px}
+.ordre-liste i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:0 0 auto}
+.ordre-liste b{
+  min-width:0;font-size:15px;font-weight:700;letter-spacing:-.01em;
+  color:color-mix(in oklab,var(--c) 62%,var(--tone));
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+@keyframes ordre-arrive{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.ordre-ok{width:min(304px,84%)}
+.ordre-ok[hidden]{display:none}
+/* le bouton du tirage prend la place d'une étiquette de l'en-tête ; il
+   reste sur une ligne, et c'est le nom de qui joue qui s'abrège si la
+   place manque — au mölkky en équipes, avec ses deux boutons */
+.top > [hidden]{display:none}
+.top .toss{flex:0 0 auto;white-space:nowrap}
+.top > .eyebrow:first-child{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
 .log tbody tr{cursor:pointer}
 .log tbody tr:active td{background:var(--panel-2)}
 .hint{font-size:12px;line-height:1.5;color:var(--muted);padding:12px 0 0}

@@ -96,30 +96,6 @@
 .ya-bilan.ok b{color:var(--live)}
 .ya-bilan.total b{font-size:16px;color:color-mix(in oklab,var(--c) 62%,var(--tone))}
 
-/* le tirage de l'ordre : le rouleau du cornhole, puis la liste qui se
-   construit rang par rang */
-#s-ygame .top [hidden]{display:none}
-.ya-tirage .toss-box{gap:16px}
-.ya-ordre{list-style:none;margin:0;padding:0;width:min(304px,84%);display:flex;flex-direction:column;gap:6px}
-.ya-ordre:empty{display:none}
-.ya-ordre li{
-  --c:#E14434;
-  display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:11px;
-  background:color-mix(in oklab,var(--c) 12%,var(--panel));
-  border:1px solid color-mix(in oklab,var(--c) 32%,transparent);
-  animation:ya-rang-arrive .32s cubic-bezier(.2,.8,.3,1);
-}
-.ya-ordre .n{font-family:var(--fm);font-size:12px;color:var(--muted);min-width:14px}
-.ya-ordre i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:0 0 auto}
-.ya-ordre b{
-  min-width:0;font-size:15px;font-weight:700;letter-spacing:-.01em;
-  color:color-mix(in oklab,var(--c) 62%,var(--tone));
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-@keyframes ya-rang-arrive{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-.ya-tirage-ok{width:min(304px,84%)}
-.ya-tirage-ok[hidden]{display:none}
-
 .ya-valider{transition:opacity .15s ease,background .15s ease}
 .ya-valider:disabled{opacity:.42;cursor:default}
 .ya-valider.barrer{background:var(--panel-2);color:var(--ink)}

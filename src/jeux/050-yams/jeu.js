@@ -15,7 +15,7 @@ declarerJeu({
   lienPalmares:"yaHall",
   records:"ya.records",
   retour:{
-    fiches:[["yaTirage","yaTirageOk"], ["yaSheetWrap","yaSheetClose"]],
+    fiches:[["yaSheetWrap","yaSheetClose"]],
     ecrans:[["s-ysetup","yaToGames"]]
   },
 
@@ -440,125 +440,16 @@ function yaApresChangement(vibration){
 }
 
 /* --- tirage au sort de l'ordre ----------------------------------- */
-/* Le rouleau du cornhole, rang par rang : il s'arrête sur l'un des joueurs
-   qui restent, qui prend la place suivante. Le dernier n'a pas besoin de
-   tirage. L'ordre ne s'enregistre qu'une fois tiré en entier : fermer
-   l'app pendant le rouleau laisse la partie telle qu'elle était. */
-var YA_CELL = 72;          /* hauteur d'une case du rouleau, cf. .cell */
-var yaTirageFini = true;
-
+/* L'ordre de jeu se tire au sort avant le premier tour, une seule fois. */
 function yaTirer(){
-  if(!Y || Y.tire || Y.tours.length || Y.players.length<2 || !yaTirageFini) return;
-  Y.tire=true;
-  yaTirageFini=false;
-  var restants=Y.players.slice(), ordre=[];
-  var wrap=$("yaTirage"), strip=$("yaReelStrip"), reel=$("yaReel"), liste=$("yaOrdre"), out=$("yaTirageOut");
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-  liste.innerHTML="";
-  out.textContent=t("toss.running");
-  $("yaTirageOk").hidden=true;
-  wrap.style.setProperty("--flash", restants[0].hex);
-  wrap.hidden=false;
-  wrap.classList.add("on");
-
-  function placer(p){
-    ordre.push(p);
-    restants.splice(restants.indexOf(p),1);
-    var li=el("li");
-    li.style.setProperty("--c",p.hex);
-    li.appendChild(el("span","n num",String(ordre.length)));
-    li.appendChild(el("i"));
-    li.appendChild(el("b",null,p.label));
-    liste.appendChild(li);
-  }
-  function suivant(){
-    if(restants.length===1){ placer(restants[0]); finir(); return; }
-    var gagnant=restants[Math.floor(Math.random()*restants.length)];
-    tourner(gagnant, ordre.length ? 950 : 1700, function(){ placer(gagnant); suivant(); });
-  }
-  function finir(){
+  if(!Y || Y.tire || Y.tours.length) return;
+  tirerOrdre(Y.players, function(ordre){
     Y.players=ordre;
+    Y.tire=true;
     YE=yaRejouer();
-    yaTirageFini=true;
-    var premier=ordre[0];
-    out.innerHTML="";
-    var parts=tf("ya.draw.first",{name:" "}).split(" ");
-    out.appendChild(document.createTextNode(parts[0]||""));
-    var b=el("b",null,premier.label);
-    b.style.color="color-mix(in oklab,"+premier.hex+" 62%,var(--tone))";
-    out.appendChild(b);
-    out.appendChild(document.createTextNode(parts[1]||""));
-    /* le rouleau finit sur celui qui commence, pas sur le dernier tiré */
-    strip.innerHTML="";
-    strip.style.transform="translateY(0)";
-    strip.style.filter="none";
-    var c=el("div","cell");
-    c.style.setProperty("--c",premier.hex);
-    c.appendChild(el("i"));
-    c.appendChild(el("span",null,premier.label));
-    strip.appendChild(c);
-    reel.classList.remove("locked");
-    void reel.offsetWidth;
-    reel.style.setProperty("--win",premier.hex);
-    reel.classList.add("locked");
-    wrap.style.setProperty("--flash",premier.hex);
-    $("yaTirageOk").hidden=false;
-    buzz([16,55,30]);
     save();
     renderYGame();
-  }
-  /* un tour de rouleau parmi les joueurs restants, arrêté sur `gagnant` :
-     les cases défilent dans l'ordre des restants, la dernière le porte */
-  function tourner(gagnant, dur, fin){
-    var m=restants.length, base=14+m;
-    var cells=base+((restants.indexOf(gagnant)-base)%m+m)%m;
-    strip.innerHTML="";
-    strip.style.transform="translateY(0)";
-    strip.style.filter="none";
-    reel.classList.remove("locked");
-    for(var i=0;i<=cells;i++){
-      var p=restants[i%m], c=el("div","cell");
-      c.style.setProperty("--c",p.hex);
-      c.appendChild(el("i"));
-      c.appendChild(el("span",null,p.label));
-      strip.appendChild(c);
-    }
-    function land(){
-      strip.style.filter="none";
-      strip.style.transform="translateY("+(-cells*YA_CELL)+"px)";
-      void reel.offsetWidth;          /* relance l'animation de verrouillage */
-      reel.style.setProperty("--win",gagnant.hex);
-      reel.classList.add("locked");
-      wrap.style.setProperty("--flash",gagnant.hex);
-      buzz(14);
-      if(reduce) fin(); else setTimeout(fin, 520);
-    }
-    if(reduce){ land(); return; }
-    var t0=null, prev=0, idx=-1;
-    function frame(now){
-      if(t0===null) t0=now;
-      var prog=Math.min(1,(now-t0)/dur);
-      var off=(1-Math.pow(1-prog,4))*cells*YA_CELL;
-      var v=off-prev; prev=off;
-      strip.style.transform="translateY("+(-off)+"px)";
-      strip.style.filter = v>1.5 ? "blur("+Math.min(5,v*0.22)+"px)" : "none";
-      var k=Math.round(off/YA_CELL);
-      if(k!==idx){
-        idx=k;
-        wrap.style.setProperty("--flash",restants[k%m].hex);
-        if(v<14) buzz(3);      /* le cliquetis n'apparaît qu'au ralenti */
-      }
-      if(prog<1) requestAnimationFrame(frame); else land();
-    }
-    requestAnimationFrame(frame);
-  }
-  suivant();
-}
-function yaFermerTirage(){
-  if(!yaTirageFini) return;
-  var wrap=$("yaTirage");
-  wrap.hidden=true;
-  wrap.classList.remove("on");
+  });
 }
 
 /* --- feuille de match -------------------------------------------- */
@@ -841,7 +732,6 @@ $("yaEffacer").addEventListener("click",function(){
 });
 $("yaValider").addEventListener("click",yaValider);
 $("yaTirer").addEventListener("click",yaTirer);
-$("yaTirage").addEventListener("click",yaFermerTirage);
 
 $("yaSheetBtn").addEventListener("click",yaOuvrirFeuille);
 $("yaSheetClose").addEventListener("click",yaFermerFeuille);

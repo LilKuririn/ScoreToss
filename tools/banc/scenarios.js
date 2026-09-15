@@ -409,5 +409,23 @@ scenario("yams-tirage", async function(a){
   await a.clic("#yaPlus", 6);
   await a.clic("#yaStart");                                    a.point("tirage proposé");
   await a.clic("#yaTirer"); await a.attendre(60);              a.point("ordre tiré");
-  await a.clic("#yaTirageOk");                                 a.point("partie dans l'ordre tiré");
+  await a.clic("#ordreOk");                                 a.point("partie dans l'ordre tiré");
+}, [360,640]);
+
+scenario("flechettes-tirage", async function(a){
+  await a.clic('#categories [data-categorie="interieur"]');
+  await a.clic("#playFlechettes");
+  await a.clic('#flMode button[data-mode="team"]');
+  await a.clic("#flPlus", 2);
+  await a.clic("#flStart");                                    a.point("tirage proposé en équipes");
+  await a.clic("#flTirer"); await a.attendre(60);              a.point("ordre des équipes tiré");
+  await a.clic("#ordreOk");                                    a.point("partie dans l'ordre tiré");
+}, [360,640]);
+
+scenario("molkky-tirage", async function(a){
+  await a.clic("#playMolkky");
+  await a.clic("#mkStart");                                    a.point("tirage proposé");
+  await a.clic("#mkTirer"); await a.attendre(60);              a.point("ordre tiré");
+  await a.clic("#ordreOk");                                    a.point("partie dans l'ordre tiré");
+  await lancers(a,[6]);                                        a.point("le premier tiré a lancé");
 }, [360,640]);

@@ -745,30 +745,6 @@ h1,h2,h3,p{margin:0}
 .ya-bilan.ok b{color:var(--live)}
 .ya-bilan.total b{font-size:16px;color:color-mix(in oklab,var(--c) 62%,var(--tone))}
 
-/* le tirage de l'ordre : le rouleau du cornhole, puis la liste qui se
-   construit rang par rang */
-#s-ygame .top [hidden]{display:none}
-.ya-tirage .toss-box{gap:16px}
-.ya-ordre{list-style:none;margin:0;padding:0;width:min(304px,84%);display:flex;flex-direction:column;gap:6px}
-.ya-ordre:empty{display:none}
-.ya-ordre li{
-  --c:#E14434;
-  display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:11px;
-  background:color-mix(in oklab,var(--c) 12%,var(--panel));
-  border:1px solid color-mix(in oklab,var(--c) 32%,transparent);
-  animation:ya-rang-arrive .32s cubic-bezier(.2,.8,.3,1);
-}
-.ya-ordre .n{font-family:var(--fm);font-size:12px;color:var(--muted);min-width:14px}
-.ya-ordre i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:0 0 auto}
-.ya-ordre b{
-  min-width:0;font-size:15px;font-weight:700;letter-spacing:-.01em;
-  color:color-mix(in oklab,var(--c) 62%,var(--tone));
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-@keyframes ya-rang-arrive{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
-.ya-tirage-ok{width:min(304px,84%)}
-.ya-tirage-ok[hidden]{display:none}
-
 .ya-valider{transition:opacity .15s ease,background .15s ease}
 .ya-valider:disabled{opacity:.42;cursor:default}
 .ya-valider.barrer{background:var(--panel-2);color:var(--ink)}
@@ -1169,6 +1145,35 @@ h1,h2,h3,p{margin:0}
   min-height:22px;letter-spacing:-.01em;
 }
 .toss-out b{font-weight:800;letter-spacing:-.02em}
+
+/* --- l'ordre de jeu, tiré rang par rang -------------------------
+   Le même rouleau, et sous lui la liste qui se construit. */
+.ordre-wrap .toss-box{gap:16px}
+.ordre-liste{list-style:none;margin:0;padding:0;width:min(304px,84%);display:flex;flex-direction:column;gap:6px}
+.ordre-liste:empty{display:none}
+.ordre-liste li{
+  --c:#E14434;
+  display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:11px;
+  background:color-mix(in oklab,var(--c) 12%,var(--panel));
+  border:1px solid color-mix(in oklab,var(--c) 32%,transparent);
+  animation:ordre-arrive .32s cubic-bezier(.2,.8,.3,1);
+}
+.ordre-liste .n{font-family:var(--fm);font-size:12px;color:var(--muted);min-width:14px}
+.ordre-liste i{width:8px;height:8px;border-radius:50%;background:var(--c);flex:0 0 auto}
+.ordre-liste b{
+  min-width:0;font-size:15px;font-weight:700;letter-spacing:-.01em;
+  color:color-mix(in oklab,var(--c) 62%,var(--tone));
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+@keyframes ordre-arrive{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.ordre-ok{width:min(304px,84%)}
+.ordre-ok[hidden]{display:none}
+/* le bouton du tirage prend la place d'une étiquette de l'en-tête ; il
+   reste sur une ligne, et c'est le nom de qui joue qui s'abrège si la
+   place manque — au mölkky en équipes, avec ses deux boutons */
+.top > [hidden]{display:none}
+.top .toss{flex:0 0 auto;white-space:nowrap}
+.top > .eyebrow:first-child{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .log tbody tr{cursor:pointer}
 .log tbody tr:active td{background:var(--panel-2)}
@@ -1894,6 +1899,7 @@ a.hall-link{text-decoration:none;color:inherit}
       <p class="eyebrow" id="mkTurn">À vous</p>
       <div class="sep"></div>
       <p class="eyebrow" id="mkTargetLabel">Objectif 50</p>
+      <button type="button" class="toss" id="mkTirer" hidden data-i18n="order.draw">Tirer l'ordre</button>
       <button type="button" class="icon-btn" id="mkLayoutBtn" data-i18n-aria="mk.layout">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <circle cx="5" cy="4.5" r="1.7" stroke="currentColor" stroke-width="1.5"/>
@@ -2042,6 +2048,7 @@ a.hall-link{text-decoration:none;color:inherit}
       <p class="eyebrow" id="flTurn">À vous</p>
       <div class="sep"></div>
       <p class="eyebrow" id="flStartLabel">501 · double out</p>
+      <button type="button" class="toss" id="flTirer" hidden data-i18n="order.draw">Tirer l'ordre</button>
       <button type="button" class="icon-btn" id="flSheetBtn" data-i18n-aria="sheet.title">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <path d="M2.5 4h13M2.5 9h13M2.5 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
@@ -2165,7 +2172,7 @@ a.hall-link{text-decoration:none;color:inherit}
       <p class="eyebrow" id="yaTurn">À vous</p>
       <div class="sep"></div>
       <p class="eyebrow" id="yaTourLabel">Tour 1 / 13</p>
-      <button type="button" class="toss" id="yaTirer" hidden data-i18n="ya.draw">Tirer l'ordre au sort</button>
+      <button type="button" class="toss" id="yaTirer" hidden data-i18n="order.draw">Tirer l'ordre</button>
       <button type="button" class="icon-btn" id="yaSheetBtn" data-i18n-aria="sheet.title">
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <path d="M2.5 4h13M2.5 9h13M2.5 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
@@ -2190,22 +2197,6 @@ a.hall-link{text-decoration:none;color:inherit}
       <button type="button" class="cta ya-valider" id="yaValider" disabled data-i18n="ya.enter">Saisissez les 5 dés</button>
     </section>
 
-    <!-- tirage au sort de l'ordre de jeu -->
-    <div class="toss-wrap ya-tirage" id="yaTirage" hidden>
-      <div class="toss-scrim"></div>
-      <div class="toss-box" role="dialog" aria-modal="true" data-i18n-aria="ya.draw">
-        <p class="eyebrow" data-i18n="ya.draw.who">Ordre de jeu</p>
-        <div class="reel" id="yaReel">
-          <div class="reel-strip" id="yaReelStrip"></div>
-          <span class="notch l"></span>
-          <span class="notch r"></span>
-        </div>
-        <ol class="ya-ordre" id="yaOrdre"></ol>
-        <p class="toss-out" id="yaTirageOut" aria-live="polite" data-i18n="toss.running">Tirage en cours</p>
-        <button type="button" class="cta ya-tirage-ok" id="yaTirageOk" hidden data-i18n="ya.draw.ok">C'est parti</button>
-      </div>
-    </div>
-
     <!-- feuille de match -->
     <div class="sheet-wrap" id="yaSheetWrap">
       <div class="scrim" id="yaScrim"></div>
@@ -2227,6 +2218,22 @@ a.hall-link{text-decoration:none;color:inherit}
       </div>
     </div>
   </section>
+
+  <!-- ============ TIRAGE AU SORT DE L'ORDRE DE JEU ============ -->
+  <div class="toss-wrap ordre-wrap" id="ordreWrap" hidden>
+    <div class="toss-scrim"></div>
+    <div class="toss-box" role="dialog" aria-modal="true" data-i18n-aria="order.who">
+      <p class="eyebrow" data-i18n="order.who">Ordre de jeu</p>
+      <div class="reel" id="ordreReel">
+        <div class="reel-strip" id="ordreStrip"></div>
+        <span class="notch l"></span>
+        <span class="notch r"></span>
+      </div>
+      <ol class="ordre-liste" id="ordreListe"></ol>
+      <p class="toss-out" id="ordreOut" aria-live="polite" data-i18n="toss.running">Tirage en cours</p>
+      <button type="button" class="cta ordre-ok" id="ordreOk" hidden data-i18n="order.ok">C'est parti</button>
+    </div>
+  </div>
 
   <section class="screen" id="s-over">
     <div class="over" id="over"></div>
@@ -2912,6 +2919,19 @@ function mAfterChange(){
   }
 }
 
+/* L'ordre de jeu se tire au sort avant le premier lancer, une seule fois ;
+   en équipes, ce sont les équipes qui sont tirées. */
+function mTirer(){
+  if(!M || M.tire || M.throws.length || M.over) return;
+  tirerOrdre(M.players, function(ordre){
+    M.players=ordre;
+    M.tire=true;
+    mRecompute();
+    save();
+    renderMGame();
+  });
+}
+
 /* --- rendu de la partie ------------------------------------------ */
 function buildMPad(){
   var host=$("mkPad");
@@ -2937,6 +2957,10 @@ function renderMGame(){
     ? tf("mk.done",{n:M.throws.length})
     : (membre ? tf("mk.turn.team",{team:nom, name:membre}) : tf("mk.turn",{name:nom}));
   $("mkTargetLabel").textContent = t("game.target")+" "+M.target;
+  /* l'ordre de jeu se tire au sort avant le premier lancer, une seule fois */
+  var tirable = !M.over && !M.tire && !M.throws.length && M.players.length>1;
+  $("mkTirer").hidden = !tirable;
+  $("mkTargetLabel").hidden = tirable;
 
   var host=$("mkList");
   host.innerHTML="";
@@ -3269,6 +3293,7 @@ $("mkPerPlus").addEventListener("click",function(){
   if(MS.per<MK_PER_MAX){ MS.per++; MS.open=-1; renderMSetup(); save(); }
 });
 $("mkStart").addEventListener("click",mNewGame);
+$("mkTirer").addEventListener("click",mTirer);
 $("mkOpenLayout").addEventListener("click",mOpenLayout);
 $("mkLayoutBtn").addEventListener("click",mOpenLayout);
 $("mkLayoutClose").addEventListener("click",mCloseLayout);
@@ -3324,6 +3349,7 @@ function normM(m){
   if(!m.throws) m.throws=[];
   if(!m.mode) m.mode="solo";
   if(!m.per) m.per=MK_PER_MIN;
+  m.tire=!!m.tire;
   return m;
 }
 
@@ -3635,6 +3661,19 @@ function flApresChangement(vibration){
   }
 }
 
+/* L'ordre de jeu se tire au sort avant la première fléchette, une seule
+   fois ; en équipes, ce sont les équipes qui sont tirées. */
+function flTirer(){
+  if(!F || F.tire || F.darts.length) return;
+  tirerOrdre(F.players, function(ordre){
+    F.players=ordre;
+    F.tire=true;
+    FE=flRejouer();
+    save();
+    renderFGame();
+  });
+}
+
 /* --- la cible ---------------------------------------------------- */
 var FL_NS = "http://www.w3.org/2000/svg";
 function flPoint(r,deg){ var a=(deg-90)*Math.PI/180; return [r*Math.cos(a), r*Math.sin(a)]; }
@@ -3814,6 +3853,10 @@ function renderFGame(){
   $("flTurn").textContent = fini ? t("fl.done")
     : (e.membre ? tf("fl.turn.team",{team:pl.label, name:e.membre}) : tf("fl.turn",{name:pl.label}));
   $("flStartLabel").textContent = tf("fl.start",{n:F.depart});
+  /* l'ordre de jeu se tire au sort avant la première fléchette, une seule fois */
+  var tirable = !fini && !F.tire && !F.darts.length && F.players.length>1;
+  $("flTirer").hidden = !tirable;
+  $("flStartLabel").hidden = tirable;
 
   var host=$("flScores");
   host.innerHTML="";
@@ -4092,6 +4135,7 @@ function flNormF(f){
   if(!f.darts) f.darts=[];
   if(FL_DEPARTS.indexOf(f.depart)<0) f.depart=FL_DEPARTS[0];
   if(f.mode!=="team") f.mode="solo";
+  f.tire=!!f.tire;
   return f;
 }
 
@@ -4128,6 +4172,7 @@ $("flPerPlus").addEventListener("click",function(){
 $("flOpenRules").addEventListener("click",openRules);
 $("flOpenAbout").addEventListener("click",openAbout);
 $("flStart").addEventListener("click",flNouvellePartie);
+$("flTirer").addEventListener("click",flTirer);
 
 $("flMiss").addEventListener("click",function(){ flLancer({ s:0, m:0, v:0 }); });
 $("flCancel").addEventListener("click",function(){
@@ -4217,7 +4262,7 @@ declarerJeu({
   lienPalmares:"yaHall",
   records:"ya.records",
   retour:{
-    fiches:[["yaTirage","yaTirageOk"], ["yaSheetWrap","yaSheetClose"]],
+    fiches:[["yaSheetWrap","yaSheetClose"]],
     ecrans:[["s-ysetup","yaToGames"]]
   },
 
@@ -4642,125 +4687,16 @@ function yaApresChangement(vibration){
 }
 
 /* --- tirage au sort de l'ordre ----------------------------------- */
-/* Le rouleau du cornhole, rang par rang : il s'arrête sur l'un des joueurs
-   qui restent, qui prend la place suivante. Le dernier n'a pas besoin de
-   tirage. L'ordre ne s'enregistre qu'une fois tiré en entier : fermer
-   l'app pendant le rouleau laisse la partie telle qu'elle était. */
-var YA_CELL = 72;          /* hauteur d'une case du rouleau, cf. .cell */
-var yaTirageFini = true;
-
+/* L'ordre de jeu se tire au sort avant le premier tour, une seule fois. */
 function yaTirer(){
-  if(!Y || Y.tire || Y.tours.length || Y.players.length<2 || !yaTirageFini) return;
-  Y.tire=true;
-  yaTirageFini=false;
-  var restants=Y.players.slice(), ordre=[];
-  var wrap=$("yaTirage"), strip=$("yaReelStrip"), reel=$("yaReel"), liste=$("yaOrdre"), out=$("yaTirageOut");
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-  liste.innerHTML="";
-  out.textContent=t("toss.running");
-  $("yaTirageOk").hidden=true;
-  wrap.style.setProperty("--flash", restants[0].hex);
-  wrap.hidden=false;
-  wrap.classList.add("on");
-
-  function placer(p){
-    ordre.push(p);
-    restants.splice(restants.indexOf(p),1);
-    var li=el("li");
-    li.style.setProperty("--c",p.hex);
-    li.appendChild(el("span","n num",String(ordre.length)));
-    li.appendChild(el("i"));
-    li.appendChild(el("b",null,p.label));
-    liste.appendChild(li);
-  }
-  function suivant(){
-    if(restants.length===1){ placer(restants[0]); finir(); return; }
-    var gagnant=restants[Math.floor(Math.random()*restants.length)];
-    tourner(gagnant, ordre.length ? 950 : 1700, function(){ placer(gagnant); suivant(); });
-  }
-  function finir(){
+  if(!Y || Y.tire || Y.tours.length) return;
+  tirerOrdre(Y.players, function(ordre){
     Y.players=ordre;
+    Y.tire=true;
     YE=yaRejouer();
-    yaTirageFini=true;
-    var premier=ordre[0];
-    out.innerHTML="";
-    var parts=tf("ya.draw.first",{name:" "}).split(" ");
-    out.appendChild(document.createTextNode(parts[0]||""));
-    var b=el("b",null,premier.label);
-    b.style.color="color-mix(in oklab,"+premier.hex+" 62%,var(--tone))";
-    out.appendChild(b);
-    out.appendChild(document.createTextNode(parts[1]||""));
-    /* le rouleau finit sur celui qui commence, pas sur le dernier tiré */
-    strip.innerHTML="";
-    strip.style.transform="translateY(0)";
-    strip.style.filter="none";
-    var c=el("div","cell");
-    c.style.setProperty("--c",premier.hex);
-    c.appendChild(el("i"));
-    c.appendChild(el("span",null,premier.label));
-    strip.appendChild(c);
-    reel.classList.remove("locked");
-    void reel.offsetWidth;
-    reel.style.setProperty("--win",premier.hex);
-    reel.classList.add("locked");
-    wrap.style.setProperty("--flash",premier.hex);
-    $("yaTirageOk").hidden=false;
-    buzz([16,55,30]);
     save();
     renderYGame();
-  }
-  /* un tour de rouleau parmi les joueurs restants, arrêté sur `gagnant` :
-     les cases défilent dans l'ordre des restants, la dernière le porte */
-  function tourner(gagnant, dur, fin){
-    var m=restants.length, base=14+m;
-    var cells=base+((restants.indexOf(gagnant)-base)%m+m)%m;
-    strip.innerHTML="";
-    strip.style.transform="translateY(0)";
-    strip.style.filter="none";
-    reel.classList.remove("locked");
-    for(var i=0;i<=cells;i++){
-      var p=restants[i%m], c=el("div","cell");
-      c.style.setProperty("--c",p.hex);
-      c.appendChild(el("i"));
-      c.appendChild(el("span",null,p.label));
-      strip.appendChild(c);
-    }
-    function land(){
-      strip.style.filter="none";
-      strip.style.transform="translateY("+(-cells*YA_CELL)+"px)";
-      void reel.offsetWidth;          /* relance l'animation de verrouillage */
-      reel.style.setProperty("--win",gagnant.hex);
-      reel.classList.add("locked");
-      wrap.style.setProperty("--flash",gagnant.hex);
-      buzz(14);
-      if(reduce) fin(); else setTimeout(fin, 520);
-    }
-    if(reduce){ land(); return; }
-    var t0=null, prev=0, idx=-1;
-    function frame(now){
-      if(t0===null) t0=now;
-      var prog=Math.min(1,(now-t0)/dur);
-      var off=(1-Math.pow(1-prog,4))*cells*YA_CELL;
-      var v=off-prev; prev=off;
-      strip.style.transform="translateY("+(-off)+"px)";
-      strip.style.filter = v>1.5 ? "blur("+Math.min(5,v*0.22)+"px)" : "none";
-      var k=Math.round(off/YA_CELL);
-      if(k!==idx){
-        idx=k;
-        wrap.style.setProperty("--flash",restants[k%m].hex);
-        if(v<14) buzz(3);      /* le cliquetis n'apparaît qu'au ralenti */
-      }
-      if(prog<1) requestAnimationFrame(frame); else land();
-    }
-    requestAnimationFrame(frame);
-  }
-  suivant();
-}
-function yaFermerTirage(){
-  if(!yaTirageFini) return;
-  var wrap=$("yaTirage");
-  wrap.hidden=true;
-  wrap.classList.remove("on");
+  });
 }
 
 /* --- feuille de match -------------------------------------------- */
@@ -5043,7 +4979,6 @@ $("yaEffacer").addEventListener("click",function(){
 });
 $("yaValider").addEventListener("click",yaValider);
 $("yaTirer").addEventListener("click",yaTirer);
-$("yaTirage").addEventListener("click",yaFermerTirage);
 
 $("yaSheetBtn").addEventListener("click",yaOuvrirFeuille);
 $("yaSheetClose").addEventListener("click",yaFermerFeuille);
@@ -5211,6 +5146,7 @@ fr:{
   "toss.who":"Qui lance en premier",
   "toss.running":"Tirage en cours",
   "toss.result":"{name} lance en premier",
+  "order.draw":"Tirer l'ordre", "order.who":"Ordre de jeu", "order.first":"{name} commence", "order.ok":"C'est parti",
   "sheet.title":"Feuille de match",
   "sheet.frame":"Manche",
   "sheet.empty":"Aucune manche jouée pour l'instant.",
@@ -5340,6 +5276,7 @@ en:{
   "toss.who":"Who throws first",
   "toss.running":"Tossing",
   "toss.result":"{name} throws first",
+  "order.draw":"Draw order", "order.who":"Playing order", "order.first":"{name} goes first", "order.ok":"Let's play",
   "sheet.title":"Scorecard",
   "sheet.frame":"Frame",
   "sheet.empty":"No frames played yet.",
@@ -5469,6 +5406,7 @@ es:{
   "toss.who":"Quién lanza primero",
   "toss.running":"Sorteando",
   "toss.result":"{name} lanza primero",
+  "order.draw":"Sortear orden", "order.who":"Orden de juego", "order.first":"Empieza {name}", "order.ok":"¡A jugar!",
   "sheet.title":"Hoja de puntuación",
   "sheet.frame":"Ronda",
   "sheet.empty":"Todavía no se ha jugado ninguna ronda.",
@@ -6238,8 +6176,6 @@ fr:{
   "ya.record":"Record du palmarès",
   "ya.rank":"Classement",
   "ya.again":"Rejouer",
-  "ya.draw":"Tirer l'ordre au sort", "ya.draw.who":"Ordre de jeu",
-  "ya.draw.first":"{name} commence", "ya.draw.ok":"C'est parti",
   "ya.records":"Meilleurs scores",
   "yrules.upper":"Le haut",
   "yrules.upper.sum":"As à Six : la somme des dés de ce chiffre",
@@ -6308,8 +6244,6 @@ en:{
   "ya.record":"New record",
   "ya.rank":"Standings",
   "ya.again":"Play again",
-  "ya.draw":"Draw the order", "ya.draw.who":"Playing order",
-  "ya.draw.first":"{name} goes first", "ya.draw.ok":"Let's play",
   "ya.records":"High scores",
   "yrules.upper":"Upper section",
   "yrules.upper.sum":"Aces to Sixes: the sum of the dice showing that number",
@@ -6378,8 +6312,6 @@ es:{
   "ya.record":"Récord del historial",
   "ya.rank":"Clasificación",
   "ya.again":"Volver a jugar",
-  "ya.draw":"Sortear el orden", "ya.draw.who":"Orden de juego",
-  "ya.draw.first":"Empieza {name}", "ya.draw.ok":"¡A jugar!",
   "ya.records":"Mejores puntuaciones",
   "yrules.upper":"Arriba",
   "yrules.upper.sum":"Unos a Seises: la suma de los dados de ese número",
@@ -7132,6 +7064,132 @@ function renderGame(rebuild, gains){
   $("undo").disabled = !G.rounds.length;
 }
 
+/* ------------------------------------------------------------------
+   Tirage au sort de l'ordre de jeu
+
+   Pour les jeux à tour de rôle. Le rouleau du tirage du cornhole
+   s'arrête sur l'un des participants qui restent, qui prend la place
+   suivante, et la liste se construit rang par rang ; le dernier n'a pas
+   besoin de tirage. Le jeu fournit ses participants — { label, hex } — et
+   reçoit l'ordre une fois tiré en entier : fermer l'application pendant
+   le rouleau laisse sa partie telle qu'elle était.
+------------------------------------------------------------------ */
+var ORDRE_CELL = 72;       /* hauteur d'une case du rouleau, cf. .cell */
+var ordreFini = true;
+
+function tirerOrdre(participants, fin){
+  if(!ordreFini || !participants || participants.length<2) return;
+  ordreFini=false;
+  var restants=participants.slice(), ordre=[];
+  var wrap=$("ordreWrap"), strip=$("ordreStrip"), reel=$("ordreReel"), liste=$("ordreListe"), out=$("ordreOut");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  liste.innerHTML="";
+  strip.innerHTML="";
+  out.textContent=t("toss.running");
+  $("ordreOk").hidden=true;
+  reel.classList.remove("locked");
+  wrap.style.setProperty("--flash", restants[0].hex);
+  wrap.hidden=false;
+  wrap.classList.add("on");
+
+  function cellule(p){
+    var c=el("div","cell");
+    c.style.setProperty("--c",p.hex);
+    c.appendChild(el("i"));
+    c.appendChild(el("span",null,p.label));
+    return c;
+  }
+  function verrouiller(p){
+    reel.classList.remove("locked");
+    void reel.offsetWidth;          /* relance l'animation de verrouillage */
+    reel.style.setProperty("--win",p.hex);
+    reel.classList.add("locked");
+    wrap.style.setProperty("--flash",p.hex);
+  }
+  function placer(p){
+    ordre.push(p);
+    restants.splice(restants.indexOf(p),1);
+    var li=el("li");
+    li.style.setProperty("--c",p.hex);
+    li.appendChild(el("span","n num",String(ordre.length)));
+    li.appendChild(el("i"));
+    li.appendChild(el("b",null,p.label));
+    liste.appendChild(li);
+  }
+  function suivant(){
+    if(restants.length===1){ placer(restants[0]); finir(); return; }
+    var gagnant=restants[Math.floor(Math.random()*restants.length)];
+    tourner(gagnant, ordre.length ? 950 : 1700, function(){ placer(gagnant); suivant(); });
+  }
+  function finir(){
+    var premier=ordre[0];
+    out.innerHTML="";
+    var parts=tf("order.first",{name:" "}).split(" ");
+    out.appendChild(document.createTextNode(parts[0]||""));
+    var b=el("b",null,premier.label);
+    b.style.color="color-mix(in oklab,"+premier.hex+" 62%,var(--tone))";
+    out.appendChild(b);
+    out.appendChild(document.createTextNode(parts[1]||""));
+    /* le rouleau finit sur celui qui commence, pas sur le dernier tiré */
+    strip.innerHTML="";
+    strip.style.transform="translateY(0)";
+    strip.style.filter="none";
+    strip.appendChild(cellule(premier));
+    verrouiller(premier);
+    $("ordreOk").hidden=false;
+    ordreFini=true;
+    buzz([16,55,30]);
+    fin(ordre);
+  }
+  /* un tour de rouleau parmi les restants, arrêté sur `gagnant` : les
+     cases défilent dans leur ordre, la dernière le porte */
+  function tourner(gagnant, dur, apres){
+    var m=restants.length, base=14+m;
+    var cells=base+((restants.indexOf(gagnant)-base)%m+m)%m;
+    strip.innerHTML="";
+    strip.style.transform="translateY(0)";
+    strip.style.filter="none";
+    reel.classList.remove("locked");
+    for(var i=0;i<=cells;i++) strip.appendChild(cellule(restants[i%m]));
+
+    function land(){
+      strip.style.filter="none";
+      strip.style.transform="translateY("+(-cells*ORDRE_CELL)+"px)";
+      verrouiller(gagnant);
+      buzz(14);
+      if(reduce) apres(); else setTimeout(apres, 520);
+    }
+    if(reduce){ land(); return; }
+    var t0=null, prev=0, idx=-1;
+    function frame(now){
+      if(t0===null) t0=now;
+      var prog=Math.min(1,(now-t0)/dur);
+      var off=(1-Math.pow(1-prog,4))*cells*ORDRE_CELL;
+      var v=off-prev; prev=off;
+      strip.style.transform="translateY("+(-off)+"px)";
+      strip.style.filter = v>1.5 ? "blur("+Math.min(5,v*0.22)+"px)" : "none";
+      var k=Math.round(off/ORDRE_CELL);
+      if(k!==idx){
+        idx=k;
+        wrap.style.setProperty("--flash",restants[k%m].hex);
+        if(v<14) buzz(3);      /* le cliquetis n'apparaît qu'au ralenti */
+      }
+      if(prog<1) requestAnimationFrame(frame); else land();
+    }
+    requestAnimationFrame(frame);
+  }
+  suivant();
+}
+
+/* Le tirage se referme d'un toucher, ou par « C'est parti », une fois
+   l'ordre tiré ; pendant le rouleau, rien ne le ferme. */
+function fermerOrdre(){
+  if(!ordreFini) return;
+  var wrap=$("ordreWrap");
+  wrap.hidden=true;
+  wrap.classList.remove("on");
+}
+$("ordreWrap").addEventListener("click",fermerOrdre);
 /* ------------------------------------------------------------------
    Feuille de match
 ------------------------------------------------------------------ */
@@ -8488,7 +8546,7 @@ function retourAndroid(){
   var tirage=$("tossWrap");
   if(tirage && !tirage.hidden) return true;   /* le tirage au sort se termine seul */
 
-  var fiches=[["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
+  var fiches=[["ordreWrap","ordreOk"], ["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
   var ecrans=[["s-hall","hallBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"], ["s-cat","catBack"]];
   ORDRE_JEUX.forEach(function(id){
     var r=JEUX[id].retour;

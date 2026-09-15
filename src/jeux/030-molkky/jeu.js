@@ -312,6 +312,19 @@ function mAfterChange(){
   }
 }
 
+/* L'ordre de jeu se tire au sort avant le premier lancer, une seule fois ;
+   en équipes, ce sont les équipes qui sont tirées. */
+function mTirer(){
+  if(!M || M.tire || M.throws.length || M.over) return;
+  tirerOrdre(M.players, function(ordre){
+    M.players=ordre;
+    M.tire=true;
+    mRecompute();
+    save();
+    renderMGame();
+  });
+}
+
 /* --- rendu de la partie ------------------------------------------ */
 function buildMPad(){
   var host=$("mkPad");
@@ -337,6 +350,10 @@ function renderMGame(){
     ? tf("mk.done",{n:M.throws.length})
     : (membre ? tf("mk.turn.team",{team:nom, name:membre}) : tf("mk.turn",{name:nom}));
   $("mkTargetLabel").textContent = t("game.target")+" "+M.target;
+  /* l'ordre de jeu se tire au sort avant le premier lancer, une seule fois */
+  var tirable = !M.over && !M.tire && !M.throws.length && M.players.length>1;
+  $("mkTirer").hidden = !tirable;
+  $("mkTargetLabel").hidden = tirable;
 
   var host=$("mkList");
   host.innerHTML="";
@@ -669,6 +686,7 @@ $("mkPerPlus").addEventListener("click",function(){
   if(MS.per<MK_PER_MAX){ MS.per++; MS.open=-1; renderMSetup(); save(); }
 });
 $("mkStart").addEventListener("click",mNewGame);
+$("mkTirer").addEventListener("click",mTirer);
 $("mkOpenLayout").addEventListener("click",mOpenLayout);
 $("mkLayoutBtn").addEventListener("click",mOpenLayout);
 $("mkLayoutClose").addEventListener("click",mCloseLayout);
@@ -724,6 +742,7 @@ function normM(m){
   if(!m.throws) m.throws=[];
   if(!m.mode) m.mode="solo";
   if(!m.per) m.per=MK_PER_MIN;
+  m.tire=!!m.tire;
   return m;
 }
 

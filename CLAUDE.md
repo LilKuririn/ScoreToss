@@ -40,7 +40,8 @@ l'en-tête décrit le contrat complet.
 Un jeu à deux camps (famille `duel`) réutilise préparation, console, feuille de match, écran de
 fin et tournois en fournissant ses calculs, comme le cornhole et le palet. Un jeu à tour de rôle
 apporte ses propres écrans et son état, comme le mölkky — et déclare, dans `retour`, ce que
-ferme le bouton retour d'Android sur ses fiches et ses écrans.
+ferme le bouton retour d'Android sur ses fiches et ses écrans. Il peut proposer le tirage au sort
+de l'ordre de jeu : `tirerOrdre(participants, fin)`, dans `src/js/065-tirage-ordre.js`.
 
 Restent partagés pour l'instant, et donc à toucher pour certains jeux : le format enregistré des
 parties à deux camps (`S.palets`, `G.max`) et les seuls formats simple et double.
@@ -49,7 +50,7 @@ Un nouveau jeu ajoute enfin son parcours au banc, dans `tools/banc/scenarios.js`
 
 ## Vérifier une refonte : le banc de comparaison
 
-`tools/banc/` joue dix-neuf parcours réels — les cinq jeux, tournois, palmarès, réglages, reprise,
+`tools/banc/` joue vingt et un parcours réels — les cinq jeux, tournois, palmarès, réglages, reprise,
 import, petit écran, catégories — sur deux versions de l'application, et compare ce qui s'affiche vraiment :
 chaque élément visible, sa place, ses couleurs, son texte, plus l'état enregistré. Le hasard,
 l'heure et les animations sont figés : une version comparée à elle-même donne zéro différence.

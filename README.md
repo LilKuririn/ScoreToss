@@ -32,6 +32,11 @@ vainqueur de la précédente, correction après coup, tournois et palmarès — 
 manche et les règles changent. Le mölkky, les fléchettes et le yams, qui ne se jouent pas à deux
 camps, ont chacun leurs propres écrans.
 
+**Tirage au sort.** Au cornhole et au palet, il désigne l'équipe qui lance en premier. Au mölkky, aux
+fléchettes et au yams, un bouton tire **l'ordre de jeu** avant le premier lancer : le même rouleau
+s'arrête sur un joueur, puis sur un autre parmi ceux qui restent, et la liste se construit rang par
+rang. En équipes, ce sont les équipes qui sont tirées.
+
 **Simple (1v1) ou double (2v2).** Nom d'équipe, noms des joueurs, couleur au choix parmi neuf.
 Passer d'un mode à l'autre repart de noms vides, un joueur n'étant pas une équipe.
 
@@ -196,9 +201,6 @@ correspondent pas, elle vaut 0.
 dés ; chaque case libre affiche aussitôt ce qu'elle rapporterait, les cases à 0 en retrait. On
 choisit la case, et le bouton dit ce qui sera inscrit — « Inscrire 25 · Full » ou « Barrer Yams · 0 ».
 Toucher un dé saisi le retire.
-
-Avant le premier tour, un bouton **tire l'ordre au sort** : le rouleau du cornhole s'arrête sur un
-joueur, puis sur un autre parmi ceux qui restent, et la liste se construit rang par rang.
 
 La fiche du joueur tient sur un écran : le haut à gauche avec son sous-total vers 63 et le bonus, le
 bas à droite avec le total. La feuille de match montre toutes les fiches côte à côte ; toucher une
