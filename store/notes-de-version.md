@@ -127,6 +127,39 @@ Corrigé : la feuille de match retrouve ses colonnes, et deux réglages n'appara
 
 ---
 
+## Version 4.0 — catégories, fléchettes et yams
+
+Nom de release, jamais montré aux utilisateurs : `4.0 — Catégories, fléchettes, yams`
+
+Rassemble tout ce qui est arrivé depuis la 3.0 : les catégories et le nouveau nom, les fléchettes, le
+yams, le tirage au sort de l'ordre de jeu et la nouvelle icône de l'application.
+
+### en-US *(392 / 500)*
+
+```
+New look: ScoreToss now keeps score for outdoor, indoor and board games, with a new icon. Pick a category, then a game.
+
+New: Darts, 501 or 301 double out. Aim right on the dartboard, the dart sits just above your finger.
+
+New: Yams. Enter your 5 dice and every box shows what it would score. 1 to 8 players, with high scores.
+
+New: draw the playing order at random in Mölkky, Darts and Yams.
+```
+
+### fr-FR *(471 / 500)*
+
+```
+Nouvelle formule : ScoreToss compte les points des jeux d'extérieur, d'intérieur et de société, avec une nouvelle icône. On choisit une catégorie, puis un jeu.
+
+Nouveau : les fléchettes, en 501 ou 301 double out. On vise sur la cible, la fléchette juste au-dessus du doigt.
+
+Nouveau : le yams. On saisit ses 5 dés, chaque case affiche ce qu'elle rapporte. De 1 à 8 joueurs, avec les records.
+
+Nouveau : l'ordre de jeu se tire au sort au mölkky, aux fléchettes et au yams.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche

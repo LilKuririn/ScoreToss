@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------
    À propos
 ------------------------------------------------------------------ */
-var APP_VERSION = "3.0";
+var APP_VERSION = "4.0";
 
 /* Page de soutien. La vider fait disparaître la ligne dans À propos —
    mieux vaut rien qu'un lien mort.
