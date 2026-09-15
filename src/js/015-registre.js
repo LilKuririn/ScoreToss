@@ -48,6 +48,8 @@
      ouvrir()                  son ouverture depuis l'accueil
      ecrans                    ses écrans, identifiants sans le préfixe s-
      lienPalmares              l'identifiant de son bouton vers le palmarès
+     records                   la clé du titre des meilleurs scores, que le
+                               palmarès affiche pour un jeu qui se joue aussi seul
      auChangementDEcran(nom)   ce qu'il ferme ou rafraîchit quand l'écran change
      sauver(o)                 ce qu'il ajoute à l'état enregistré
      charger(d), importer(d)   le relire au démarrage, ou d'une sauvegarde

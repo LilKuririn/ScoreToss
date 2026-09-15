@@ -1,7 +1,7 @@
 {
   "name": "ScoreToss — Compteur de points",
   "short_name": "ScoreToss",
-  "description": "Compteur de points pour les jeux d'extérieur, d'intérieur et de société : cornhole, palet breton, mölkky et fléchettes, en simple, en double, en équipes et en tournoi.",
+  "description": "Compteur de points pour les jeux d'extérieur, d'intérieur et de société : cornhole, palet breton, mölkky, fléchettes et yams, en simple, en double, en équipes et en tournoi.",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",

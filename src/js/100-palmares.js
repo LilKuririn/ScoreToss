@@ -56,13 +56,14 @@ function tagEl(tags,name){
 function standings(){
   var map={}, order=[];
   HG().forEach(function(g){
+    if(g.n.length<2) return;      /* seul, on ne gagne contre personne */
     for(var i=0;i<g.n.length;i++){
       var k=nameKey(g.n[i]);
       if(!k) continue;
       if(!map[k]){ map[k]={label:g.n[i], hex:g.c[i], v:0, d:0}; order.push(k); }
       var m=map[k];
       m.label=g.n[i]; m.hex=g.c[i];
-      if(g.w===i) m.v++; else m.d++;
+      if(g.w===i) m.v++; else if(g.w>=0) m.d++;   /* une égalité ne compte ni pour ni contre */
     }
   });
   var list=order.map(function(k){ return map[k]; });
@@ -76,6 +77,7 @@ function duels(){
   var map={}, order=[];
   HG().forEach(function(g){
     if(g.n.length!==2) return;   /* une confrontation se joue à deux */
+    if(g.w<0) return;            /* une égalité ne départage personne */
     var ka=nameKey(g.n[0]), kb=nameKey(g.n[1]);
     if(!ka || !kb || ka===kb) return;
     var flip = kb<ka;
@@ -156,6 +158,27 @@ function renderHall(){
     body.appendChild(bd);
   }
 
+  /* meilleurs scores : un jeu qui se joue aussi seul les déclare */
+  var titreRecords=jeu(S.game).records;
+  if(titreRecords){
+    var scores=[];
+    HG().forEach(function(g){
+      g.n.forEach(function(nom,i){ scores.push({n:nom, s:g.s[i], d:g.d}); });
+    });
+    scores.sort(function(a,b){ return (b.s-a.s) || (a.d-b.d); });
+    var bs=blockOf(t(titreRecords));
+    scores.slice(0,5).forEach(function(x){
+      var row=el("div","rec");
+      row.appendChild(el("p","d", new Date(x.d).toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric",month:"short"})));
+      var mr=el("p","m");
+      mr.appendChild(el("b",null,x.n));
+      row.appendChild(mr);
+      row.appendChild(el("p","sc",String(x.s)));
+      bs.appendChild(row);
+    });
+    body.appendChild(bs);
+  }
+
   /* classement */
   var st=standings();
   var br=blockOf(t("hall.standings"));
@@ -181,12 +204,12 @@ function renderHall(){
     tr.appendChild(td);
     tr.appendChild(el("td",null,String(m.v)));
     tr.appendChild(el("td",null,String(m.d)));
-    tr.appendChild(el("td","pct", Math.round(m.v/(m.v+m.d)*100)+" %"));
+    tr.appendChild(el("td","pct", (m.v+m.d) ? Math.round(m.v/(m.v+m.d)*100)+" %" : "—"));
     tb.appendChild(tr);
   });
   table.appendChild(tb);
   br.appendChild(table);
-  body.appendChild(br);
+  if(st.length) body.appendChild(br);
 
   /* dernières parties */
   var bl=blockOf(t("hall.recent"));
@@ -195,7 +218,12 @@ function renderHall(){
     var dt=new Date(g.d);
     row.appendChild(el("p","d", dt.toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric",month:"short"})));
     var m=el("p","m");
-    if(g.n.length===2){
+    if(g.w<0){
+      /* une égalité : personne n'est nommé vainqueur */
+      m.appendChild(el("b",null,t("hall.tie")));
+      row.appendChild(m);
+      row.appendChild(el("p","sc", String(Math.max.apply(null,g.s))));
+    }else if(g.n.length===2){
       var mp=tf("hall.beat",{w:"\u0000",l:"\u0001"}).split(/[\u0000\u0001]/);
       m.appendChild(document.createTextNode(mp[0]||""));
       m.appendChild(el("b",null,g.n[g.w]));

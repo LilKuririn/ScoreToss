@@ -264,7 +264,8 @@ scenario("petit-ecran", async function(a){
 
 scenario("categories", async function(a){
   a.point("accueil");
-  await a.clic('#categories [data-categorie="societe"]');      a.point("catégorie sans jeu : rien ne s'ouvre");
+  await a.clic('#categories [data-categorie="societe"]');      a.point("liste de la société");
+  await a.clic("#catBack");
   await a.clic('#categories [data-categorie="exterieur"]');    a.point("liste de l'extérieur");
   await a.clic("#playPalet");
   await a.clic("#backToGames");                                a.point("changer de jeu depuis le palet");
@@ -332,4 +333,72 @@ scenario("flechettes-doigt", async function(a){
   await a.attendre(40);                                        a.point("visée au doigt, fléchette affichée");
   q.dispatchEvent(new w.PointerEvent("pointerup", o));
   await a.attendre(40);                                        a.point("T20 comptée, fléchette plantée");
+}, [360,640]);
+
+/* --- yams : on saisit les cinq dés du lancer, puis on choisit la case --- */
+async function yamsDes(a, des){
+  for(var i=0;i<des.length;i++){ a.q("#yaPave").children[des[i]-1].click(); await a.attendre(15); }
+}
+async function yamsCase(a, nom){
+  var b=[].slice.call(a.d.querySelectorAll("#yaFiche .ya-case")).find(function(x){ return x.querySelector(".lab").textContent===nom; });
+  if(!b) throw new Error("case "+nom+" introuvable");
+  b.click();
+  await a.attendre(15);
+}
+async function yamsTour(a, des, nom){ await yamsDes(a, des); await yamsCase(a, nom); await a.clic("#yaValider"); }
+/* treize tours qui remplissent le haut à 63 pile : bonus, et 326 points */
+var YAMS_FICHE = [
+  [[1,1,1,2,3],"As"], [[2,2,2,1,3],"Deux"], [[3,3,3,1,2],"Trois"], [[4,4,4,1,2],"Quatre"],
+  [[5,5,5,1,2],"Cinq"], [[6,6,6,1,2],"Six"], [[6,6,6,5,5],"Brelan"], [[6,6,6,6,5],"Carré"],
+  [[2,2,3,3,3],"Full"], [[1,2,3,4,6],"Petite suite"], [[2,3,4,5,6],"Grande suite"],
+  [[4,4,4,4,4],"Yams"], [[6,6,5,5,4],"Chance"]
+];
+
+scenario("yams-partie", async function(a){
+  await a.clic('#categories [data-categorie="societe"]');      a.point("liste de la société");
+  await a.clic("#playYams");                                   a.point("préparation");
+  await a.clic("#yaOpenRules");                                a.point("règles du yams");
+  await a.clic("#rulesClose");
+  await a.clic("#yaStart");                                    a.point("partie neuve");
+  await yamsDes(a,[3,5,3]);                                    a.point("trois dés saisis");
+  await yamsDes(a,[5,3]);                                      a.point("points possibles");
+  await yamsCase(a,"Full");                                    a.point("full choisi");
+  await a.clic("#yaValider");                                  a.point("au joueur 2");
+  await yamsDes(a,[2,6,2,6,4]); await yamsCase(a,"Yams");      a.point("case barrée proposée");
+  await a.clic("#yaValider");
+  await a.clic("#yaSheetBtn");                                 a.point("feuille de match");
+  await a.clic("#yaUndo");                                     a.point("dernier tour annulé, dés rendus");
+  await yamsCase(a,"Chance"); await a.clic("#yaValider");
+  await a.clic("#yaSheetBtn");
+  await a.clicN("#yaSheetBody .ya-cell", 0);                   a.point("éditeur");
+  await a.clicN("#yaSheetBody .ya-des .ya-slot.plein", 4);
+  await a.clicN("#yaSheetBody .ya-pave .ya-touche", 2);
+  var carre=[].slice.call(a.d.querySelectorAll("#yaSheetBody .ya-chip")).find(function(x){ return x.textContent.indexOf("Carré")===0; });
+  carre.click(); await a.attendre(20);                         a.point("correction préparée");
+  await a.clic("#yaEdSave"); await a.attendre(80);             a.point("correction rejouée");
+  await a.clic("#yaQuit", 2);                                  a.point("partie arrêtée");
+  await a.clic("#yaStart");
+  for(var k=0;k<13;k++){
+    await yamsTour(a, YAMS_FICHE[k][0], YAMS_FICHE[k][1]);
+    await yamsTour(a, YAMS_FICHE[k][0], YAMS_FICHE[k][1]);
+    if(k===5) a.point("bonus atteint");
+  }
+  await finDePartie(a);                                        a.point("égalité à 326");
+  await a.clic("#over .cta.ghost");
+  await a.clic("#yaHall");                                     a.point("palmarès : égalité et meilleurs scores");
+});
+
+scenario("yams-seul", async function(a){
+  await a.clic('#categories [data-categorie="societe"]');
+  await a.clic("#playYams");
+  await a.clic("#yaMinus");                                    a.point("un seul joueur");
+  await a.clic("#yaStart");                                    a.point("partie seule sur petit écran");
+  for(var k=0;k<6;k++) await yamsTour(a, YAMS_FICHE[k][0], YAMS_FICHE[k][1]);
+  await yamsDes(a,[6,6,6]);
+  await a.recharger();                                         a.point("reprise en plein tour");
+  await yamsDes(a,[5,5]); await yamsCase(a,"Brelan"); await a.clic("#yaValider");
+  for(k=7;k<13;k++) await yamsTour(a, YAMS_FICHE[k][0], YAMS_FICHE[k][1]);
+  await finDePartie(a);                                        a.point("fin de partie seule");
+  await a.clic("#over .cta.ghost");
+  await a.clic("#yaHall");                                     a.point("palmarès d'un joueur seul");
 }, [360,640]);

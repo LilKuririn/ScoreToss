@@ -4,8 +4,8 @@
 
 # ScoreToss — Compteur de points
 
-Compteur de points pour les jeux d'extérieur — **cornhole**, **palet breton**, **mölkky** — et
-d'intérieur — **fléchettes**.
+Compteur de points pour les jeux d'extérieur — **cornhole**, **palet breton**, **mölkky** —,
+d'intérieur — **fléchettes** — et de société — **yams**.
 
 Conçu pour être lu d'un coup d'œil depuis l'autre planche, et utilisé debout dans un jardin : deux
 grands chiffres, chacun dans la couleur de son équipe, et rien d'autre qui réclame l'attention
@@ -29,8 +29,8 @@ En local, ouvrir [`index.html`](index.html) dans un navigateur suffit.
 L'accueil propose d'abord une catégorie — extérieur, intérieur, société —, puis ses jeux. Le
 cornhole et le palet partagent tout : manches successives, honneur au
 vainqueur de la précédente, correction après coup, tournois et palmarès — seules la saisie d'une
-manche et les règles changent. Le mölkky et les fléchettes, qui ne se jouent pas à deux camps, ont
-chacun leurs propres écrans.
+manche et les règles changent. Le mölkky, les fléchettes et le yams, qui ne se jouent pas à deux
+camps, ont chacun leurs propres écrans.
 
 **Simple (1v1) ou double (2v2).** Nom d'équipe, noms des joueurs, couleur au choix parmi neuf.
 Passer d'un mode à l'autre repart de noms vides, un joueur n'étant pas une équipe.
@@ -67,7 +67,7 @@ Le tournoi et la partie en cours sont sauvegardés séparément : un 1v1 improvi
 le tableau commencé. Et rien n'oblige à aller au bout — on peut repartir d'un nouveau tableau ou
 abandonner, en deux appuis pour éviter la fausse manœuvre.
 
-Le mölkky et les fléchettes n'ont pas de tableau. **Chacun des deux autres a le sien**, et son brouillon. Un tournoi de cornhole en cours n'allume
+Le mölkky, les fléchettes et le yams n'ont pas de tableau. **Chacun des deux autres a le sien**, et son brouillon. Un tournoi de cornhole en cours n'allume
 pas la pastille du bouton quand on passe au palet, et les noms d'équipes saisis d'un côté ne
 réapparaissent pas de l'autre. Les deux peuvent tourner en même temps sans se gêner.
 
@@ -80,10 +80,13 @@ entre deux barbecues : **qui mène**.
 - **Classement** — victoires, défaites, ratio
 - **Dernières parties** — date, vainqueur, score
 
+Le yams, qui se joue aussi seul, ajoute ses **meilleurs scores**. Une partie seule ne compte pas au
+classement, et une égalité n'y compte ni pour ni contre personne.
+
 Au cornhole et au palet, une petite marque `1v1` ou `2v2` distingue les joueurs des équipes. Un nom apparu dans les deux
 formats n'en reçoit aucune : elle mentirait.
 
-Chaque jeu a son palmarès, mölkky et fléchettes compris : les victoires ne voyagent pas de l'un à l'autre.
+Chaque jeu a son palmarès, mölkky, fléchettes et yams compris : les victoires ne voyagent pas de l'un à l'autre.
 
 ## Les règles appliquées
 
@@ -171,6 +174,35 @@ et les tours qui suivent se recalculent.
 score. L'écran de fin classe les participants au score restant, avec la moyenne sur trois
 fléchettes, la meilleure volée et le nombre de busts.
 
+### Yams
+
+**Cinq dés, treize cases**, de **1 à 8 joueurs** — seul, pour battre son record. Chacun joue treize
+tours, trois lancers au plus, et doit remplir une case libre à la fin de chacun ; si les dés n'y
+correspondent pas, elle vaut 0.
+
+| Case | Condition | Points |
+| --- | --- | --- |
+| As à Six | — | somme des dés de ce chiffre |
+| Bonus | haut ≥ 63 | 35 |
+| Brelan | 3 dés identiques au moins | somme des 5 dés |
+| Carré | 4 dés identiques au moins | somme des 5 dés |
+| Full | 3 d'une valeur, 2 d'une autre | 25 |
+| Petite suite | 4 dés qui se suivent | 30 |
+| Grande suite | 5 dés qui se suivent | 40 |
+| Yams | 5 dés identiques | 50 |
+| Chance | aucune | somme des 5 dés |
+
+**On joue avec de vrais dés.** Après le dernier lancer, on touche les cinq faces sur un pavé de six
+dés ; chaque case libre affiche aussitôt ce qu'elle rapporterait, les cases à 0 en retrait. On
+choisit la case, et le bouton dit ce qui sera inscrit — « Inscrire 25 · Full » ou « Barrer Yams · 0 ».
+Toucher un dé saisi le retire.
+
+La fiche du joueur tient sur un écran : le haut à gauche avec son sous-total vers 63 et le bonus, le
+bas à droite avec le total. La feuille de match montre toutes les fiches côte à côte ; toucher une
+case remplie permet de corriger ses dés ou de la déplacer vers une case libre, et le dernier tour
+s'annule en rendant ses dés à la saisie. L'écran de fin détaille le haut, le bonus et le bas de
+chacun, et signale une égalité.
+
 ## Vos données restent chez vous
 
 Aucune donnée ne quitte le téléphone. Pas de compte, pas de serveur, pas de traceur, pas de
@@ -248,5 +280,5 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 
 ## Ce qui viendra
 
-La pétanque et le bibock en extérieur, le Tossit en intérieur, et le yams pour ouvrir les jeux de société.
+La pétanque et le bibock en extérieur, le Tossit en intérieur, et d'autres jeux de société après le yams.
 Les tournois en poules, quand l'élimination directe montrera ses limites.
