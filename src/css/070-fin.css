@@ -7,7 +7,7 @@
      l'écran dépasse la hauteur d'un téléphone et doit défiler. Centrer
      un contenu plus haut que sa boîte en rendrait le haut inatteignable. */
   flex:1;display:flex;flex-direction:column;
-  padding:22px 20px calc(16px + env(safe-area-inset-bottom));gap:16px;
+  padding:calc(22px + env(safe-area-inset-top)) 20px calc(16px + env(safe-area-inset-bottom));gap:16px;
   overflow-y:auto;
   background:radial-gradient(90% 60% at 50% 34%,color-mix(in oklab,var(--team) 16%,var(--bg)),var(--bg) 72%);
 }
