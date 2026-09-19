@@ -472,3 +472,60 @@ scenario("bibock-elimination", async function(a){
   await bibockBocks(a,2,false,4);                              a.point("B n'a plus de Bock");
   await a.clic("#biValider"); await finDePartie(a);            a.point("victoire par élimination");
 }, [360,640]);
+
+/* --- tossit : le gagnant, ses fléchettes collées et ses bonus --- */
+async function tossitPlus(a, lib, n){
+  for(var k=0;k<n;k++){
+    var row=[].slice.call(a.d.querySelectorAll("#tiCorps .ti-ligne")).find(function(r){ return r.querySelector(".lab span").textContent===lib; });
+    if(!row) throw new Error("ligne "+lib+" introuvable");
+    row.querySelector(".step").children[2].click();
+    await a.attendre(15);
+  }
+}
+async function tossitBascule(a, lib){
+  var b=[].slice.call(a.d.querySelectorAll("#tiCorps .ti-bascule")).find(function(x){ return x.querySelector("span").textContent===lib; });
+  if(!b) throw new Error("bonus "+lib+" introuvable");
+  b.click();
+  await a.attendre(15);
+}
+
+scenario("tossit-partie", async function(a){
+  await a.clic('#categories [data-categorie="interieur"]');     a.point("liste de l'intérieur");
+  await a.clic("#playTossit");                                  a.point("préparation");
+  await a.clic('#tiDarts .chip[data-darts="4"]'); await a.clic("#tiPlus"); a.point("3 joueurs, 4 fléchettes");
+  await a.clic("#tiOpenRules");                                 a.point("règles du tossit");
+  await a.clic("#rulesClose");
+  await a.clic("#tiStart");                                     a.point("partie neuve");
+  await a.clicN("#tiScores .ti-score", 1);                      a.point("gagnant choisi");
+  await tossitPlus(a,"Fléchettes collées",3); await tossitPlus(a,"Kiss",1); await tossitBascule(a,"Jackiss");
+  a.point("3 fléchettes, Kiss et Jackiss");
+  await a.clic("#tiValider");                                   a.point("manche 1");
+  await a.clicN("#tiTypes button", 3);                          a.point("Jack-0");
+  await a.clic("#tiValider");
+  await a.clicN("#tiTypes button", 2); await a.clicN("#tiScores .ti-score", 2); a.point("Jackoff");
+  await a.clic("#tiValider");
+  await a.clicN("#tiTypes button", 1); await a.clicN("#tiScores .ti-score", 0);
+  await tossitPlus(a,"Fléchettes lancées",2);                  a.point("Jackquake");
+  await a.clic("#tiValider");
+  await a.clicN("#tiScores .ti-score", 2); await tossitPlus(a,"Fléchettes collées",1); await tossitBascule(a,"Par-dessus");
+  a.point("Sautez par-dessus");
+  await a.clic("#tiValider");                                   a.point("les autres à zéro");
+  await a.clic("#tiSheetBtn");                                  a.point("feuille de match");
+  await a.clicN("#tiSheetBody tbody tr", 0);                    a.point("éditeur");
+  await a.clic("#tiEdSave"); await a.attendre(80);
+  await a.clic("#tiUndo"); await a.attendre(80);                a.point("dernière manche annulée");
+  await a.clic("#tiValider");
+  await a.clicN("#tiScores .ti-score", 2); await tossitPlus(a,"Fléchettes collées",2);
+  await a.clic("#tiValider"); await finDePartie(a);            a.point("victoire à 13");
+  await a.clic("#over .cta.ghost");
+  await a.clic("#tiHall");                                      a.point("palmarès du tossit");
+});
+
+scenario("tossit-jackover", async function(a){
+  await a.clic('#categories [data-categorie="interieur"]');
+  await a.clic("#playTossit");
+  await a.clic('#tiMode button[data-mode="team"]');
+  await a.clic("#tiStart");                                     a.point("partie en équipes");
+  await a.clicN("#tiScores .ti-score", 0); await tossitBascule(a,"Jackover"); a.point("Jackover");
+  await a.clic("#tiValider"); await finDePartie(a);            a.point("victoire par Jackover");
+}, [360,640]);

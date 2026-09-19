@@ -1,0 +1,124 @@
+/* ============ TOSSIT ============ */
+.ti-rows{display:flex;flex-direction:column}
+.ti-mates{margin-top:8px}
+.trow + .ti-mates{margin-top:8px}
+.ti-mates + .trow,.ti-mates + .trow-sw{margin-top:8px}
+
+/* La bande des joueurs : toucher un joueur le désigne gagnant de la
+   manche. Celui qui lance le jack porte son badge. */
+.ti-scores{display:flex;gap:7px;overflow-x:auto;padding:12px 14px 4px;scrollbar-width:none}
+.ti-scores::-webkit-scrollbar{display:none}
+.ti-score{
+  --c:#E14434;
+  flex:1 0 104px;min-width:0;
+  display:flex;flex-direction:column;gap:6px;
+  padding:9px 11px 10px;border-radius:12px;text-align:left;
+  background:var(--panel);border:1px solid var(--line);
+  transition:border-color .16s ease,background .16s ease;
+}
+.ti-score:disabled{cursor:default}
+.ti-score .haut{display:flex;align-items:center;gap:6px;min-width:0}
+.ti-score .dot{width:8px;height:8px;border-radius:50%;background:var(--c);flex:0 0 auto}
+.ti-score .who{font-size:13px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ti-score .bas{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ti-score .sc{font-size:26px;line-height:1;color:var(--ink)}
+.ti-jack{
+  flex:0 0 auto;padding:3px 6px;border-radius:20px;
+  font-family:var(--fm);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid var(--line-2);color:var(--muted);
+}
+.ti-mini{display:block;height:4px;border-radius:2px;background:var(--line-2);overflow:hidden}
+.ti-mini i{display:block;height:100%;border-radius:inherit;background:color-mix(in oklab,var(--c) 78%,var(--tone));transition:width .4s ease}
+.ti-score.on{
+  background:color-mix(in oklab,var(--c) 14%,var(--panel));
+  border-color:color-mix(in oklab,var(--c) 60%,transparent);
+}
+.ti-score.on .sc,.ti-score.win .sc{color:color-mix(in oklab,var(--c) 62%,var(--tone))}
+
+/* L'aperçu de la manche : qui marque, son score avant et après, et ce que
+   la manche déclenche. */
+.ti-zone{flex:1;min-height:0;display:flex;align-items:center;padding:8px 14px}
+.ti-apercu{
+  --c:#8D999E;
+  width:100%;display:flex;flex-direction:column;gap:6px;
+  padding:14px 16px;border-radius:16px;
+  background:
+    radial-gradient(120% 150% at 100% 0%,color-mix(in oklab,var(--c) 22%,transparent),transparent 62%),
+    color-mix(in oklab,var(--c) 8%,var(--panel));
+  border:1px solid color-mix(in oklab,var(--c) 42%,transparent);
+}
+.ti-apercu.vide{background:transparent;border:1px dashed var(--line-2);align-items:center;text-align:center;gap:4px}
+.ti-apercu .consigne{font-size:15px;font-weight:600;color:var(--ink)}
+.ti-apercu .nom{display:flex;align-items:center;gap:8px;min-width:0;font-size:16px;font-weight:700;color:color-mix(in oklab,var(--c) 72%,var(--tone))}
+.ti-apercu .nom .dot{width:9px;height:9px;border-radius:50%;background:var(--c);flex:0 0 auto}
+.ti-apercu .nom span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ti-apercu .ligne{display:flex;align-items:baseline;gap:10px}
+.ti-apercu .avant{font-size:30px;color:var(--muted)}
+.ti-apercu .fleche{font-size:20px;color:var(--muted)}
+.ti-apercu .apres{font-size:clamp(46px,14vw,64px);line-height:.9;color:color-mix(in oklab,var(--c) 62%,var(--tone))}
+.ti-apercu .gain{margin-left:auto;font-size:17px;color:color-mix(in oklab,var(--c) 70%,var(--tone))}
+.ti-apercu .detail{font-size:13px;font-weight:600;color:var(--muted)}
+
+/* la console : comment la manche a fini, puis ce qu'elle rapporte */
+.ti-types{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--panel-2)}
+.ti-types button{
+  height:34px;padding:0 4px;border-radius:9px;
+  font-size:12px;font-weight:600;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ti-types button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 0 var(--line-2)}
+.ti-types button:disabled{opacity:.4}
+.ti-corps{display:flex;flex-direction:column;gap:8px}
+.ti-ligne{display:grid;grid-template-columns:1fr 120px;align-items:center;gap:8px}
+.ti-ligne .lab{display:flex;align-items:baseline;gap:7px;min-width:0;font-size:13.5px;font-weight:600;color:var(--ink)}
+.ti-ligne .lab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ti-ligne .lab b{flex:0 0 auto;font-family:var(--fm);font-size:11.5px;color:var(--muted)}
+.ti-bonus{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ti-bonus .ti-ligne{grid-template-columns:1fr;gap:5px}
+.ti-bascules{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ti-bascule{
+  height:42px;padding:0 6px;border-radius:10px;border:1px solid var(--line-2);
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  font-size:12.5px;font-weight:600;color:var(--muted);
+  transition:background .12s ease,border-color .12s ease,color .12s ease;
+}
+.ti-bascule span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ti-bascule b{flex:0 0 auto;font-family:var(--fm);font-size:11px}
+.ti-bascule.on{
+  background:color-mix(in oklab,var(--ink) 12%,var(--panel-2));
+  border-color:color-mix(in oklab,var(--ink) 45%,transparent);color:var(--ink);
+}
+.ti-aide{font-size:13px;line-height:1.5;color:var(--muted)}
+
+/* feuille de match et correction */
+.ti-log th:nth-child(2),.ti-log td:nth-child(2),.ti-log th:nth-child(3),.ti-log td:nth-child(3){text-align:left;padding-left:10px}
+.ti-log td.comment{font-size:12.5px;color:var(--muted);white-space:normal}
+.ti-log .qui{font-weight:600}
+.sheet-body .ti-types{margin-top:2px}
+.sheet-body .ti-corps{margin-top:4px}
+.ti-choix{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.ti-chip{
+  --c:#E14434;
+  display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:10px;
+  background:var(--panel-2);border:1px solid transparent;font-size:13px;font-weight:600;
+}
+.ti-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.ti-chip.on{
+  background:color-mix(in oklab,var(--c) 18%,var(--panel-2));
+  border-color:color-mix(in oklab,var(--c) 60%,transparent);
+}
+
+/* le classement de fin de partie */
+.ti-rang{width:100%;border-collapse:collapse;margin-top:4px}
+.ti-rang th{
+  font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);text-align:right;padding:0 0 6px 8px;
+}
+.ti-rang th:first-child{text-align:left;padding-left:0}
+.ti-rang td{padding:9px 0 9px 8px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px}
+.ti-rang td:first-child{text-align:left;padding-left:0}
+.ti-rang .who{display:flex;align-items:center;gap:7px;min-width:0;font-weight:600}
+.ti-rang .who i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.ti-rang .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ti-rang td.total{font-weight:800}
+.ti-rang tr.win td.total{color:var(--live)}

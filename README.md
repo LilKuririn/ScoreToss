@@ -5,7 +5,7 @@
 # ScoreToss — Compteur de points
 
 Compteur de points pour les jeux d'extérieur — **cornhole**, **palet breton**, **mölkky**, **bibock** —,
-d'intérieur — **fléchettes** — et de société — **yams**.
+d'intérieur — **fléchettes**, **tossit** — et de société — **yams**.
 
 Conçu pour être lu d'un coup d'œil depuis l'autre planche, et utilisé debout dans un jardin : deux
 grands chiffres, chacun dans la couleur de son équipe, et rien d'autre qui réclame l'attention
@@ -29,11 +29,11 @@ En local, ouvrir [`index.html`](index.html) dans un navigateur suffit.
 L'accueil propose d'abord une catégorie — extérieur, intérieur, société —, puis ses jeux. Le
 cornhole et le palet partagent tout : manches successives, honneur au
 vainqueur de la précédente, correction après coup, tournois et palmarès — seules la saisie d'une
-manche et les règles changent. Le mölkky, les fléchettes et le yams, qui ne se jouent pas à deux
+manche et les règles changent. Le mölkky, les fléchettes, le tossit et le yams, qui ne se jouent pas à deux
 camps, ont chacun leurs propres écrans.
 
 **Tirage au sort.** Au cornhole et au palet, il désigne l'équipe qui lance en premier. Au mölkky, aux
-fléchettes et au yams, un bouton tire **l'ordre de jeu** avant le premier lancer : le même rouleau
+fléchettes, au tossit et au yams, un bouton tire **l'ordre de jeu** avant le premier lancer : le même rouleau
 s'arrête sur un joueur, puis sur un autre parmi ceux qui restent, et la liste se construit rang par
 rang. En équipes, ce sont les équipes qui sont tirées.
 
@@ -91,7 +91,7 @@ classement, et une égalité n'y compte ni pour ni contre personne.
 Au cornhole et au palet, une petite marque `1v1` ou `2v2` distingue les joueurs des équipes. Un nom apparu dans les deux
 formats n'en reçoit aucune : elle mentirait.
 
-Chaque jeu a son palmarès, mölkky, fléchettes et yams compris : les victoires ne voyagent pas de l'un à l'autre.
+Chaque jeu a son palmarès : les victoires ne voyagent pas de l'un à l'autre.
 
 ## Les règles appliquées
 
@@ -205,6 +205,20 @@ et les tours qui suivent se recalculent.
 score. L'écran de fin classe les participants au score restant, avec la moyenne sur trois
 fléchettes, la meilleure volée et le nombre de busts.
 
+### Tossit
+
+Des fléchettes à ventouse sur une surface lisse, de **2 à 8 joueurs**, en individuel ou en équipes.
+On lance d'abord la fléchette noire, le **jack** ; le plus proche du jack gagne la manche et marque
+**1 point par fléchette collée**, les autres rien. Le gagnant lance le jack de la manche suivante.
+Premier à **13**, atteint ou dépassé. Seules les règles de base et les bonus sont suivis.
+
+On touche le gagnant dans la bande des joueurs, on compte ses fléchettes collées et on ajoute ses
+bonus d'un appui : **Kiss +2**, **French Kiss +3**, **Jackiss +3**, **Sautez par-dessus +9** — qui
+remet tous les adversaires à zéro — et le **Jackover**, victoire immédiate. Trois fins de manche
+ont leur onglet : **Jackquake** (+1 et 1 par fléchette lancée), **Jackoff** (+1 au plus proche avant
+la chute du jack) et **Jack-0** (+1 à celui qui a lancé le jack). Un aperçu montre le score avant et
+après la manche, et ce qu'elle déclenche.
+
 ### Yams
 
 **Cinq dés, treize cases**, de **1 à 8 joueurs** — seul, pour battre son record. Chacun joue treize
@@ -311,5 +325,5 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 
 ## Ce qui viendra
 
-La pétanque en extérieur, le Tossit en intérieur, et d'autres jeux de société après le yams.
+La pétanque en extérieur, et d'autres jeux de société après le yams.
 Les tournois en poules, quand l'élimination directe montrera ses limites.
