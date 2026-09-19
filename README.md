@@ -4,7 +4,7 @@
 
 # ScoreToss — Compteur de points
 
-Compteur de points pour les jeux d'extérieur — **cornhole**, **palet breton**, **mölkky** —,
+Compteur de points pour les jeux d'extérieur — **cornhole**, **palet breton**, **mölkky**, **bibock** —,
 d'intérieur — **fléchettes** — et de société — **yams**.
 
 Conçu pour être lu d'un coup d'œil depuis l'autre planche, et utilisé debout dans un jardin : deux
@@ -154,6 +154,25 @@ le maximum qu'une manche peut rapporter.
 La saisie s'en trouve simplifiée : une seule réglette par équipe, puisqu'une seule marque. Deux zéros
 valent manche nulle.
 
+### Bibock
+
+Deux équipes de **1 à 4 joueurs**, **huit Bocks** à deux faces — quatre par équipe au départ — et un
+**Maître**. C'est la face visible qui dit à qui appartient un Bock ; un Bock recouvert est **mangé**,
+celui du dessus imposant sa couleur à tout le groupe, et un Bock resté sur la tranche est neutre.
+
+Seule l'équipe la plus proche du Maître marque : **1 point par Bock** mieux placé que le meilleur
+adverse, un groupe comptant en entier, et **5 points par Bock à cheval sur le Maître**. La saisie
+tient en deux réglettes par équipe — *Proches ×1* et *Maître ×5* — et saisir pour l'une remet l'autre
+à zéro. À distance égale, ou avec un Bock de chaque sur le Maître, la manche est nulle.
+
+En fin de manche, on indique les **Bocks récupérés** par chaque équipe, mangés compris ; la réglette
+part des Bocks qu'elle avait, et le total ne dépasse jamais huit. L'équipe qui en a le plus commence
+la manche suivante, puis celle qui a le plus de points ; à égalité parfaite — toujours le cas à la
+première —, un bouton tire au sort qui commence.
+
+On gagne à **16 points**, ou **9** en express, ou **par élimination** : l'équipe qui n'a plus de Bock
+a perdu. Le règlement officiel dit « mène » ; l'application dit manche, comme partout.
+
 ### Fléchettes
 
 **501 ou 301, double out**, en une seule manche, de **2 à 8 participants**. Chacun part du score
@@ -285,5 +304,5 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 
 ## Ce qui viendra
 
-La pétanque et le bibock en extérieur, le Tossit en intérieur, et d'autres jeux de société après le yams.
+La pétanque en extérieur, le Tossit en intérieur, et d'autres jeux de société après le yams.
 Les tournois en poules, quand l'élimination directe montrera ses limites.

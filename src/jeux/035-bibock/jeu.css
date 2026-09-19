@@ -1,0 +1,28 @@
+/* ============ BIBOCK ============ */
+/* Il reprend les cartes d'équipe, les réglettes et la feuille du cornhole
+   et du palet ; ne s'ajoutent que les Bocks de chaque équipe et leur saisie. */
+.bi-equipes{display:flex;flex-direction:column}
+.bi-mates{margin-top:8px}
+.trow + .bi-mates{margin-top:8px}
+.bi-mates + .trow,.bi-mates + .trow-sw{margin-top:8px}
+
+/* les Bocks que l'équipe a en main, en petits losanges à sa couleur */
+.bi-stock{display:flex;align-items:center;gap:5px;margin-top:9px;min-height:12px}
+.bi-stock i{
+  width:9px;height:9px;border-radius:2px;flex:0 0 auto;
+  background:color-mix(in oklab,var(--team) 72%,var(--tone));
+  transform:rotate(45deg);
+}
+.bi-stock span{margin-left:5px;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--muted)}
+
+.bi-rows{display:flex;flex-direction:column;gap:8px}
+.bi-rec-titre{margin-top:2px}
+.bi-rec{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bi-rec-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bi-rec-col .who{display:flex;align-items:center;gap:6px;min-width:0}
+.bi-rec-col .who span{
+  font-size:12.5px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sheet-body .bi-rows{margin-top:8px}
+.sheet-body .bi-rec-titre{margin-top:14px;margin-bottom:8px}

@@ -429,3 +429,46 @@ scenario("molkky-tirage", async function(a){
   await a.clic("#ordreOk");                                    a.point("partie dans l'ordre tiré");
   await lancers(a,[6]);                                        a.point("le premier tiré a lancé");
 }, [360,640]);
+
+/* --- bibock : points des proches et du Maître, puis Bocks récupérés --- */
+function bibockPoint(a, equipe, colonne, n){
+  return a.clic("#biPoints .crow:nth-child("+equipe+") .step:nth-child("+(colonne+1)+") button:last-child", n);
+}
+function bibockBocks(a, equipe, plus, n){
+  return a.clic("#biRec .bi-rec-col:nth-child("+equipe+") .step button:"+(plus ? "last-child" : "first-child"), n);
+}
+
+scenario("bibock-partie", async function(a){
+  await a.clic('#categories [data-categorie="exterieur"]');
+  await a.clic("#playBibock");                                 a.point("préparation");
+  await a.clic("#biPerPlus");                                  a.point("2 contre 2");
+  await a.clic('#biCible .chip[data-cible="9"]');              a.point("express en 9");
+  await a.clic("#biOpenRules");                                a.point("règles du bibock");
+  await a.clic("#rulesClose");
+  await a.clic("#biStart");                                    a.point("partie neuve, tirage proposé");
+  await a.clic("#biTirer"); await a.attendre(60);              a.point("qui commence, tiré au sort");
+  await a.clic("#ordreOk");
+  await bibockPoint(a,1,1,2); await bibockPoint(a,1,2,1);      a.point("7 points pour A");
+  await bibockPoint(a,2,1,1);                                  a.point("B marque, A remis à zéro");
+  await bibockBocks(a,2,false,1); await bibockBocks(a,1,true,1); a.point("Bocks récupérés 5–3");
+  await a.clic("#biValider"); await a.attendre(80);            a.point("manche 1");
+  await a.clic("#biSheetBtn");                                 a.point("feuille de match");
+  await a.clicN("#biSheetBody tbody tr", 0);                   a.point("éditeur");
+  await a.clic("#biSheetBody .bi-rows .crow:nth-child(2) .step:nth-child(2) button:last-child", 2);
+  a.point("éditeur modifié");
+  await a.clic("#biEdSave"); await a.attendre(80);             a.point("correction rejouée");
+  await a.clic("#biUndo"); await a.attendre(80);               a.point("dernière manche annulée");
+  await a.clic("#biValider"); await a.attendre(80);
+  await bibockPoint(a,1,2,2); await a.clic("#biValider");
+  await finDePartie(a);                                        a.point("victoire en express");
+  await a.clic("#over .cta.ghost");
+  await a.clic("#biHall");                                     a.point("palmarès du bibock");
+});
+
+scenario("bibock-elimination", async function(a){
+  await a.clic('#categories [data-categorie="exterieur"]');
+  await a.clic("#playBibock");
+  await a.clic("#biStart");                                    a.point("partie en 1 contre 1");
+  await bibockBocks(a,2,false,4); await bibockBocks(a,1,true,4); a.point("B n'a plus de Bock");
+  await a.clic("#biValider"); await finDePartie(a);            a.point("victoire par élimination");
+}, [360,640]);

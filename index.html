@@ -14,7 +14,7 @@ try{
 }catch(e){}
 </script>
 <meta name="theme-color" content="#EFF2F2" media="(prefers-color-scheme: light)">
-<meta name="description" content="ScoreToss — Compteur de points pour les jeux d'extérieur, d'intérieur et de société : cornhole, palet breton, mölkky, fléchettes et yams, en simple, en double, en équipes et en tournoi.">
+<meta name="description" content="ScoreToss — Compteur de points pour les jeux d'extérieur, d'intérieur et de société : cornhole, palet breton, mölkky, bibock, fléchettes et yams, en simple, en double, en équipes et en tournoi.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -509,6 +509,34 @@ h1,h2,h3,p{margin:0}
   margin-top:12px;font-size:12.5px;color:var(--muted);
 }
 
+/* ============ BIBOCK ============ */
+/* Il reprend les cartes d'équipe, les réglettes et la feuille du cornhole
+   et du palet ; ne s'ajoutent que les Bocks de chaque équipe et leur saisie. */
+.bi-equipes{display:flex;flex-direction:column}
+.bi-mates{margin-top:8px}
+.trow + .bi-mates{margin-top:8px}
+.bi-mates + .trow,.bi-mates + .trow-sw{margin-top:8px}
+
+/* les Bocks que l'équipe a en main, en petits losanges à sa couleur */
+.bi-stock{display:flex;align-items:center;gap:5px;margin-top:9px;min-height:12px}
+.bi-stock i{
+  width:9px;height:9px;border-radius:2px;flex:0 0 auto;
+  background:color-mix(in oklab,var(--team) 72%,var(--tone));
+  transform:rotate(45deg);
+}
+.bi-stock span{margin-left:5px;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--muted)}
+
+.bi-rows{display:flex;flex-direction:column;gap:8px}
+.bi-rec-titre{margin-top:2px}
+.bi-rec{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bi-rec-col{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bi-rec-col .who{display:flex;align-items:center;gap:6px;min-width:0}
+.bi-rec-col .who span{
+  font-size:12.5px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sheet-body .bi-rows{margin-top:8px}
+.sheet-body .bi-rec-titre{margin-top:14px;margin-bottom:8px}
 /* ============ FLÉCHETTES ============ */
 .fl-mates{margin-top:8px}
 .fl-mates + .trow,.fl-mates + .trow-sw{margin-top:8px}
@@ -1430,6 +1458,23 @@ a.hall-link{text-decoration:none;color:inherit}
         </svg>
       </button>
 
+      <button type="button" class="tile" id="playBibock" data-jeu="bibock">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <path d="M5.5 16h23L17 26.5z" fill="#C5551F"/>
+            <path d="M17 5.5L28.5 16 17 26.5 5.5 16z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M5.5 16v3.2L17 29.7l11.5-10.5V16" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="bi.name">Bibock</span>
+          <span class="tile-sub" data-i18n="bi.tile.sub">16 points ou élimination</span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
       <button type="button" class="tile" id="playFlechettes" data-jeu="flechettes">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
@@ -1950,6 +1995,135 @@ a.hall-link{text-decoration:none;color:inherit}
           <button type="button" class="act danger" id="mkEdDel" hidden data-i18n="edit.delete">Supprimer ce lancer</button>
           <button type="button" class="act" id="mkUndo" data-i18n="mk.undo">Annuler le dernier lancer</button>
           <button type="button" class="act danger" id="mkQuit" data-i18n="sheet.quit">Terminer la partie</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BIBOCK : PRÉPARATION ============ -->
+  <section class="screen" id="s-bsetup">
+    <header class="brand">
+      <div class="brand-row">
+        <div>
+          <button type="button" class="crumb" id="biToGames">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span data-i18n="games.change">Changer de jeu</span>
+          </button>
+          <h1><span data-i18n="bi.name">Bibock</span><span>.</span></h1>
+        </div>
+        <div class="nav">
+          <button type="button" class="nav-btn" id="biHall" hidden data-i18n-aria="hall.aria">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M3.6 15V9.2M9 15V3.4M14.4 15v-3.9" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+              <path d="M1.8 15h14.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="setup-body">
+      <div class="tcount">
+        <div>
+          <p class="eyebrow" data-i18n="bi.per">Joueurs par équipe</p>
+          <p class="note" id="biNote">1 contre 1 · 4 Bocks chacune</p>
+        </div>
+        <div class="step wide">
+          <button type="button" id="biPerMinus" data-i18n-aria="bi.remove">−</button>
+          <div class="v" id="biVal">1</div>
+          <button type="button" id="biPerPlus" data-i18n-aria="bi.add">+</button>
+        </div>
+      </div>
+
+      <div class="panel-block">
+        <div class="opt">
+          <p class="eyebrow" data-i18n="bi.cible">Score à atteindre</p>
+          <div class="opt-row" id="biCible"></div>
+          <p class="hint" data-i18n="bi.cible.hint">16 points, ou 9 pour la variante express.</p>
+        </div>
+      </div>
+
+      <div id="biRows" class="bi-equipes"></div>
+
+      <div class="link-group">
+        <button type="button" class="hall-link" id="biOpenRules">
+          <span>
+            <span class="eyebrow" data-i18n="setup.rules.eyebrow">Règles du jeu</span>
+            <b data-i18n="setup.rules.label">Comment marquer des points</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button type="button" class="hall-link" id="biOpenAbout">
+          <span>
+            <span class="eyebrow" data-i18n="setup.about.eyebrow">À propos</span>
+            <b data-i18n="setup.about.label">Réglages, sauvegarde et langue</b>
+          </span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <footer class="cta-bar">
+      <button type="button" class="cta" id="biStart" data-i18n="setup.start">Commencer la partie</button>
+    </footer>
+  </section>
+
+  <!-- ============ BIBOCK : PARTIE ============ -->
+  <section class="screen" id="s-bgame">
+    <header class="top">
+      <p class="eyebrow" id="biMancheLabel">Manche 1</p>
+      <div class="sep"></div>
+      <p class="eyebrow" id="biCibleLabel">Objectif 16</p>
+      <button type="button" class="toss" id="biTirer" hidden data-i18n="toss.draw">Tirer au sort</button>
+      <button type="button" class="icon-btn" id="biSheetBtn" data-i18n-aria="sheet.title">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M2.5 4h13M2.5 9h13M2.5 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="fields" id="biFields"></div>
+
+    <section class="console">
+      <div class="console-head">
+        <p class="eyebrow" data-i18n="over.points">Points</p>
+        <p class="eyebrow" data-i18n="bi.col.pp">Proches ×1</p>
+        <p class="eyebrow" data-i18n="bi.col.pm">Maître ×5</p>
+      </div>
+      <div class="bi-rows" id="biPoints"></div>
+      <p class="eyebrow bi-rec-titre" data-i18n="bi.rec">Bocks récupérés</p>
+      <div class="bi-rec" id="biRec"></div>
+      <div class="settle">
+        <p class="outcome" id="biOutcome">Manche nulle</p>
+        <button type="button" class="validate" id="biValider" data-i18n="game.validate">Valider</button>
+      </div>
+    </section>
+
+    <!-- feuille de match -->
+    <div class="sheet-wrap" id="biSheetWrap">
+      <div class="scrim" id="biScrim"></div>
+      <div class="sheet" role="dialog" aria-modal="true" data-i18n-aria="sheet.title">
+        <div class="sheet-head">
+          <h3 data-i18n="sheet.title">Feuille de match</h3>
+          <button type="button" class="icon-btn" id="biSheetClose" data-i18n-aria="nav.close">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="sheet-body" id="biSheetBody"></div>
+        <div class="sheet-acts">
+          <button type="button" class="act" id="biEdSave" hidden data-i18n="edit.save">Enregistrer la correction</button>
+          <button type="button" class="act danger" id="biEdDel" hidden data-i18n="edit.delete">Supprimer cette manche</button>
+          <button type="button" class="act" id="biUndo" data-i18n="sheet.undo">Annuler la dernière manche</button>
+          <button type="button" class="act danger" id="biQuit" data-i18n="sheet.quit">Terminer la partie</button>
         </div>
       </div>
     </div>
@@ -3377,6 +3551,717 @@ function fillMolkkyRules(host){
     li.appendChild(document.createTextNode(t("mrules."+k+"a")));
     li.appendChild(el("b",null,t("mrules."+k+"b")));
     li.appendChild(document.createTextNode(t("mrules."+k+"c")));
+    list.appendChild(li);
+  });
+  deroule.appendChild(list);
+  host.appendChild(deroule);
+}
+/* Bibock.
+
+   Deux équipes de 1 à 4 joueurs, huit Bocks à deux faces et un Maître.
+   Seule l'équipe la plus proche du Maître marque : un point par Bock mieux
+   placé que le meilleur adverse — un groupe compte en entier —, cinq par
+   Bock à cheval sur le Maître. En fin de manche, chaque équipe récupère
+   les Bocks de sa couleur, mangés compris : celle qui n'en a plus est
+   éliminée. On gagne à 16 points, 9 en express, ou par élimination.
+   Le règlement dit « mène » ; l'application dit manche, comme partout. */
+declarerJeu({
+  id:"bibock",
+  famille:"tours",
+  categorie:"exterieur",
+  nom:function(){ return t("bi.name"); },
+  regles:fillBibockRules,
+  ecrans:["bsetup","bgame"],
+  lienPalmares:"biHall",
+  retour:{
+    fiches:[["biSheetWrap","biSheetClose"]],
+    ecrans:[["s-bsetup","biToGames"]]
+  },
+
+  auChangementDEcran:function(nom){
+    if(nom!=="bgame") biFermerFeuille();
+    if(nom==="bsetup") refreshHallLink();
+  },
+  sauver:function(o){ o.bs=BS; o.b=B; },
+  charger:function(d){
+    if(d && d.bs && d.bs.teams && d.bs.teams.length===2) BS=biNormBS(d.bs);
+    if(d && d.b && d.b.teams && d.b.teams.length===2){ B=biNormB(d.b); BE=biRejouer(); }
+    renderBSetup();
+  },
+  importer:function(d){
+    BS = biNormBS((d.bs && d.bs.teams && d.bs.teams.length===2) ? d.bs : biReglagesVides());
+    B  = (d.b && d.b.teams && d.b.teams.length===2) ? biNormB(d.b) : null;
+    BE = B ? biRejouer() : null;
+    renderBSetup();
+  },
+  reprendre:function(){
+    if(!B || !BE || BE.gagnant>=0) return false;
+    show("bgame");
+    renderBGame();
+    keepAwake();
+    return true;
+  },
+  changementDeLangue:function(){
+    renderBSetup();
+    if(B && $("s-bgame").classList.contains("on")) renderBGame();
+  },
+
+  ouvrir:function(){
+    if(!S.tgt) S.tgt=ciblesParDefaut();
+    if(jeu(S.game).famille==="duel"){
+      S.tgt[S.game]=S.target;
+      TOUR[S.game]=T;
+      DRAFT[S.game]=TS;
+    }
+    S.game="bibock";
+    T=null;
+    fillRules("rulesBody");
+    save();
+    show("bsetup");
+    renderBSetup();
+  }
+});
+
+var BI_BOCKS  = 8;     /* Bocks en jeu, les deux équipes ensemble */
+var BI_DEPART = 4;     /* Bocks de chaque équipe au départ */
+var BI_MAITRE = 5;     /* points d'un Bock à cheval sur le Maître */
+var BI_CIBLES = [16, 9];
+var BI_PER_MIN = 1;
+var BI_PER_MAX = 4;
+
+function biReglagesVides(){
+  return { per:1, cible:16, open:-1, teams:[
+    { name:"", color:"rouge", mates:["","","",""] },
+    { name:"", color:"bleu",  mates:["","","",""] }
+  ]};
+}
+var BS = biReglagesVides();
+var B  = null;      /* la partie : ses équipes, ses manches, la saisie en cours */
+var BE = null;      /* ce qui s'en déduit, recalculé à chaque changement */
+var BEDIT = null;   /* la manche en cours de correction */
+
+function biNom(i){
+  var v=(BS.teams[i].name||"").trim();
+  return v || t(BS.per>1 ? ["team.a","team.b"][i] : ["player.a","player.b"][i]);
+}
+function biCoequipier(i,j){
+  var v=((BS.teams[i].mates||[])[j]||"").trim();
+  return v || (t("team.player")+" "+(j+1));
+}
+
+/* --- calcul ------------------------------------------------------ */
+function biSaisieVide(){ return { pp:[0,0], pm:[0,0], bocks:null }; }
+/* ce que rapporte une manche : un point par Bock proche, cinq par Bock
+   sur le Maître ; une seule équipe marque */
+function biGain(m){ return [m.pp[0]+BI_MAITRE*m.pm[0], m.pp[1]+BI_MAITRE*m.pm[1]]; }
+
+/* Tout se déduit des manches jouées : corriger une manche ancienne
+   recalcule les scores, les Bocks et le vainqueur. */
+function biRejouer(){
+  var e={ scores:[0,0], bocks:[BI_DEPART,BI_DEPART], gagnant:-1, elimination:false,
+          gagnees:[0,0], maitre:[0,0], meilleure:[0,0], cumuls:[], fin:-1 };
+  for(var k=0;k<B.manches.length;k++){
+    var m=B.manches[k], g=biGain(m);
+    for(var i=0;i<2;i++){
+      e.scores[i]+=g[i];
+      e.maitre[i]+=m.pm[i];
+      if(g[i]>0){ e.gagnees[i]++; if(g[i]>e.meilleure[i]) e.meilleure[i]=g[i]; }
+    }
+    e.bocks=m.b.slice();
+    e.cumuls.push(e.scores.slice());
+    if(e.scores[0]>=B.cible || e.scores[1]>=B.cible){
+      e.gagnant = e.scores[0]>=B.cible ? 0 : 1;
+      e.fin=k;
+      break;
+    }
+    /* une équipe sans Bock est éliminée */
+    if(!e.bocks[0] !== !e.bocks[1]){
+      e.gagnant = e.bocks[0] ? 0 : 1;
+      e.elimination=true;
+      e.fin=k;
+      break;
+    }
+  }
+  e.manche = B.manches.length+1;
+  e.main = biQuiCommence(e);
+  return e;
+}
+
+/* Commence l'équipe qui a le plus de Bocks, puis celle qui a le plus de
+   points ; à égalité parfaite — toujours le cas à la première manche —,
+   un tirage au sort décide. -1 tant qu'il n'a pas eu lieu. */
+function biQuiCommence(e){
+  var k=B.manches.length, tire=B.departs[k];
+  if(tire===0 || tire===1) return tire;
+  if(e.bocks[0]!==e.bocks[1]) return e.bocks[0]>e.bocks[1] ? 0 : 1;
+  if(e.scores[0]!==e.scores[1]) return e.scores[0]>e.scores[1] ? 0 : 1;
+  return -1;
+}
+
+/* Saisir pour une équipe remet l'autre à zéro : une seule marque. Les
+   Bocks proches et sur le Maître ne dépassent pas les huit en jeu. */
+function biAjuster(s, i, type, d){
+  var v=s[type][i]+d;
+  if(v<0 || s.pp[i]+s.pm[i]+d>BI_BOCKS) return false;
+  s[type][i]=v;
+  if(d>0){ s.pp[1-i]=0; s.pm[1-i]=0; }
+  return true;
+}
+/* Les Bocks récupérés : les neutres restent sur le terrain, le total ne
+   dépasse donc jamais huit, mais peut rester en dessous. */
+function biAjusterBocks(b, i, d){
+  var v=b[i]+d;
+  if(v<0 || b[0]+b[1]+d>BI_BOCKS) return false;
+  b[i]=v;
+  return true;
+}
+
+/* --- préparation ------------------------------------------------- */
+function renderBSetup(){
+  $("biVal").textContent=BS.per;
+  $("biNote").textContent=tf("bi.note",{n:BS.per});
+  $("biPerMinus").disabled = BS.per<=BI_PER_MIN;
+  $("biPerPlus").disabled  = BS.per>=BI_PER_MAX;
+  fillChips($("biCible"), BI_CIBLES, BS.cible, "cible");
+  renderBRows();
+}
+
+function renderBRows(){
+  var host=$("biRows");
+  host.innerHTML="";
+  var eq = BS.per>1;
+  for(var k=0;k<2;k++){
+    (function(k){
+      var tm=BS.teams[k];
+      var row=el("div","trow");
+      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
+
+      var pick=el("button","pick");
+      pick.type="button";
+      pick.style.setProperty("--c",color(tm.color).hex);
+      pick.setAttribute("aria-label",tf("bi.color.aria",{n:k+1}));
+      pick.setAttribute("aria-expanded", BS.open===k ? "true":"false");
+      pick.appendChild(el("i"));
+      pick.addEventListener("click",function(){
+        BS.open = BS.open===k ? -1 : k;
+        renderBRows();
+      });
+      row.appendChild(pick);
+
+      var name=el("input","field-input");
+      name.type="text";
+      name.value=tm.name;
+      name.maxLength=22;
+      name.placeholder=t(eq ? ["team.a","team.b"][k] : ["player.a","player.b"][k]);
+      name.setAttribute("aria-label",tf("bi.team.aria",{n:k+1}));
+      name.addEventListener("input",function(){ tm.name=name.value; save(); });
+      row.appendChild(name);
+      host.appendChild(row);
+
+      if(eq){
+        var mates=el("div","mates bi-mates");
+        for(var j=0;j<BS.per;j++){
+          (function(j){
+            var mi=el("input","field-input");
+            mi.type="text";
+            mi.value=tm.mates[j]||"";
+            mi.maxLength=16;
+            mi.placeholder=t("team.player")+" "+(j+1);
+            mi.setAttribute("aria-label",tf("bi.mate.aria",{j:j+1, n:k+1}));
+            mi.addEventListener("input",function(){ tm.mates[j]=mi.value; save(); });
+            mates.appendChild(mi);
+          })(j);
+        }
+        host.appendChild(mates);
+      }
+
+      var sw=el("div","trow-sw swatches");
+      sw.hidden = BS.open!==k;
+      COLORS.forEach(function(col){
+        var b=el("button","sw");
+        b.type="button";
+        b.style.setProperty("--c",col.hex);
+        b.setAttribute("aria-pressed", col.id===tm.color ? "true":"false");
+        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
+        b.addEventListener("click",function(){
+          tm.color=col.id; BS.open=-1;
+          renderBRows(); save();
+        });
+        sw.appendChild(b);
+      });
+      host.appendChild(sw);
+    })(k);
+  }
+}
+
+function biNouvellePartie(){
+  B={ cible:BS.cible, per:BS.per, teams:[], manches:[], saisie:biSaisieVide(), departs:{} };
+  for(var i=0;i<2;i++){
+    var mates=[];
+    if(BS.per>1){ for(var j=0;j<BS.per;j++) mates.push(biCoequipier(i,j)); }
+    B.teams.push({ label:biNom(i), hex:color(BS.teams[i].color).hex, mates:mates });
+  }
+  BE=biRejouer();
+  BEDIT=null;
+  show("bgame");
+  renderBGame();
+  save();
+  keepAwake();
+}
+
+/* --- une réglette ------------------------------------------------ */
+function biReglette(hex, v, moinsOff, plusOff, moins, plus, ariaMoins, ariaPlus){
+  var st=el("div","step");
+  st.style.setProperty("--team",hex);
+  var a=el("button",null,"−");
+  a.type="button";
+  a.disabled=moinsOff;
+  a.setAttribute("aria-label",ariaMoins);
+  a.addEventListener("click",moins);
+  var b=el("button",null,"+");
+  b.type="button";
+  b.disabled=plusOff;
+  b.setAttribute("aria-label",ariaPlus);
+  b.addEventListener("click",plus);
+  st.appendChild(a);
+  st.appendChild(el("div","v"+(v>0 ? " hot" : ""),String(v)));
+  st.appendChild(b);
+  return st;
+}
+
+/* Les deux lignes de points, une par équipe, et les Bocks récupérés :
+   la console de la partie et l'éditeur de la feuille partagent ce rendu. */
+function biPeindreSaisie(hotePoints, hoteBocks, s, bocks, apres){
+  hotePoints.innerHTML="";
+  B.teams.forEach(function(tm,i){
+    var row=el("div","crow");
+    var who=el("div","who"), dot=el("i","dot");
+    dot.style.background=tm.hex;
+    who.appendChild(dot);
+    who.appendChild(el("span",null,tm.label));
+    row.appendChild(who);
+    ["pp","pm"].forEach(function(type){
+      row.appendChild(biReglette(tm.hex, s[type][i],
+        s[type][i]<=0, s.pp[i]+s.pm[i]>=BI_BOCKS,
+        function(){ if(biAjuster(s,i,type,-1)) apres(6); },
+        function(){ if(biAjuster(s,i,type,1)) apres(10); },
+        tf("bi.rm."+type,{name:tm.label}), tf("bi.add."+type,{name:tm.label})));
+    });
+    hotePoints.appendChild(row);
+  });
+
+  hoteBocks.innerHTML="";
+  B.teams.forEach(function(tm,i){
+    var col=el("div","bi-rec-col");
+    var who=el("div","who"), dot=el("i","dot");
+    dot.style.background=tm.hex;
+    who.appendChild(dot);
+    who.appendChild(el("span",null,tm.label));
+    col.appendChild(who);
+    col.appendChild(biReglette(tm.hex, bocks[i],
+      bocks[i]<=0, bocks[0]+bocks[1]>=BI_BOCKS,
+      function(){ if(biAjusterBocks(bocks,i,-1)) apres(6); },
+      function(){ if(biAjusterBocks(bocks,i,1)) apres(10); },
+      tf("bi.rm.bk",{name:tm.label}), tf("bi.add.bk",{name:tm.label})));
+    hoteBocks.appendChild(col);
+  });
+}
+
+/* ce que la saisie rapporterait, écrit en toutes lettres */
+function biAnnonce(hote, s){
+  var g=biGain(s), w = g[0]>0 ? 0 : (g[1]>0 ? 1 : -1);
+  hote.innerHTML="";
+  if(w<0){ hote.textContent=t("game.void"); return; }
+  var parts=tf(g[w]>1 ? "game.scores_p" : "game.scores",{name:" ", n:g[w]}).split(" ");
+  hote.appendChild(document.createTextNode(parts[0]||""));
+  hote.appendChild(el("b",null,B.teams[w].label));
+  hote.appendChild(document.createTextNode(parts[1]||""));
+}
+
+/* --- la partie --------------------------------------------------- */
+function renderBGame(){
+  if(!B) return;
+  if(!BE) BE=biRejouer();
+  var e=BE, fini=e.gagnant>=0;
+
+  $("biMancheLabel").textContent = fini ? t("bi.done") : t("game.frame")+" "+e.manche;
+  $("biCibleLabel").textContent = t("game.target")+" "+B.cible;
+  /* à égalité de Bocks et de points, un tirage décide qui commence */
+  var tirable = !fini && e.main<0;
+  $("biTirer").hidden = !tirable;
+  $("biCibleLabel").hidden = tirable;
+
+  var host=$("biFields");
+  host.innerHTML="";
+  B.teams.forEach(function(tm,i){
+    var f=el("div","tfield"+(e.scores[i]>e.scores[1-i] ? " lead" : ""));
+    f.style.setProperty("--team",tm.hex);
+    var sc=el("div","t-score"), id=el("div","t-id");
+    var nm=el("div","t-name");
+    nm.appendChild(el("i","dot"));
+    nm.appendChild(el("span",null,tm.label));
+    id.appendChild(nm);
+    id.appendChild(el("div","t-mates",tm.mates.join(" · ")));
+    var stock=el("div","bi-stock");
+    stock.setAttribute("aria-label",tn("bi.bocks",e.bocks[i]));
+    for(var n=0;n<e.bocks[i];n++) stock.appendChild(el("i"));
+    stock.appendChild(el("span",null,tn("bi.bocks",e.bocks[i])));
+    id.appendChild(stock);
+    if(e.main===i && !fini){
+      var h=el("div","t-honor");
+      h.appendChild(el("span","honor",t("game.first")));
+      id.appendChild(h);
+    }
+    sc.appendChild(id);
+    sc.appendChild(el("span","t-num num",String(e.scores[i])));
+    f.appendChild(sc);
+    host.appendChild(f);
+  });
+
+  var s=B.saisie;
+  var bocks = s.bocks || e.bocks.slice();
+  biPeindreSaisie($("biPoints"), $("biRec"), s, bocks, function(vib){
+    if(!s.bocks) s.bocks=bocks;
+    buzz(vib);
+    save();
+    renderBGame();
+  });
+  biAnnonce($("biOutcome"), s);
+  $("biValider").disabled = fini;
+}
+
+function biValider(){
+  if(!B || !BE || BE.gagnant>=0) return;
+  var s=B.saisie;
+  B.manches.push({ pp:s.pp.slice(), pm:s.pm.slice(), b:(s.bocks || BE.bocks).slice() });
+  B.saisie=biSaisieVide();
+  var g=biGain(B.manches[B.manches.length-1]);
+  biApresChangement((g[0]||g[1]) ? 14 : [12,40,12]);
+}
+
+function biApresChangement(vibration){
+  var avant = BE ? BE.gagnant : -1;
+  BE=biRejouer();
+  buzz(vibration);
+  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de fin
+     ne doit pas faire perdre la partie au palmarès */
+  if(BE.gagnant>=0 && avant<0){
+    biFermerFeuille();
+    biArchiver();
+    save();
+    renderBGame();
+    setTimeout(renderBOver, 620);
+  }else{
+    save();
+    renderBGame();
+    if($("biSheetWrap").classList.contains("on")) renderBSheet();
+  }
+}
+
+/* Le tirage de la première manche, ou d'une égalité parfaite. */
+function biTirer(){
+  if(!B || !BE || BE.gagnant>=0 || BE.main>=0) return;
+  tirerOrdre(B.teams, function(ordre){
+    B.departs[B.manches.length]=B.teams.indexOf(ordre[0]);
+    BE=biRejouer();
+    save();
+    renderBGame();
+  });
+}
+
+/* --- feuille de match -------------------------------------------- */
+function renderBSheet(){
+  var body=$("biSheetBody");
+  body.innerHTML="";
+  $("biEdSave").hidden = !BEDIT;
+  $("biEdDel").hidden  = !BEDIT;
+  $("biUndo").hidden   = !!BEDIT;
+  $("biQuit").hidden   = !!BEDIT;
+  if(BEDIT){ renderBEditeur(body); return; }
+  $("biUndo").disabled = !B.manches.length || BE.gagnant>=0;
+
+  if(!B.manches.length){
+    body.appendChild(el("p","empty",t("sheet.empty")));
+    return;
+  }
+  var table=el("table","log");
+  var thead=el("thead"), htr=el("tr");
+  htr.appendChild(el("th",null,t("sheet.frame")));
+  B.teams.forEach(function(tm){ htr.appendChild(el("th",null,tm.label)); });
+  htr.appendChild(el("th",null,t("bi.col.bocks")));
+  thead.appendChild(htr);
+  table.appendChild(thead);
+
+  var tbody=el("tbody");
+  B.manches.forEach(function(m,k){
+    var g=biGain(m), cumul=BE.cumuls[k];
+    var tr=el("tr");
+    tr.setAttribute("aria-label",tf("sheet.fix.aria",{n:k+1}));
+    tr.appendChild(el("td",null,String(k+1).padStart(2,"0")));
+    for(var i=0;i<2;i++){
+      var td=el("td");
+      td.appendChild(el("span","pt"+(g[i] ? "" : " zero"), g[i] ? "+"+g[i] : "0"));
+      if(cumul) td.appendChild(el("span","run",String(cumul[i])));
+      tr.appendChild(td);
+    }
+    tr.appendChild(el("td",null,m.b[0]+"–"+m.b[1]));
+    tr.addEventListener("click",function(){ biOuvrirEditeur(k); });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  body.appendChild(table);
+  body.appendChild(el("p","hint",t("bi.sheet.hint")));
+}
+
+function biOuvrirEditeur(k){
+  var m=B.manches[k];
+  if(!m) return;
+  BEDIT={ k:k, m:{ pp:m.pp.slice(), pm:m.pm.slice(), b:m.b.slice() } };
+  renderBSheet();
+}
+function biFermerEditeur(){ BEDIT=null; renderBSheet(); }
+
+function renderBEditeur(body){
+  var head=el("div","ed-head");
+  head.appendChild(el("p","eyebrow",tf("edit.title",{n:BEDIT.k+1})));
+  var back=el("button","ed-back",t("edit.cancel"));
+  back.type="button";
+  back.addEventListener("click",biFermerEditeur);
+  head.appendChild(back);
+  body.appendChild(head);
+
+  var tete=el("div","console-head");
+  tete.appendChild(el("p","eyebrow",t("over.points")));
+  tete.appendChild(el("p","eyebrow",t("bi.col.pp")));
+  tete.appendChild(el("p","eyebrow",t("bi.col.pm")));
+  body.appendChild(tete);
+  var points=el("div","bi-rows"), rec=el("div","bi-rec");
+  body.appendChild(points);
+  body.appendChild(el("p","eyebrow bi-rec-titre",t("bi.rec")));
+  body.appendChild(rec);
+  biPeindreSaisie(points, rec, BEDIT.m, BEDIT.m.b, function(vib){ buzz(vib); renderBSheet(); });
+  var out=el("p","outcome ed-out");
+  biAnnonce(out, BEDIT.m);
+  body.appendChild(out);
+}
+
+function biOuvrirFeuille(){
+  BEDIT=null;
+  renderBSheet();
+  biArmerQuitter(false);
+  $("biSheetWrap").classList.add("on");
+}
+function biFermerFeuille(){
+  $("biSheetWrap").classList.remove("on");
+  BEDIT=null;
+}
+function biArmerQuitter(on){
+  var b=$("biQuit");
+  b.dataset.armed = on ? "1" : "0";
+  b.textContent = on ? t("sheet.quit.confirm") : t("sheet.quit");
+}
+
+/* --- archivage et fin de partie ---------------------------------- */
+function biArchiver(){
+  if(!B || B.archived || !BE || BE.gagnant<0) return;
+  H.unshift({
+    d:Date.now(), g:"bibock",
+    n:B.teams.map(function(tm){ return tm.label; }),
+    c:B.teams.map(function(tm){ return tm.hex; }),
+    s:BE.scores.slice(), w:BE.gagnant, r:BE.fin+1, t:false
+  });
+  if(H.length>200) H.length=200;
+  B.archived=true;
+}
+
+function biQui(i, droite){
+  var who=el("div","tale-who"+(droite ? " r" : "")), dot=el("i","dot");
+  dot.style.background=B.teams[i].hex;
+  who.appendChild(dot);
+  who.appendChild(el("span",null,B.teams[i].label));
+  return who;
+}
+
+function renderBOver(){
+  if(!B || !BE || BE.gagnant<0) return;
+  var e=BE, w=e.gagnant, l=1-w, box=$("over");
+  box.innerHTML="";
+  box.style.setProperty("--team",B.teams[w].hex);
+
+  var head=el("div","over-head reveal");
+  head.appendChild(el("p","eyebrow",tn("over.done",e.fin+1)));
+  head.appendChild(el("h2",null,tf("over.wins",{name:B.teams[w].label})));
+  var fin=el("div","final");
+  fin.appendChild(el("span","a",String(e.scores[w])));
+  fin.appendChild(el("span","s","–"));
+  fin.appendChild(el("span","b",String(e.scores[l])));
+  head.appendChild(fin);
+  if(e.elimination) head.appendChild(el("p","note",tf("bi.elim.note",{name:B.teams[l].label})));
+  box.appendChild(head);
+
+  var card=el("div","tale reveal");
+  card.style.animationDelay="80ms";
+  var top=el("div","tale-top");
+  top.appendChild(el("p","eyebrow",t("over.stats")));
+  top.appendChild(el("p","eyebrow",tf("over.goal",{n:B.cible})));
+  card.appendChild(top);
+  var tete=el("div","tale-row head");
+  tete.appendChild(biQui(w,false));
+  tete.appendChild(el("span","tale-lab",""));
+  tete.appendChild(biQui(l,true));
+  card.appendChild(tete);
+  function plus(v){ return v>0 ? "+"+v : "—"; }
+  [
+    [t("over.points"),     e.scores,    String],
+    [t("over.won"),        e.gagnees,   String],
+    [t("bi.stat.maitre"),  e.maitre,    String],
+    [t("over.best"),       e.meilleure, plus],
+    [t("bi.stat.bocks"),   e.bocks,     String]
+  ].forEach(function(r){
+    var row=el("div","tale-row");
+    row.appendChild(el("span","tale-v"+(r[1][w] ? "" : " off"),r[2](r[1][w])));
+    row.appendChild(el("span","tale-lab",r[0]));
+    row.appendChild(el("span","tale-v b"+(r[1][l] ? "" : " off"),r[2](r[1][l])));
+    card.appendChild(row);
+  });
+  box.appendChild(card);
+
+  var acts=el("div","over-acts reveal");
+  acts.style.animationDelay="160ms";
+  var share=el("button","share-btn",t("share.result"));
+  share.type="button";
+  share.addEventListener("click",biPartager);
+  acts.appendChild(share);
+  var again=el("button","cta",t("over.rematch"));
+  again.type="button";
+  again.addEventListener("click",biNouvellePartie);
+  acts.appendChild(again);
+  var back=el("button","cta ghost",t("over.newsetup"));
+  back.type="button";
+  back.addEventListener("click",function(){ B=null; BE=null; save(); show("bsetup"); renderBSetup(); });
+  acts.appendChild(back);
+  box.appendChild(acts);
+
+  show("over");
+  buzz([14,60,26]);
+}
+
+function biPartager(){
+  if(!B || !BE || BE.gagnant<0) return;
+  var n=BE.fin+1;
+  shareText(t("bi.name")+" · "+tf(n>1 ? "share.game_p" : "share.game",{
+    a:B.teams[0].label, sa:BE.scores[0], sb:BE.scores[1], b:B.teams[1].label, n:n
+  }));
+}
+
+/* --- état enregistré --------------------------------------------- */
+function biNormBS(bs){
+  bs.open=-1;
+  if(!bs.per || bs.per<BI_PER_MIN || bs.per>BI_PER_MAX) bs.per=BI_PER_MIN;
+  if(BI_CIBLES.indexOf(bs.cible)<0) bs.cible=BI_CIBLES[0];
+  bs.teams.forEach(function(tm,i){
+    if(typeof tm.name!=="string") tm.name="";
+    if(!tm.color) tm.color = i ? "bleu" : "rouge";
+    if(!tm.mates || tm.mates.length!==4) tm.mates=["","","",""];
+  });
+  return bs;
+}
+function biPaire(a){ return a && a.length===2 && a.every(function(v){ return typeof v==="number" && v>=0 && v<=BI_BOCKS; }); }
+function biNormB(b){
+  if(BI_CIBLES.indexOf(b.cible)<0) b.cible=BI_CIBLES[0];
+  b.manches=(b.manches||[]).filter(function(m){ return m && biPaire(m.pp) && biPaire(m.pm) && biPaire(m.b); });
+  var s=b.saisie;
+  if(!s || !biPaire(s.pp) || !biPaire(s.pm) || (s.bocks && !biPaire(s.bocks))) b.saisie=biSaisieVide();
+  if(!b.departs || typeof b.departs!=="object") b.departs={};
+  b.teams.forEach(function(tm){ if(!tm.mates) tm.mates=[]; });
+  return b;
+}
+
+/* --- commandes --------------------------------------------------- */
+$("biToGames").addEventListener("click",retourAuxJeux);
+$("biHall").addEventListener("click",function(){ HALL_BACK="bsetup"; renderHall(); show("hall"); });
+$("biPerMinus").addEventListener("click",function(){
+  if(BS.per>BI_PER_MIN){ BS.per--; BS.open=-1; renderBSetup(); save(); }
+});
+$("biPerPlus").addEventListener("click",function(){
+  if(BS.per<BI_PER_MAX){ BS.per++; BS.open=-1; renderBSetup(); save(); }
+});
+$("biCible").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-cible]");
+  if(!b) return;
+  BS.cible=+b.dataset.cible;
+  renderBSetup(); save();
+});
+$("biOpenRules").addEventListener("click",openRules);
+$("biOpenAbout").addEventListener("click",openAbout);
+$("biStart").addEventListener("click",biNouvellePartie);
+
+$("biTirer").addEventListener("click",biTirer);
+$("biValider").addEventListener("click",biValider);
+$("biSheetBtn").addEventListener("click",biOuvrirFeuille);
+$("biSheetClose").addEventListener("click",biFermerFeuille);
+$("biScrim").addEventListener("click",biFermerFeuille);
+$("biEdSave").addEventListener("click",function(){
+  if(!BEDIT) return;
+  B.manches[BEDIT.k]=BEDIT.m;
+  BEDIT=null;
+  biApresChangement(10);
+});
+$("biEdDel").addEventListener("click",function(){
+  if(!BEDIT) return;
+  var k=BEDIT.k;
+  B.manches.splice(k,1);
+  /* les tirages des manches suivantes n'ont plus de sens */
+  Object.keys(B.departs).forEach(function(c){ if(+c>=k) delete B.departs[c]; });
+  BEDIT=null;
+  biApresChangement(10);
+});
+/* Annuler la dernière manche rend sa saisie : il ne reste qu'à la corriger. */
+$("biUndo").addEventListener("click",function(){
+  if(!B || !B.manches.length || (BE && BE.gagnant>=0)) return;
+  var m=B.manches.pop();
+  B.saisie={ pp:m.pp.slice(), pm:m.pm.slice(), bocks:m.b.slice() };
+  biFermerFeuille();
+  biApresChangement(10);
+});
+$("biQuit").addEventListener("click",function(){
+  var b=$("biQuit");
+  if(b.dataset.armed!=="1"){
+    biArmerQuitter(true);
+    setTimeout(function(){ if(b.dataset.armed==="1") biArmerQuitter(false); },4000);
+    return;
+  }
+  biFermerFeuille();
+  B=null;
+  BE=null;
+  buzz(12);
+  save();
+  show("bsetup");
+  renderBSetup();
+});
+
+/* --- fiche de règles --------------------------------------------- */
+function fillBibockRules(host){
+  var comptage=el("div","block");
+  comptage.appendChild(el("p","eyebrow",t("birules.count")));
+  var pts=el("div","pts");
+  [["1",t("birules.pt")],["5",t("birules.maitre")],["Σ",t("birules.groupe")]].forEach(function(r){
+    var row=el("div","pt-row");
+    row.appendChild(el("b",null,r[0]));
+    row.appendChild(el("span",null,r[1]));
+    pts.appendChild(row);
+  });
+  comptage.appendChild(pts);
+  host.appendChild(comptage);
+
+  var deroule=el("div","block");
+  deroule.appendChild(el("p","eyebrow",t("birules.flow")));
+  var list=el("ul","rulist");
+  [1,2,3,4,5,6].forEach(function(k){
+    var li=document.createElement("li");
+    li.appendChild(document.createTextNode(t("birules."+k+"a")));
+    li.appendChild(el("b",null,t("birules."+k+"b")));
+    li.appendChild(document.createTextNode(t("birules."+k+"c")));
     list.appendChild(li);
   });
   deroule.appendChild(list);
@@ -5124,9 +6009,9 @@ fr:{
   "cat.eyebrow":"Choisir une catégorie", "cat.back":"Catégories", "cat.soon":"Bientôt",
   "cat.exterieur":"Extérieur", "cat.interieur":"Intérieur", "cat.societe":"Société",
   "cat.count":"{n} jeu", "cat.count_p":"{n} jeux",
-  "games.soon":"En chantier", "games.soon.sub":"Pétanque, bibock…",
+  "games.soon":"En chantier", "games.soon.sub":"Pétanque…",
   "games.change":"Changer de jeu",
-  "app.desc":"Compteur de points pour les jeux d'extérieur, d'intérieur et de société. Cornhole, palet breton, mölkky, fléchettes et yams, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
+  "app.desc":"Compteur de points pour les jeux d'extérieur, d'intérieur et de société. Cornhole, palet breton, mölkky, bibock, fléchettes et yams, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
   "nav.home":"Accueil", "nav.close":"Fermer",
   "mode.single":"Simple", "mode.single.sub":"1 v 1",
   "mode.double":"Double", "mode.double.sub":"2 v 2",
@@ -5254,9 +6139,9 @@ en:{
   "cat.eyebrow":"Pick a category", "cat.back":"Categories", "cat.soon":"Coming soon",
   "cat.exterieur":"Outdoor", "cat.interieur":"Indoor", "cat.societe":"Board games",
   "cat.count":"{n} game", "cat.count_p":"{n} games",
-  "games.soon":"In the works", "games.soon.sub":"Pétanque, Bibock…",
+  "games.soon":"In the works", "games.soon.sub":"Pétanque…",
   "games.change":"Change game",
-  "app.desc":"A score keeper for outdoor, indoor and board games. Cornhole, Breton palet, Mölkky, darts and Yams, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
+  "app.desc":"A score keeper for outdoor, indoor and board games. Cornhole, Breton palet, Mölkky, Bibock, darts and Yams, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
   "nav.home":"Home", "nav.close":"Close",
   "mode.single":"Singles", "mode.single.sub":"1 v 1",
   "mode.double":"Doubles", "mode.double.sub":"2 v 2",
@@ -5384,9 +6269,9 @@ es:{
   "cat.eyebrow":"Elige una categoría", "cat.back":"Categorías", "cat.soon":"Próximamente",
   "cat.exterieur":"Exterior", "cat.interieur":"Interior", "cat.societe":"Juegos de mesa",
   "cat.count":"{n} juego", "cat.count_p":"{n} juegos",
-  "games.soon":"En preparación", "games.soon.sub":"Petanca, bibock…",
+  "games.soon":"En preparación", "games.soon.sub":"Petanca…",
   "games.change":"Cambiar de juego",
-  "app.desc":"Marcador de puntos para juegos de exterior, de interior y de mesa. Cornhole, palet bretón, mölkky, dardos y yams, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
+  "app.desc":"Marcador de puntos para juegos de exterior, de interior y de mesa. Cornhole, palet bretón, mölkky, bibock, dardos y yams, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
   "nav.home":"Inicio", "nav.close":"Cerrar",
   "mode.single":"Individual", "mode.single.sub":"1 v 1",
   "mode.double":"Parejas", "mode.double.sub":"2 v 2",
@@ -5925,6 +6810,144 @@ es:{
   "mk.mate.aria":"Jugador {j} del equipo {n}",
   "mk.note.team":"{n} equipos · el primero en 50 exactos",
   "mk.turn.team":"Turno de {team} · {name}"
+}
+});
+/* Textes du Bibock. Le règlement dit « mène » : l'application dit manche. */
+ajouterTextes({
+fr:{
+  "bi.name":"Bibock",
+  "bi.tile.sub":"16 points ou élimination",
+  "bi.per":"Joueurs par équipe",
+  "bi.add":"Un joueur de plus par équipe", "bi.remove":"Un joueur de moins par équipe",
+  "bi.note":"{n} contre {n} · 4 Bocks chacune",
+  "bi.cible":"Score à atteindre",
+  "bi.cible.hint":"16 points, ou 9 pour la variante express.",
+  "bi.team.aria":"Nom de l'équipe {n}",
+  "bi.color.aria":"Couleur de l'équipe {n}",
+  "bi.mate.aria":"Joueur {j} de l'équipe {n}",
+  "bi.col.pp":"Proches ×1", "bi.col.pm":"Maître ×5", "bi.col.bocks":"Bocks",
+  "bi.rec":"Bocks récupérés en fin de manche",
+  "bi.bocks":"{n} Bock", "bi.bocks_p":"{n} Bocks",
+  "bi.rm.pp":"Un Bock proche de moins pour {name}", "bi.add.pp":"Un Bock proche de plus pour {name}",
+  "bi.rm.pm":"Un Bock sur le Maître de moins pour {name}", "bi.add.pm":"Un Bock sur le Maître de plus pour {name}",
+  "bi.rm.bk":"Un Bock récupéré de moins pour {name}", "bi.add.bk":"Un Bock récupéré de plus pour {name}",
+  "bi.done":"Partie terminée",
+  "bi.sheet.hint":"Touchez une manche pour corriger ses points ou ses Bocks. La partie est recalculée.",
+  "bi.elim.note":"Par élimination : {name} n'a plus de Bock.",
+  "bi.stat.maitre":"Sur le Maître", "bi.stat.bocks":"Bocks en fin de partie",
+  "birules.count":"Comptage",
+  "birules.pt":"Par Bock plus proche du Maître que le meilleur adverse",
+  "birules.maitre":"Par Bock à cheval sur le Maître",
+  "birules.groupe":"Un groupe compte en entier : 3 Bocks empilés, 3 points",
+  "birules.flow":"Déroulé",
+  "birules.1a":"Deux équipes de 1 à 4 joueurs, à 6 ou 8 mètres, le Maître au milieu. Chacune part avec ",
+  "birules.1b":"4 Bocks",
+  "birules.1c":" : c'est la face visible qui dit à qui appartient un Bock.",
+  "birules.2a":"Les équipes lancent ",
+  "birules.2b":"à tour de rôle",
+  "birules.2c":" jusqu'au dernier Bock. Seule l'équipe la plus proche du Maître marque.",
+  "birules.3a":"Un Bock recouvert est ",
+  "birules.3b":"mangé",
+  "birules.3c":" : le Bock du dessus impose sa couleur au groupe. Resté sur la tranche, il est neutre et ne compte pas.",
+  "birules.4a":"En fin de manche, chaque équipe ",
+  "birules.4b":"récupère les Bocks de sa couleur",
+  "birules.4c":". Celle qui en a le plus commence la suivante, puis celle qui a le plus de points.",
+  "birules.5a":"On gagne à ",
+  "birules.5b":"16 points ou plus",
+  "birules.5c":" — 9 en express —, ou en prenant tous les Bocks : l'équipe qui n'en a plus est éliminée.",
+  "birules.6a":"À distance égale, ou avec un Bock de chaque équipe sur le Maître, ",
+  "birules.6b":"la manche est nulle",
+  "birules.6c":"."
+},
+en:{
+  "bi.name":"Bibock",
+  "bi.tile.sub":"16 points or knockout",
+  "bi.per":"Players per team",
+  "bi.add":"One more player per team", "bi.remove":"One fewer player per team",
+  "bi.note":"{n} vs {n} · 4 Bocks each",
+  "bi.cible":"Winning score",
+  "bi.cible.hint":"16 points, or 9 for the express variant.",
+  "bi.team.aria":"Name of team {n}",
+  "bi.color.aria":"Colour of team {n}",
+  "bi.mate.aria":"Player {j} of team {n}",
+  "bi.col.pp":"Closest ×1", "bi.col.pm":"Master ×5", "bi.col.bocks":"Bocks",
+  "bi.rec":"Bocks recovered at the end of the frame",
+  "bi.bocks":"{n} Bock", "bi.bocks_p":"{n} Bocks",
+  "bi.rm.pp":"One fewer closest Bock for {name}", "bi.add.pp":"One more closest Bock for {name}",
+  "bi.rm.pm":"One fewer Bock on the Master for {name}", "bi.add.pm":"One more Bock on the Master for {name}",
+  "bi.rm.bk":"One fewer Bock recovered by {name}", "bi.add.bk":"One more Bock recovered by {name}",
+  "bi.done":"Game over",
+  "bi.sheet.hint":"Tap a frame to correct its points or Bocks. The game is recalculated.",
+  "bi.elim.note":"By knockout: {name} has no Bocks left.",
+  "bi.stat.maitre":"On the Master", "bi.stat.bocks":"Bocks at the end",
+  "birules.count":"Scoring",
+  "birules.pt":"Per Bock closer to the Master than the opponents' best",
+  "birules.maitre":"Per Bock resting on the Master",
+  "birules.groupe":"A stack counts in full: 3 stacked Bocks, 3 points",
+  "birules.flow":"How it goes",
+  "birules.1a":"Two teams of 1 to 4 players, 6 to 8 metres apart, the Master in the middle. Each starts with ",
+  "birules.1b":"4 Bocks",
+  "birules.1c":": the face showing decides which team a Bock belongs to.",
+  "birules.2a":"Teams throw ",
+  "birules.2b":"in turn",
+  "birules.2c":" until the last Bock. Only the team closest to the Master scores.",
+  "birules.3a":"A covered Bock is ",
+  "birules.3b":"eaten",
+  "birules.3c":": the Bock on top gives its colour to the whole stack. One left standing on its edge is neutral and does not count.",
+  "birules.4a":"At the end of a frame, each team ",
+  "birules.4b":"takes back the Bocks showing its colour",
+  "birules.4c":". The team with the most starts the next one, then the one with more points.",
+  "birules.5a":"You win at ",
+  "birules.5b":"16 points or more",
+  "birules.5c":" — 9 in express — or by taking every Bock: the team left with none is knocked out.",
+  "birules.6a":"If two Bocks are equally close, or each team has one on the Master, ",
+  "birules.6b":"the frame is void",
+  "birules.6c":"."
+},
+es:{
+  "bi.name":"Bibock",
+  "bi.tile.sub":"16 puntos o eliminación",
+  "bi.per":"Jugadores por equipo",
+  "bi.add":"Un jugador más por equipo", "bi.remove":"Un jugador menos por equipo",
+  "bi.note":"{n} contra {n} · 4 Bocks cada uno",
+  "bi.cible":"Puntuación objetivo",
+  "bi.cible.hint":"16 puntos, o 9 para la variante exprés.",
+  "bi.team.aria":"Nombre del equipo {n}",
+  "bi.color.aria":"Color del equipo {n}",
+  "bi.mate.aria":"Jugador {j} del equipo {n}",
+  "bi.col.pp":"Cerca ×1", "bi.col.pm":"Maestro ×5", "bi.col.bocks":"Bocks",
+  "bi.rec":"Bocks recuperados al final de la ronda",
+  "bi.bocks":"{n} Bock", "bi.bocks_p":"{n} Bocks",
+  "bi.rm.pp":"Un Bock cercano menos para {name}", "bi.add.pp":"Un Bock cercano más para {name}",
+  "bi.rm.pm":"Un Bock sobre el Maestro menos para {name}", "bi.add.pm":"Un Bock sobre el Maestro más para {name}",
+  "bi.rm.bk":"Un Bock recuperado menos para {name}", "bi.add.bk":"Un Bock recuperado más para {name}",
+  "bi.done":"Partida terminada",
+  "bi.sheet.hint":"Toca una ronda para corregir sus puntos o sus Bocks. La partida se recalcula.",
+  "bi.elim.note":"Por eliminación: {name} ya no tiene Bocks.",
+  "bi.stat.maitre":"Sobre el Maestro", "bi.stat.bocks":"Bocks al final",
+  "birules.count":"Puntuación",
+  "birules.pt":"Por Bock más cerca del Maestro que el mejor rival",
+  "birules.maitre":"Por Bock encima del Maestro",
+  "birules.groupe":"Un grupo cuenta entero: 3 Bocks apilados, 3 puntos",
+  "birules.flow":"Desarrollo",
+  "birules.1a":"Dos equipos de 1 a 4 jugadores, a 6 u 8 metros, con el Maestro en medio. Cada uno empieza con ",
+  "birules.1b":"4 Bocks",
+  "birules.1c":": la cara visible dice a quién pertenece un Bock.",
+  "birules.2a":"Los equipos lanzan ",
+  "birules.2b":"por turnos",
+  "birules.2c":" hasta el último Bock. Solo puntúa el equipo más cercano al Maestro.",
+  "birules.3a":"Un Bock cubierto queda ",
+  "birules.3b":"comido",
+  "birules.3c":": el de arriba impone su color a todo el grupo. Si queda de canto, es neutro y no cuenta.",
+  "birules.4a":"Al final de la ronda, cada equipo ",
+  "birules.4b":"recupera los Bocks de su color",
+  "birules.4c":". Empieza la siguiente el que tiene más, y si no, el que tiene más puntos.",
+  "birules.5a":"Se gana con ",
+  "birules.5b":"16 puntos o más",
+  "birules.5c":" — 9 en exprés — o quedándose con todos los Bocks: el equipo sin Bocks queda eliminado.",
+  "birules.6a":"Con dos Bocks a igual distancia, o uno de cada equipo sobre el Maestro, ",
+  "birules.6b":"la ronda es nula",
+  "birules.6c":"."
 }
 });
 /* Textes des fléchettes. */
