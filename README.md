@@ -171,7 +171,9 @@ tient en deux réglettes par équipe — *Proches ×1* et *Maître ×5* — et s
 à zéro. À distance égale, ou avec un Bock de chaque sur le Maître, la manche est nulle.
 
 En fin de manche, on indique les **Bocks récupérés** par chaque équipe, mangés compris ; la réglette
-part des Bocks qu'elle avait, et ce que l'une gagne, l'autre le perd : le total fait toujours huit. L'équipe qui en a le plus commence
+part des Bocks qu'elle avait, et le total ne dépasse jamais huit :
+une fois les huit répartis, ce que l'une gagne, l'autre le perd. Il peut descendre en dessous, un
+Bock resté sur la tranche n'étant à personne. L'équipe qui en a le plus commence
 la manche suivante, puis celle qui a le plus de points ; à égalité parfaite — toujours le cas à la
 première —, un bouton tire au sort qui commence.
 

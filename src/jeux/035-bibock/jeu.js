@@ -149,13 +149,20 @@ function biAjuster(s, i, type, d){
   if(d>0){ s.pp[1-i]=0; s.pm[1-i]=0; }
   return true;
 }
-/* Les Bocks récupérés : ce que l'une gagne, l'autre le perd — les deux
-   équipes se partagent toujours les huit. */
+/* Les Bocks récupérés ne dépassent jamais huit. Tant qu'il en manque —
+   un Bock resté sur la tranche n'est à personne —, le + ajoute ; quand
+   les huit sont répartis, ce que l'une gagne, l'autre le perd. Le −
+   retire simplement : le Bock retourne au terrain. */
 function biAjusterBocks(b, i, d){
-  var v=b[i]+d, autre=b[1-i]-d;
-  if(v<0 || autre<0) return false;
-  b[i]=v;
-  b[1-i]=autre;
+  if(d<0){
+    if(b[i]<=0) return false;
+    b[i]--;
+    return true;
+  }
+  if(b[0]+b[1]<BI_BOCKS){ b[i]++; return true; }
+  if(b[1-i]<=0) return false;
+  b[i]++;
+  b[1-i]--;
   return true;
 }
 
@@ -302,7 +309,7 @@ function biPeindreSaisie(hotePoints, hoteBocks, s, bocks, apres){
     who.appendChild(el("span",null,tm.label));
     col.appendChild(who);
     col.appendChild(biReglette(tm.hex, bocks[i],
-      bocks[i]<=0, bocks[1-i]<=0,
+      bocks[i]<=0, bocks[i]>=BI_BOCKS,
       function(){ if(biAjusterBocks(bocks,i,-1)) apres(6); },
       function(){ if(biAjusterBocks(bocks,i,1)) apres(10); },
       tf("bi.rm.bk",{name:tm.label}), tf("bi.add.bk",{name:tm.label})));
