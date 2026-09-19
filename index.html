@@ -14,7 +14,7 @@ try{
 }catch(e){}
 </script>
 <meta name="theme-color" content="#EFF2F2" media="(prefers-color-scheme: light)">
-<meta name="description" content="ScoreToss — Compteur de points pour les jeux d'extérieur, d'intérieur et de société : cornhole, palet breton, mölkky, bibock, fléchettes, tossit et yams, en simple, en double, en équipes et en tournoi.">
+<meta name="description" content="ScoreToss — Compteur de points pour les jeux d'extérieur, d'intérieur et de société : cornhole, pétanque, palet breton, mölkky, bibock, fléchettes, tossit et yams, en simple, en double, en équipes et en tournoi.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -192,6 +192,7 @@ h1,h2,h3,p{margin:0}
   color:var(--muted);transition:background .18s ease,color .18s ease;
   display:flex;flex-direction:column;align-items:center;gap:2px;
 }
+.seg button[hidden]{display:none}      /* `display:flex` l'emporterait sur hidden */
 .seg button .sub{font-family:var(--fm);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
 .seg button.on{background:var(--panel-2);color:var(--ink)}
 .seg3{grid-template-columns:1fr 1fr 1fr}
@@ -219,6 +220,7 @@ h1,h2,h3,p{margin:0}
 .field-input::placeholder{color:var(--muted);font-weight:500}
 .field-input:focus{border-color:color-mix(in oklab,var(--team) 55%,transparent);outline:none}
 .mates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mates.trio{grid-template-columns:1fr 1fr 1fr;gap:6px}
 .mates .field-input{font-size:14px;padding:10px 12px;font-weight:500}
 
 .swatches{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;padding:3px 0}
@@ -620,6 +622,43 @@ h1,h2,h3,p{margin:0}
 }
 .sheet-body .bi-rows{margin-top:8px}
 .sheet-body .bi-rec-titre{margin-top:14px;margin-bottom:8px}
+/* le chrono d'une minute : une ligne sobre, au-dessus de la saisie, dont le
+   fond se vide à mesure que le temps passe */
+.pe-chrono{
+  --reste:1;
+  position:relative;overflow:hidden;isolation:isolate;
+  display:flex;align-items:center;gap:10px;
+  height:40px;padding:0 4px 0 11px;margin-bottom:9px;
+  background:var(--panel-2);border-radius:10px;
+}
+.pe-chrono[hidden]{display:none}      /* sinon `display:flex` l'emporte sur `hidden` */
+.pe-chrono::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:color-mix(in oklab,var(--live) 16%,transparent);
+  transform-origin:left center;transform:scaleX(var(--reste));
+  opacity:0;transition:transform .2s linear, opacity .2s ease;
+}
+.pe-chrono.court::before{opacity:1}
+.pe-chrono.presse::before{background:color-mix(in oklab,var(--danger) 24%,transparent)}
+.pe-chrono .lab{
+  flex:0 0 auto;font-size:11px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+}
+.pe-chrono .temps{
+  flex:1;min-width:0;font-size:15px;font-weight:700;color:var(--ink);
+  font-variant-numeric:tabular-nums;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.pe-chrono.presse .temps,.pe-chrono.fini .temps{color:var(--danger)}
+.pe-chrono.fini{animation:pe-sonne .5s ease 2}
+@keyframes pe-sonne{50%{background:color-mix(in oklab,var(--danger) 22%,var(--panel-2))}}
+.pe-chrono button{
+  flex:0 0 auto;height:32px;padding:0 12px;border-radius:8px;
+  background:var(--panel);border:1px solid var(--line);
+  font-size:12.5px;font-weight:600;color:var(--ink);
+  transition:background .14s ease;
+}
+.pe-chrono button:active{background:var(--line-2)}
 /* ============ FLÉCHETTES ============ */
 .fl-mates{margin-top:8px}
 .fl-mates + .trow,.fl-mates + .trow-sw{margin-top:8px}
@@ -1682,6 +1721,24 @@ a.hall-link{text-decoration:none;color:inherit}
         </svg>
       </button>
 
+      <button type="button" class="tile" id="playPetanque" data-jeu="petanque">
+        <span class="tile-mark">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+            <circle cx="11" cy="21.5" r="6" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M6.2 18.2c3 1.6 6.6 1.6 9.6 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="23.5" cy="14" r="6" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M18.7 10.7c3 1.6 6.6 1.6 9.6 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="24.5" cy="26" r="2.4" fill="#C5551F"/>
+          </svg>
+        </span>
+        <span class="tile-txt">
+          <span class="tile-name" data-i18n="pe.name">Pétanque</span>
+          <span class="tile-sub" data-i18n="pe.tile.sub">Tête-à-tête, doublette, triplette</span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
       <button type="button" class="tile" id="playFlechettes" data-jeu="flechettes">
         <span class="tile-mark">
           <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
@@ -1790,6 +1847,7 @@ a.hall-link{text-decoration:none;color:inherit}
       <div class="seg" id="mode">
         <button type="button" data-mode="simple" class="on"><span class="lbl" data-i18n="mode.single">Simple</span><span class="sub" data-i18n="mode.single.sub">1 v 1</span></button>
         <button type="button" data-mode="double"><span class="lbl" data-i18n="mode.double">Double</span><span class="sub" data-i18n="mode.double.sub">2 v 2</span></button>
+        <button type="button" data-mode="triple" hidden><span class="lbl" data-i18n="mode.triple">Triple</span><span class="sub" data-i18n="mode.triple.sub">3 v 3</span></button>
       </div>
 
       <div id="cards"></div>
@@ -1934,6 +1992,7 @@ a.hall-link{text-decoration:none;color:inherit}
       <div class="seg" id="tmode">
         <button type="button" data-mode="simple" class="on"><span class="lbl" data-i18n="mode.single">Simple</span><span class="sub" data-i18n="mode.single.sub">1 v 1</span></button>
         <button type="button" data-mode="double"><span class="lbl" data-i18n="mode.double">Double</span><span class="sub" data-i18n="mode.double.sub">2 v 2</span></button>
+        <button type="button" data-mode="triple" hidden><span class="lbl" data-i18n="mode.triple">Triple</span><span class="sub" data-i18n="mode.triple.sub">3 v 3</span></button>
       </div>
 
       <div id="trows"></div>
@@ -2024,12 +2083,18 @@ a.hall-link{text-decoration:none;color:inherit}
         <p class="eyebrow ch-corn" data-propre="cornhole"><span data-i18n="game.hole">Trou</span> <b data-i18n="game.hole.pts">3 pts</b></p>
         <p class="eyebrow ch-corn" data-propre="cornhole"><span data-i18n="game.board">Planche</span> <b data-i18n="game.board.pts">1 pt</b></p>
         <p class="eyebrow ch-palet" data-propre="palet" hidden><b data-i18n="game.perpalet">1 pt par palet</b></p>
+        <p class="eyebrow ch-palet" data-propre="petanque" hidden><b data-i18n="pe.perboule">1 pt par boule</b></p>
       </div>
       <div class="mtr" id="mtr" data-propre="palet" hidden>
         <i id="mtrDot"></i>
         <span class="lab" data-i18n="game.master">Maître</span>
         <span class="who" id="mtrWho"></span>
         <button type="button" id="mtrMiss" data-i18n="game.missed">Manqué</button>
+      </div>
+      <div class="pe-chrono" id="peChrono" data-propre="petanque" hidden>
+        <span class="lab" data-i18n="pe.chrono">Chrono</span>
+        <span class="temps num" id="peTemps" aria-live="off">1:00</span>
+        <button type="button" id="peBouton" data-i18n="pe.chrono.go">Lancer</button>
       </div>
 
       <div id="rows"></div>
@@ -2861,6 +2926,10 @@ function newEntry(g){ return jeuDuel(g).entreeVide(); }
      historique                reprend les enregistrements sans nom de jeu
      compteNulles              annonce le nombre de manches nulles en fin de partie
      main()                    l'équipe qui a la main, si ce n'est pas l'honneur
+     modes                     ses formats, parmi "simple", "double" et "triple" ;
+                               simple et double par défaut
+     maxParManche(mode)        ce qu'une équipe peut marquer au plus en une
+                               manche, s'il ne dépend pas du réglage des palets
      peindre()                 ce qu'il affiche en plus dans la console
      auChoix(), auChangementDeMode(), peindrePreparation()
                                ses propres réglages sur l'écran de préparation
@@ -2885,7 +2954,9 @@ function newEntry(g){ return jeuDuel(g).entreeVide(); }
    par des repères @@jeux:fichier@@ ; ses éléments portent
    data-propre="identifiant", et le code commun ne les affiche que pour lui.
    Ses textes, dans textes.js, rejoignent le dictionnaire commun par
-   ajouterTextes().
+   ajouterTextes(). Une clé suivie de @identifiant — "game.frame@petanque" —
+   remplace la clé commune tant que ce jeu est le jeu courant : c'est ainsi
+   que la pétanque dit « mène » là où les autres disent « manche ».
 ------------------------------------------------------------------ */
 var JEUX = {};
 var ORDRE_JEUX = [];
@@ -2943,6 +3014,26 @@ function ecransDesJeux(){
 }
 function liensPalmares(){
   return ORDRE_JEUX.map(function(id){ return JEUX[id].lienPalmares; }).filter(Boolean);
+}
+
+/* Les formats d'un jeu à deux camps, et le nombre de coéquipiers de chacun. */
+function modesDuJeu(id){ return jeu(id).modes || ["simple","double"]; }
+function coequipiers(mode){ return mode==="triple" ? 3 : (mode==="double" ? 2 : 0); }
+function maxDeManche(id, mode){
+  var d=jeu(id);
+  return d.maxParManche ? d.maxParManche(mode) : paletMax(mode,S.palets);
+}
+/* La bascule de format, à la préparation comme au tournoi : seuls les
+   formats du jeu s'affichent, sous les noms qu'il leur donne. */
+function peindreModes(hote, id, courant){
+  var modes=modesDuJeu(id), b=hote.children;
+  hote.classList.toggle("seg3", modes.length===3);
+  for(var i=0;i<b.length;i++){
+    b[i].hidden = modes.indexOf(b[i].dataset.mode)<0;
+    b[i].classList.toggle("on", b[i].dataset.mode===courant);
+    var n=b[i].querySelectorAll("[data-i18n]");
+    for(var k=0;k<n.length;k++) n[k].textContent=t(n[k].getAttribute("data-i18n"));
+  }
 }
 
 /* Les éléments propres à un jeu ne s'affichent que pour lui. */
@@ -4736,6 +4827,152 @@ function fillBibockRules(host){
   });
   deroule.appendChild(list);
   host.appendChild(deroule);
+}
+/* Pétanque.
+
+   Règlement officiel de la FIPJP, repris tel quel par la FFPJP. Triplette,
+   doublette ou tête-à-tête : deux boules par joueur en triplette, trois
+   sinon, donc six boules par équipe et trois en tête-à-tête. Seule l'équipe
+   la plus proche du but marque, un point par boule mieux placée que la
+   meilleure adverse : la saisie tient en un compte par équipe, comme au
+   palet, et saisir pour l'une remet l'autre à zéro. Deux zéros font une
+   mène nulle, et le but reste à l'équipe qui avait marqué. Partie en 13
+   points, en 11 dans les poules et les cadrages.
+
+   La pétanque dit « mène » là où les autres jeux disent « manche » : ses
+   textes renomment les clés communes, voir textes.js. */
+declarerJeu({
+  id:"petanque",
+  famille:"duel",
+  categorie:"exterieur",
+  cibles:[11,13], cible:13,
+  modes:["simple","double","triple"],
+  maxParManche:function(mode){ return mode==="simple" ? 3 : 6; },
+  nom:function(){ return t("pe.name"); },
+  regles:fillPetanqueRules,
+
+  saisie:{ types:["p"], retirer:{p:"pe.rm"}, ajouter:{p:"pe.add"}, entetes:["over.points"] },
+  entreeVide:function(){ return [{p:0},{p:0}]; },
+  entreeDeManche:function(rd){ return [{p:rd.p[0]},{p:rd.p[1]}]; },
+  gain:function(e){ return [e[0].p, e[1].p]; },
+  manche:function(e,gain){ return { p:[e[0].p,e[1].p], gain:gain }; },
+  ajuster:function(e,i,kind,d,max){
+    var next=e[i].p+d;
+    if(next>max) return false;
+    e[i].p=next;
+    if(next>0) e[1-i].p=0;
+    return true;
+  },
+  plein:function(e,i,kind,max){ return e[i].p>=max; },
+  annonceNulle:function(){ return t("pe.void"); },
+  titreConsole:function(max){ return tf("pe.console",{n:max}); },
+
+  compteNulles:true,
+  statistiques:function(f,w,l,fmt){
+    return [
+      [t("over.points"), G.scores[w],    G.scores[l],    fmt.plain],
+      [t("over.won"),    f.won[w],       f.won[l],       fmt.plain],
+      [t("over.best"),   f.best[w],      f.best[l],      fmt.gain],
+      [t("over.avg"),    fmt.moyenne(w), fmt.moyenne(l), fmt.plain]
+    ];
+  },
+
+  peindre:peindreChrono,
+  auChangementDEcran:function(nom){ if(nom!=="game") arreterChrono(); }
+});
+
+/* --- le chrono d'une minute ---------------------------------------- */
+/* Une minute pour jouer chaque boule, et pour lancer le but (art. 21).
+   Rien d'obligatoire : on le lance d'un appui, un second l'arrête. Il ne
+   s'enregistre pas, et repart à zéro à chaque mène validée. */
+var PE_DUREE = 60000;
+var peFin = 0, peMinuteur = null, peMenes = -1;
+
+function arreterChrono(){
+  if(peMinuteur) clearInterval(peMinuteur);
+  peMinuteur = null; peFin = 0;
+  var c=$("peChrono");
+  if(c){ c.classList.remove("court","presse","fini"); c.style.setProperty("--reste","1"); }
+  afficherChrono(PE_DUREE);
+}
+function afficherChrono(ms){
+  var s=Math.ceil(ms/1000);
+  $("peTemps").textContent = Math.floor(s/60)+":"+("0"+(s%60)).slice(-2);
+  $("peBouton").textContent = t(peFin ? "pe.chrono.stop" : "pe.chrono.go");
+}
+function tictac(){
+  var reste=Math.max(0, peFin-Date.now()), c=$("peChrono");
+  c.style.setProperty("--reste", String(reste/PE_DUREE));
+  c.classList.toggle("presse", reste>0 && reste<=10000);
+  if(reste<=0){
+    clearInterval(peMinuteur); peMinuteur=null; peFin=0;
+    c.classList.remove("court","presse");
+    c.classList.add("fini");
+    $("peTemps").textContent = t("pe.chrono.out");
+    $("peBouton").textContent = t("pe.chrono.again");
+    buzz([120,80,120]);
+    return;
+  }
+  afficherChrono(reste);
+}
+function lancerChrono(){
+  if(peFin){ arreterChrono(); return; }
+  arreterChrono();
+  peFin = Date.now()+PE_DUREE;
+  $("peChrono").classList.add("court");
+  buzz(8);
+  tictac();
+  peMinuteur = setInterval(tictac, 200);
+}
+$("peBouton").addEventListener("click", lancerChrono);
+
+function peindreChrono(){
+  var c=$("peChrono");
+  var montrer = G && !G.over;
+  c.hidden = !montrer;
+  /* une mène validée ou annulée : le chrono repart de zéro */
+  if(!montrer || G.rounds.length!==peMenes){ peMenes = G ? G.rounds.length : -1; arreterChrono(); }
+  else if(!peFin) afficherChrono(PE_DUREE);
+}
+
+/* --- la fiche de règles -------------------------------------------- */
+/* Six chapitres, dans l'ordre du règlement. Chaque règle est une phrase
+   dont la partie entre astérisques s'affiche en gras. */
+var PE_CHAPITRES = [
+  ["materiel", 3], ["equipes", 4], ["but", 5], ["mene", 5], ["points", 4], ["discipline", 4]
+];
+function phraseEnGras(li, s){
+  s.split("*").forEach(function(morceau, k){
+    if(!morceau) return;
+    if(k%2) li.appendChild(el("b",null,morceau));
+    else li.appendChild(document.createTextNode(morceau));
+  });
+}
+function fillPetanqueRules(host){
+  var comptage=el("div","block");
+  comptage.appendChild(el("p","eyebrow",t("pe.r.count")));
+  var pts=el("div","pts");
+  [["1",t("pe.r.pt")],["13",t("pe.r.win")]].forEach(function(p){
+    var row=el("div","pt-row");
+    row.appendChild(el("b",null,p[0]));
+    row.appendChild(el("span",null,p[1]));
+    pts.appendChild(row);
+  });
+  comptage.appendChild(pts);
+  host.appendChild(comptage);
+
+  PE_CHAPITRES.forEach(function(c){
+    var bloc=el("div","block");
+    bloc.appendChild(el("p","eyebrow",t("pe.r."+c[0])));
+    var list=el("ul","rulist");
+    for(var k=1;k<=c[1];k++){
+      var li=document.createElement("li");
+      phraseEnGras(li, t("pe.r."+c[0]+"."+k));
+      list.appendChild(li);
+    }
+    bloc.appendChild(list);
+    host.appendChild(bloc);
+  });
 }
 /* Fléchettes.
 
@@ -7268,7 +7505,7 @@ function fillYamsRules(host){
    reste annoncée sur l'accueil, mais ne s'ouvre pas.
 ------------------------------------------------------------------ */
 var CATEGORIES = [
-  {id:"exterieur", bientot:"games.soon.sub"},
+  {id:"exterieur"},
   {id:"interieur"},
   {id:"societe"}
 ];
@@ -7334,7 +7571,7 @@ fr:{
   "cat.count":"{n} jeu", "cat.count_p":"{n} jeux",
   "games.soon":"En chantier", "games.soon.sub":"Pétanque…",
   "games.change":"Changer de jeu",
-  "app.desc":"Compteur de points pour les jeux d'extérieur, d'intérieur et de société. Cornhole, palet breton, mölkky, bibock, fléchettes, tossit et yams, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
+  "app.desc":"Compteur de points pour les jeux d'extérieur, d'intérieur et de société. Cornhole, pétanque, palet breton, mölkky, bibock, fléchettes, tossit et yams, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
   "nav.home":"Accueil", "nav.close":"Fermer",
   "mode.single":"Simple", "mode.single.sub":"1 v 1",
   "mode.double":"Double", "mode.double.sub":"2 v 2",
@@ -7424,7 +7661,7 @@ fr:{
   "hall.recent":"Dernières parties",
   "hall.team":"Nom", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
   "hall.beat":"{w} bat {l}", "hall.tie":"Égalité",
-  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2",
+  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Effacer le palmarès",
   "hall.clear.confirm":"Confirmer l'effacement",
   "rules.title":"Règles du jeu",
@@ -7464,7 +7701,7 @@ en:{
   "cat.count":"{n} game", "cat.count_p":"{n} games",
   "games.soon":"In the works", "games.soon.sub":"Pétanque…",
   "games.change":"Change game",
-  "app.desc":"A score keeper for outdoor, indoor and board games. Cornhole, Breton palet, Mölkky, Bibock, darts, Tossit and Yams, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
+  "app.desc":"A score keeper for outdoor, indoor and board games. Cornhole, pétanque, Breton palet, Mölkky, Bibock, darts, Tossit and Yams, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
   "nav.home":"Home", "nav.close":"Close",
   "mode.single":"Singles", "mode.single.sub":"1 v 1",
   "mode.double":"Doubles", "mode.double.sub":"2 v 2",
@@ -7554,7 +7791,7 @@ en:{
   "hall.recent":"Recent games",
   "hall.team":"Name", "hall.w":"W", "hall.l":"L", "hall.rate":"Win rate",
   "hall.beat":"{w} beat {l}", "hall.tie":"Draw",
-  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2",
+  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Clear the records",
   "hall.clear.confirm":"Confirm clearing",
   "rules.title":"How to play",
@@ -7594,7 +7831,7 @@ es:{
   "cat.count":"{n} juego", "cat.count_p":"{n} juegos",
   "games.soon":"En preparación", "games.soon.sub":"Petanca…",
   "games.change":"Cambiar de juego",
-  "app.desc":"Marcador de puntos para juegos de exterior, de interior y de mesa. Cornhole, palet bretón, mölkky, bibock, dardos, tossit y yams, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
+  "app.desc":"Marcador de puntos para juegos de exterior, de interior y de mesa. Cornhole, petanca, palet bretón, mölkky, bibock, dardos, tossit y yams, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
   "nav.home":"Inicio", "nav.close":"Cerrar",
   "mode.single":"Individual", "mode.single.sub":"1 v 1",
   "mode.double":"Parejas", "mode.double.sub":"2 v 2",
@@ -7684,7 +7921,7 @@ es:{
   "hall.recent":"Últimas partidas",
   "hall.team":"Nombre", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
   "hall.beat":"{w} gana a {l}", "hall.tie":"Empate",
-  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2",
+  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Borrar el historial",
   "hall.clear.confirm":"Confirmar el borrado",
   "rules.title":"Cómo se juega",
@@ -8277,6 +8514,256 @@ es:{
   "birules.6a":"Con dos Bocks a igual distancia, o uno de cada equipo sobre el Maestro, ",
   "birules.6b":"la ronda es nula",
   "birules.6c":"."
+}
+});
+/* Textes de la pétanque.
+
+   Les clés suivies de @petanque remplacent les clés communes tant que la
+   pétanque est le jeu courant : on y dit « mène » et non « manche », et
+   c'est l'équipe qui a la main qui lance le but. */
+ajouterTextes({
+fr:{
+  "pe.name":"Pétanque",
+  "pe.tile.sub":"Tête-à-tête, doublette, triplette",
+  "pe.console":"{n} boules par équipe",
+  "pe.perboule":"1 pt par boule",
+  "pe.void":"Mène nulle",
+  "pe.add":"Ajouter un point",
+  "pe.rm":"Retirer un point",
+  "pe.chrono":"Chrono",
+  "pe.chrono.go":"Lancer",
+  "pe.chrono.stop":"Arrêter",
+  "pe.chrono.again":"Relancer",
+  "pe.chrono.out":"Temps écoulé",
+  "mode.triple":"Triple", "mode.triple.sub":"3 v 3",
+
+  "mode.single@petanque":"Tête-à-tête", "mode.single.sub@petanque":"1 v 1",
+  "mode.double@petanque":"Doublette", "mode.double.sub@petanque":"2 v 2",
+  "mode.triple@petanque":"Triplette", "mode.triple.sub@petanque":"3 v 3",
+  "game.frame@petanque":"Mène",
+  "game.first@petanque":"Lance le but",
+  "toss.who@petanque":"Qui lance le but",
+  "toss.result@petanque":"{name} lance le but",
+  "sheet.frame@petanque":"Mène",
+  "sheet.empty@petanque":"Aucune mène jouée pour l'instant.",
+  "sheet.hint@petanque":"Touchez une mène pour corriger son décompte. Le score est recalculé sur toute la partie.",
+  "sheet.undo@petanque":"Annuler la dernière mène",
+  "sheet.fix.aria@petanque":"Corriger la mène {n}",
+  "edit.title@petanque":"Correction · mène {n}",
+  "edit.delete@petanque":"Supprimer cette mène",
+  "over.done@petanque":"Partie terminée en {n} mène", "over.done_p@petanque":"Partie terminée en {n} mènes",
+  "over.nframes@petanque":"{n} mène", "over.nframes_p@petanque":"{n} mènes",
+  "over.best@petanque":"Meilleure mène",
+  "over.won@petanque":"Mènes gagnées",
+  "over.avg@petanque":"Moyenne par mène",
+  "over.void@petanque":"Mènes nulles",
+  "over.chart.aria@petanque":"Progression des points : {a} {sa}, {b} {sb}, en {n} mène",
+  "over.chart.aria_p@petanque":"Progression des points : {a} {sa}, {b} {sb}, en {n} mènes",
+  "share.game@petanque":"{a} {sa} – {sb} {b} · {n} mène · ScoreToss",
+  "share.game_p@petanque":"{a} {sa} – {sb} {b} · {n} mènes · ScoreToss",
+
+  "pe.r.count":"Comptage",
+  "pe.r.pt":"point par boule mieux placée que la meilleure adverse",
+  "pe.r.win":"points pour gagner, 11 en poules et cadrages",
+
+  "pe.r.materiel":"Matériel et terrain",
+  "pe.r.materiel.1":"Boules en *métal, creuses*, de 7,05 à 8 cm de diamètre et de 650 à 800 g, homologuées FIPJP, marque et poids gravés. Jamais plombées, sablées ni recuites.",
+  "pe.r.materiel.2":"But en *bois ou en synthétique* homologué : 30 mm de diamètre (± 1 mm), 10 à 18 g, qu'un aimant ne soulève pas.",
+  "pe.r.materiel.3":"Terrain *libre* : toutes surfaces. Terrain *tracé* : 15 × 4 m au moins en championnat, 12 × 3 m par dérogation ; ses lignes de fond sont des lignes de perte.",
+
+  "pe.r.equipes":"Équipes et début de partie",
+  "pe.r.equipes.1":"Triplette, *2 boules* par joueur ; doublette et tête-à-tête, *3 boules* par joueur. Aucune autre formule.",
+  "pe.r.equipes.2":"Un *tirage au sort* désigne l'équipe qui choisit le terrain, s'il n'est pas imposé, et lance le but.",
+  "pe.r.equipes.3":"Cercle tracé de *35 à 50 cm* de diamètre, ou rigide de 50 cm, à plus d'1 m de tout obstacle et à 1,50 m d'un autre cercle ou d'un autre but.",
+  "pe.r.equipes.4":"Les pieds restent *entièrement dans le cercle*, sans mordre dessus ni décoller, jusqu'à ce que la boule touche le sol.",
+
+  "pe.r.but":"Lancer du but",
+  "pe.r.but.1":"But valable à *6 à 10 m* du cercle, à 50 cm au moins de tout obstacle, et visible du joueur debout dans le cercle.",
+  "pe.r.but.2":"*Un seul essai* : manqué, l'adversaire place le but, mais l'équipe qui l'a manqué joue la première boule.",
+  "pe.r.but.3":"À la mène suivante, le cercle est tracé *autour du but* de la mène précédente.",
+  "pe.r.but.4":"Le but devient *nul* en terrain interdit, invisible du cercle, à plus de 20 m ou moins de 3 m, ou introuvable après cinq minutes.",
+  "pe.r.but.5":"But nul : s'il reste des boules aux deux équipes, *la mène est nulle* ; à une seule, elle marque *autant de points que de boules restantes*.",
+
+  "pe.r.mene":"La mène",
+  "pe.r.mene.1":"L'équipe qui a lancé le but joue la première boule ; ensuite, *joue l'équipe qui n'a pas le point*.",
+  "pe.r.mene.2":"*Une minute* pour jouer chaque boule, comme pour lancer le but.",
+  "pe.r.mene.3":"Une boule qui sort en *terrain interdit* est nulle et retirée du jeu.",
+  "pe.r.mene.4":"Boule ou but déplacés par le vent, un spectateur, un animal : *remis en place* s'ils étaient marqués. Déplacés par une boule jouée : ils restent.",
+  "pe.r.mene.5":"Boule arrêtée par un partenaire : *nulle*. Pointée et arrêtée par un adversaire : rejouée ou laissée, au choix. L'arrêter exprès : *disqualification*.",
+
+  "pe.r.points":"Points et fin de partie",
+  "pe.r.points.1":"Seule l'équipe la plus proche marque : *1 point par boule* mieux placée que la meilleure adverse.",
+  "pe.r.points.2":"On mesure avec un *instrument adapté*, jamais au pied : le dernier à avoir joué, puis l'adversaire s'il le veut. Boules et obstacles gênants s'écartent, une fois marqués.",
+  "pe.r.points.3":"Boules *à égale distance* : l'équipe qui a joué la dernière rejoue, puis l'autre. Sans boule de part et d'autre, *la mène est nulle*.",
+  "pe.r.points.4":"Partie en *13 points*, en *11* dans les poules et les cadrages.",
+
+  "pe.r.discipline":"Discipline",
+  "pe.r.discipline.1":"Interdit : *modifier le terrain*, seul le trou laissé par une boule pouvant être bouché ; jouer une boule *sans l'avoir nettoyée* ; lancer une boule d'essai.",
+  "pe.r.discipline.2":"*Silence* pendant qu'un joueur joue : les adversaires se tiennent sur le côté, à 2 m au moins, derrière lui ou au-delà du but.",
+  "pe.r.discipline.3":"Sanctions de l'arbitre : *carton jaune*, l'avertissement ; *orange*, boule annulée ; *rouge*, exclusion pour la partie ; puis disqualification de l'équipe, des deux en cas d'entente.",
+  "pe.r.discipline.4":"Temps dépassé : *carton jaune à toute l'équipe*. Un joueur déjà averti perd une boule."
+},
+en:{
+  "pe.name":"Pétanque",
+  "pe.tile.sub":"Singles, doubles, triples",
+  "pe.console":"{n} boules per team",
+  "pe.perboule":"1 pt per boule",
+  "pe.void":"Void end",
+  "pe.add":"Add a point",
+  "pe.rm":"Remove a point",
+  "pe.chrono":"Timer",
+  "pe.chrono.go":"Start",
+  "pe.chrono.stop":"Stop",
+  "pe.chrono.again":"Restart",
+  "pe.chrono.out":"Time's up",
+  "mode.triple":"Triples", "mode.triple.sub":"3 v 3",
+
+  "mode.single@petanque":"Singles", "mode.single.sub@petanque":"1 v 1",
+  "mode.double@petanque":"Doubles", "mode.double.sub@petanque":"2 v 2",
+  "mode.triple@petanque":"Triples", "mode.triple.sub@petanque":"3 v 3",
+  "game.frame@petanque":"End",
+  "game.first@petanque":"Throws the jack",
+  "toss.who@petanque":"Who throws the jack",
+  "toss.result@petanque":"{name} throws the jack",
+  "sheet.frame@petanque":"End",
+  "sheet.empty@petanque":"No ends played yet.",
+  "sheet.hint@petanque":"Tap an end to correct its count. The score is recalculated across the whole game.",
+  "sheet.undo@petanque":"Undo the last end",
+  "sheet.fix.aria@petanque":"Correct end {n}",
+  "edit.title@petanque":"Correction · end {n}",
+  "edit.delete@petanque":"Delete this end",
+  "over.done@petanque":"Game finished in {n} end", "over.done_p@petanque":"Game finished in {n} ends",
+  "over.nframes@petanque":"{n} end", "over.nframes_p@petanque":"{n} ends",
+  "over.best@petanque":"Best end",
+  "over.won@petanque":"Ends won",
+  "over.avg@petanque":"Average per end",
+  "over.void@petanque":"Void ends",
+  "over.chart.aria@petanque":"Score progression: {a} {sa}, {b} {sb}, over {n} end",
+  "over.chart.aria_p@petanque":"Score progression: {a} {sa}, {b} {sb}, over {n} ends",
+  "share.game@petanque":"{a} {sa} – {sb} {b} · {n} end · ScoreToss",
+  "share.game_p@petanque":"{a} {sa} – {sb} {b} · {n} ends · ScoreToss",
+
+  "pe.r.count":"Scoring",
+  "pe.r.pt":"point per boule closer than the opponents' best",
+  "pe.r.win":"points to win, 11 in pools and play-offs",
+
+  "pe.r.materiel":"Equipment and ground",
+  "pe.r.materiel.1":"Boules made of *hollow metal*, 7.05 to 8 cm across and 650 to 800 g, FIPJP-approved, with maker and weight engraved. Never weighted, filled or re-tempered.",
+  "pe.r.materiel.2":"Jack in approved *wood or synthetic*: 30 mm across (± 1 mm), 10 to 18 g, and not picked up by a magnet.",
+  "pe.r.materiel.3":"*Open* ground: any surface. *Marked* terrain: at least 15 × 4 m in championships, 12 × 3 m by exemption; its end lines are dead-ball lines.",
+
+  "pe.r.equipes":"Teams and start of play",
+  "pe.r.equipes.1":"Triples, *2 boules* each; doubles and singles, *3 boules* each. No other format.",
+  "pe.r.equipes.2":"A *toss* decides which team picks the terrain, if none is assigned, and throws the jack.",
+  "pe.r.equipes.3":"Drawn circle *35 to 50 cm* across, or a rigid 50 cm one, more than 1 m from any obstacle and 1.50 m from another circle or jack.",
+  "pe.r.equipes.4":"Feet stay *wholly inside the circle*, not on the line nor lifted, until the boule touches the ground.",
+
+  "pe.r.but":"Throwing the jack",
+  "pe.r.but.1":"The jack is valid *6 to 10 m* from the circle, at least 50 cm from any obstacle, and visible to the player standing in the circle.",
+  "pe.r.but.2":"*One attempt only*: if it fails, the opponents place the jack, but the team that failed plays the first boule.",
+  "pe.r.but.3":"On the next end, the circle is drawn *around the jack's* last position.",
+  "pe.r.but.4":"The jack becomes *dead* in out-of-bounds ground, out of sight from the circle, beyond 20 m or within 3 m, or lost for five minutes.",
+  "pe.r.but.5":"Dead jack: if both teams still hold boules, *the end is void*; if only one does, it scores *one point per boule left*.",
+
+  "pe.r.mene":"The end",
+  "pe.r.mene.1":"The team that threw the jack plays the first boule; after that, *the team without the point plays*.",
+  "pe.r.mene.2":"*One minute* to play each boule, and to throw the jack.",
+  "pe.r.mene.3":"A boule that goes into *out-of-bounds* ground is dead and removed.",
+  "pe.r.mene.4":"A boule or jack moved by wind, a spectator or an animal is *put back* if it was marked. Moved by a played boule, it stays.",
+  "pe.r.mene.5":"A boule stopped by a teammate is *dead*. A pointed boule stopped by an opponent may be replayed or left. Stopping one on purpose: *disqualification*.",
+
+  "pe.r.points":"Points and end of the game",
+  "pe.r.points.1":"Only the closest team scores: *1 point per boule* closer than the opponents' best.",
+  "pe.r.points.2":"Measure with a *proper tool*, never with feet: the last player to play, then the opponents if they wish. Boules and obstacles in the way may be moved once marked.",
+  "pe.r.points.3":"Boules *equally close*: the team that played last plays again, then the other. If neither has boules left, *the end is void*.",
+  "pe.r.points.4":"Games to *13 points*, to *11* in pools and play-offs.",
+
+  "pe.r.discipline":"Discipline",
+  "pe.r.discipline.1":"Forbidden: *altering the ground*, except filling a hole left by a boule; playing a boule *without cleaning it*; throwing a practice boule.",
+  "pe.r.discipline.2":"*Silence* while a player plays: opponents stand to the side, at least 2 m away, behind the player or beyond the jack.",
+  "pe.r.discipline.3":"Umpire's sanctions: *yellow card*, the warning; *orange*, boule cancelled; *red*, sent off for the game; then team disqualification, both teams in case of collusion.",
+  "pe.r.discipline.4":"Time exceeded: *yellow card to the whole team*. A player already warned loses a boule."
+},
+es:{
+  "pe.name":"Petanca",
+  "pe.tile.sub":"Individual, dupletas, tripletas",
+  "pe.console":"{n} bolas por equipo",
+  "pe.perboule":"1 pt por bola",
+  "pe.void":"Jugada nula",
+  "pe.add":"Sumar un punto",
+  "pe.rm":"Quitar un punto",
+  "pe.chrono":"Crono",
+  "pe.chrono.go":"Iniciar",
+  "pe.chrono.stop":"Parar",
+  "pe.chrono.again":"Reiniciar",
+  "pe.chrono.out":"Tiempo agotado",
+  "mode.triple":"Tripletas", "mode.triple.sub":"3 v 3",
+
+  "mode.single@petanque":"Individual", "mode.single.sub@petanque":"1 v 1",
+  "mode.double@petanque":"Dupletas", "mode.double.sub@petanque":"2 v 2",
+  "mode.triple@petanque":"Tripletas", "mode.triple.sub@petanque":"3 v 3",
+  "game.frame@petanque":"Jugada",
+  "game.first@petanque":"Lanza el boliche",
+  "toss.who@petanque":"Quién lanza el boliche",
+  "toss.result@petanque":"{name} lanza el boliche",
+  "sheet.frame@petanque":"Jugada",
+  "sheet.empty@petanque":"Todavía no se ha jugado ninguna jugada.",
+  "sheet.hint@petanque":"Toca una jugada para corregir su recuento. La puntuación se recalcula en toda la partida.",
+  "sheet.undo@petanque":"Deshacer la última jugada",
+  "sheet.fix.aria@petanque":"Corregir la jugada {n}",
+  "edit.title@petanque":"Corrección · jugada {n}",
+  "edit.delete@petanque":"Eliminar esta jugada",
+  "over.done@petanque":"Partida terminada en {n} jugada", "over.done_p@petanque":"Partida terminada en {n} jugadas",
+  "over.nframes@petanque":"{n} jugada", "over.nframes_p@petanque":"{n} jugadas",
+  "over.best@petanque":"Mejor jugada",
+  "over.won@petanque":"Jugadas ganadas",
+  "over.avg@petanque":"Promedio por jugada",
+  "over.void@petanque":"Jugadas nulas",
+  "over.chart.aria@petanque":"Progresión de puntos: {a} {sa}, {b} {sb}, en {n} jugada",
+  "over.chart.aria_p@petanque":"Progresión de puntos: {a} {sa}, {b} {sb}, en {n} jugadas",
+  "share.game@petanque":"{a} {sa} – {sb} {b} · {n} jugada · ScoreToss",
+  "share.game_p@petanque":"{a} {sa} – {sb} {b} · {n} jugadas · ScoreToss",
+
+  "pe.r.count":"Puntuación",
+  "pe.r.pt":"punto por bola mejor colocada que la mejor rival",
+  "pe.r.win":"puntos para ganar, 11 en liguillas y repescas",
+
+  "pe.r.materiel":"Material y terreno",
+  "pe.r.materiel.1":"Bolas de *metal, huecas*, de 7,05 a 8 cm de diámetro y de 650 a 800 g, homologadas por la FIPJP, con marca y peso grabados. Nunca lastradas, rellenas ni recocidas.",
+  "pe.r.materiel.2":"Boliche de *madera o sintético* homologado: 30 mm de diámetro (± 1 mm), de 10 a 18 g, y que un imán no levante.",
+  "pe.r.materiel.3":"Terreno *libre*: cualquier superficie. Terreno *marcado*: 15 × 4 m como mínimo en campeonatos, 12 × 3 m por excepción; sus líneas de fondo son líneas de pérdida.",
+
+  "pe.r.equipes":"Equipos e inicio de la partida",
+  "pe.r.equipes.1":"Tripletas, *2 bolas* por jugador; dupletas e individual, *3 bolas* por jugador. Ninguna otra fórmula.",
+  "pe.r.equipes.2":"Un *sorteo* decide qué equipo elige el terreno, si no está asignado, y lanza el boliche.",
+  "pe.r.equipes.3":"Círculo trazado de *35 a 50 cm* de diámetro, o rígido de 50 cm, a más de 1 m de cualquier obstáculo y a 1,50 m de otro círculo o boliche.",
+  "pe.r.equipes.4":"Los pies quedan *por completo dentro del círculo*, sin pisar la línea ni despegarse, hasta que la bola toque el suelo.",
+
+  "pe.r.but":"Lanzamiento del boliche",
+  "pe.r.but.1":"El boliche es válido a *6 a 10 m* del círculo, a 50 cm como mínimo de cualquier obstáculo, y visible desde el círculo con el jugador de pie.",
+  "pe.r.but.2":"*Un solo intento*: si falla, el rival coloca el boliche, pero el equipo que falló juega la primera bola.",
+  "pe.r.but.3":"En la jugada siguiente, el círculo se traza *alrededor del boliche* de la jugada anterior.",
+  "pe.r.but.4":"El boliche es *nulo* en terreno prohibido, invisible desde el círculo, a más de 20 m o menos de 3 m, o perdido tras cinco minutos.",
+  "pe.r.but.5":"Boliche nulo: si a ambos equipos les quedan bolas, *la jugada es nula*; si solo a uno, este suma *tantos puntos como bolas le quedan*.",
+
+  "pe.r.mene":"La jugada",
+  "pe.r.mene.1":"El equipo que lanzó el boliche juega la primera bola; después, *juega el equipo que no tiene el punto*.",
+  "pe.r.mene.2":"*Un minuto* para jugar cada bola, igual que para lanzar el boliche.",
+  "pe.r.mene.3":"Una bola que sale a *terreno prohibido* es nula y se retira.",
+  "pe.r.mene.4":"Bola o boliche movidos por el viento, un espectador o un animal: *se reponen* si estaban marcados. Movidos por una bola jugada: se quedan.",
+  "pe.r.mene.5":"Bola detenida por un compañero: *nula*. Arrimada y detenida por un rival: se repite o se deja, a elección. Detenerla a propósito: *descalificación*.",
+
+  "pe.r.points":"Puntos y final de la partida",
+  "pe.r.points.1":"Solo puntúa el equipo más cercano: *1 punto por bola* mejor colocada que la mejor rival.",
+  "pe.r.points.2":"Se mide con un *instrumento adecuado*, nunca con el pie: el último en jugar, luego el rival si quiere. Bolas y obstáculos que estorben se apartan, una vez marcados.",
+  "pe.r.points.3":"Bolas *a igual distancia*: vuelve a jugar el equipo que jugó la última, luego el otro. Sin bolas en ningún lado, *la jugada es nula*.",
+  "pe.r.points.4":"Partidas a *13 puntos*, a *11* en liguillas y repescas.",
+
+  "pe.r.discipline":"Disciplina",
+  "pe.r.discipline.1":"Prohibido: *modificar el terreno*, salvo tapar el hoyo que dejó una bola; jugar una bola *sin limpiarla*; lanzar una bola de prueba.",
+  "pe.r.discipline.2":"*Silencio* mientras alguien juega: los rivales se colocan a un lado, a 2 m como mínimo, detrás del jugador o más allá del boliche.",
+  "pe.r.discipline.3":"Sanciones del árbitro: *tarjeta amarilla*, la advertencia; *naranja*, bola anulada; *roja*, expulsión para la partida; después, descalificación del equipo, de ambos si hay connivencia.",
+  "pe.r.discipline.4":"Tiempo superado: *amarilla a todo el equipo*. Un jugador ya advertido pierde una bola."
 }
 });
 /* Textes des fléchettes. */
@@ -8953,6 +9440,11 @@ var LANG = "fr";
 var DATE_LOCALE = {fr:"fr-FR", en:"en-GB", es:"es-ES"};
 function t(k){
   var d=TXT[LANG]||TXT.fr;
+  /* un jeu peut renommer une clé commune pour lui seul : voir le registre */
+  if(S){
+    var p=k+"@"+curGame();
+    if(d[p]!==undefined) return d[p];
+  }
   return d[k]!==undefined ? d[k] : (TXT.fr[k]!==undefined ? TXT.fr[k] : k);
 }
 /* Pluriel simple : suffixe _p au-delà de un, suffisant pour le français
@@ -9114,25 +9606,25 @@ function langPicker(){
 }
 
 function defaultName(i){
-  return S.mode==="double" ? t(i===0?"team.a":"team.b") : t(i===0?"player.a":"player.b");
+  return coequipiers(S.mode) ? t(i===0?"team.a":"team.b") : t(i===0?"player.a":"player.b");
 }
 function teamLabel(i){
   var team=S.teams[i];
   var n=(team.name||"").trim();
   if(n) return n;
-  if(S.mode==="double"){
-    var a=(team.mates[0]||"").trim(), b=(team.mates[1]||"").trim();
-    if(a&&b) return a+" & "+b;
-    if(a||b) return a||b;
-  }
+  var m=nomsCoequipiers(i);
+  if(m.length>1) return m.slice(0,-1).join(", ")+" & "+m[m.length-1];
+  if(m.length) return m[0];
   return defaultName(i);
 }
+function nomsCoequipiers(i){
+  var m=S.teams[i].mates||[], out=[];
+  for(var k=0;k<coequipiers(S.mode);k++){ var v=(m[k]||"").trim(); if(v) out.push(v); }
+  return out;
+}
 function matesLabel(i){
-  if(S.mode!=="double") return "";
-  var team=S.teams[i];
-  var a=(team.mates[0]||"").trim(), b=(team.mates[1]||"").trim();
-  if(a&&b) return a+" · "+b;
-  return a||b||"";
+  var m=nomsCoequipiers(i);
+  return m.length>1 ? m.join(" · ") : (m[0]||"");
 }
 
 /* ------------------------------------------------------------------
@@ -9178,13 +9670,15 @@ function renderCards(){
     name.value=team.name;
     name.maxLength=22;
     name.placeholder=defaultName(i);
-    name.setAttribute("aria-label",t(S.mode==="double"?"team.name.aria":"player.name.aria")+" "+(i===0?"A":"B"));
+    name.setAttribute("aria-label",t(coequipiers(S.mode)?"team.name.aria":"player.name.aria")+" "+(i===0?"A":"B"));
     name.addEventListener("input",function(){ team.name=name.value; save(); });
     card.appendChild(name);
 
-    if(S.mode==="double"){
-      var mates=el("div","mates");
-      [0,1].forEach(function(k){
+    var nb=coequipiers(S.mode);
+    if(nb){
+      var mates=el("div","mates"+(nb===3 ? " trio" : ""));
+      while(team.mates.length<nb) team.mates.push("");
+      team.mates.slice(0,nb).forEach(function(_,k){
         var m=el("input","field-input");
         m.type="text";
         m.value=team.mates[k];
@@ -9222,6 +9716,9 @@ function applyGame(id){
   TOUR[S.game]  = T;                 /* ainsi que son tableau et son brouillon */
   DRAFT[S.game] = TS;
   S.game = id;
+  /* la triplette n'existe qu'à la pétanque : on se replie sur le double */
+  if(modesDuJeu(id).indexOf(S.mode)<0) changerMode("double");
+  applyStaticText();                /* ses propres mots, « mène » à la pétanque */
   T  = TOUR[id] || null;
   TS = DRAFT[id] || freshDraft(id);
   TS.open = -1;
@@ -9247,35 +9744,32 @@ function renderRules(){
   fillChips($("target"), gd.cibles, S.target, "target");
   montrerPropres($("s-setup"), S.game);
   if(gd.peindrePreparation) gd.peindrePreparation();
-  var i;
   /* le mode n'était synchronisé qu'au clic : au rechargement d'une partie
      en double, la bascule restait affichée sur Simple. */
-  var m=$("mode").children;
-  for(i=0;i<m.length;i++) m[i].classList.toggle("on", m[i].dataset.mode===S.mode);
+  peindreModes($("mode"), S.game, S.mode);
 }
 
 $("mode").addEventListener("click",function(e){
   var b=e.target.closest("button[data-mode]");
   if(!b || b.dataset.mode===S.mode) return;   /* rien à faire si c'est déjà le mode courant */
 
-  S.mode=b.dataset.mode;
-  /* Passer de simple à double, ou l'inverse, change la nature de ce qu'on
-     nomme : un joueur devient une équipe. Les noms précédents n'ont plus
-     de sens, on repart de zéro. Les couleurs, elles, restent. */
-  S.teams.forEach(function(team){
-    team.name="";
-    team.mates=["",""];
-  });
-
-  var d=jeuDuel(S.game);
-  if(d.auChangementDeMode) d.auChangementDeMode();
-
-  var kids=$("mode").children;
-  for(var i=0;i<kids.length;i++) kids[i].classList.toggle("on", kids[i]===b);
+  changerMode(b.dataset.mode);
   renderCards();
   renderRules();
   save();
 });
+/* Changer de format change la nature de ce qu'on nomme : un joueur devient
+   une équipe. Les noms précédents n'ont plus de sens, on repart de zéro.
+   Les couleurs, elles, restent. */
+function changerMode(mode){
+  S.mode=mode;
+  S.teams.forEach(function(team){
+    team.name="";
+    team.mates=coequipiers(mode)===3 ? ["","",""] : ["",""];
+  });
+  var d=jeuDuel(S.game);
+  if(d.auChangementDeMode) d.auChangementDeMode();
+}
 $("target").addEventListener("click",function(e){
   var b=e.target.closest("button[data-target]");
   if(!b) return;
@@ -9291,7 +9785,7 @@ $("target").addEventListener("click",function(e){
 function newGame(){
   G={
     game:S.game, mode:S.mode, target:S.target,
-    max:paletMax(S.mode,S.palets),
+    max:maxDeManche(S.game,S.mode),
     teams:[
       {label:teamLabel(0), mates:matesLabel(0), hex:color(S.teams[0].color).hex},
       {label:teamLabel(1), mates:matesLabel(1), hex:color(S.teams[1].color).hex}
@@ -9562,7 +10056,7 @@ function renderConsole(){
 }
 
 function renderGame(rebuild, gains){
-  if(rebuild){ buildFields(); buildRows(); }
+  if(rebuild){ applyStaticText(); buildFields(); buildRows(); }
 
   var ctx = (G.tour && T && T.matches[G.tour.mid]) ? roundName(T.matches[G.tour.mid].r)+" · " : "";
   $("roundLabel").textContent = ctx+t("game.frame")+" "+(G.rounds.length+1);
@@ -10227,9 +10721,18 @@ function HG(){
 
 function nameKey(s){ return (s||"").trim().toLocaleLowerCase("fr"); }
 
-/* Un nom peut désigner un joueur seul ou une équipe de deux : on relève le
-   format dans lequel il a joué pour pouvoir les distinguer d'un coup d'œil.
-   Un nom apparu dans les deux ne reçoit aucune marque, elle mentirait. */
+/* Un nom peut désigner un joueur seul ou une équipe : on relève le format
+   dans lequel il a joué pour pouvoir les distinguer d'un coup d'œil. Un nom
+   apparu dans plusieurs ne reçoit aucune marque, elle mentirait. */
+var TAG_MODE={simple:"hall.tag.solo", double:"hall.tag.duo", triple:"hall.tag.trio"};
+function noterMode(m, mode){
+  if(!mode) return;
+  m.modes[mode]=true;
+}
+function tagDeModes(m){
+  var k=Object.keys(m.modes);
+  return k.length===1 ? t(TAG_MODE[k[0]]||TAG_MODE.simple) : null;
+}
 function modeTags(){
   var m={};
   HG().forEach(function(g){
@@ -10237,16 +10740,15 @@ function modeTags(){
     for(var i=0;i<g.n.length;i++){
       var k=nameKey(g.n[i]);
       if(!k) continue;
-      if(!m[k]) m[k]={solo:false,duo:false};
-      if(g.mode==="double") m[k].duo=true; else m[k].solo=true;
+      if(!m[k]) m[k]={modes:{}};
+      noterMode(m[k], g.mode==="double"||g.mode==="triple" ? g.mode : "simple");
     }
   });
   return m;
 }
 function tagFor(tags,name){
   var i=tags[nameKey(name)];
-  if(!i || (i.solo && i.duo)) return null;
-  return t(i.duo ? "hall.tag.duo" : "hall.tag.solo");
+  return i ? tagDeModes(i) : null;
 }
 function tagEl(tags,name){
   var s=tagFor(tags,name);
@@ -10283,13 +10785,13 @@ function duels(){
     var flip = kb<ka;
     var id = flip ? kb+"|"+ka : ka+"|"+kb;
     var f = flip ? 1 : 0;
-    if(!map[id]){ map[id]={n:["",""], c:["",""], w:[0,0], solo:false, duo:false}; order.push(id); }
+    if(!map[id]){ map[id]={n:["",""], c:["",""], w:[0,0], modes:{}}; order.push(id); }
     var m=map[id];
     m.n=[g.n[f],g.n[1-f]];
     m.c=[g.c[f],g.c[1-f]];
     /* le mölkky et les fléchettes ne se jouent ni en simple ni en double :
        leurs confrontations ne reçoivent aucune marque */
-    if(g.mode==="double") m.duo=true; else if(g.mode) m.solo=true;
+    if(g.mode) noterMode(m, g.mode==="double"||g.mode==="triple" ? g.mode : "simple");
     if(g.w===f) m.w[0]++; else m.w[1]++;
   });
   var list=order.map(function(k){ return map[k]; });
@@ -10334,9 +10836,8 @@ function renderHall(){
          les noms n'en avaient pas à céder */
       var mid=el("div","duel-mid");
       mid.appendChild(el("p","duel-s",x.w[0]+" – "+x.w[1]));
-      if(x.solo !== x.duo){
-        mid.appendChild(el("span","mtag",t(x.duo ? "hall.tag.duo" : "hall.tag.solo")));
-      }
+      var tag=tagDeModes(x);
+      if(tag) mid.appendChild(el("span","mtag",tag));
       top.appendChild(mid);
 
       var right=el("div","duel-n r");
@@ -10772,7 +11273,7 @@ function buildTournament(){
     for(var i=0;i<count;i++) matches.push({r:r,i:i,a:null,b:null,winner:-1,score:[0,0],done:false,bye:false});
   }
   T={
-    game:S.game, max:paletMax(TS.mode,S.palets),
+    game:S.game, max:maxDeManche(S.game,TS.mode),
     /* enregistre plus bas dans TOUR[S.game] */
     teams:TS.teams.slice(0,n).map(function(team,k){
       return {name:(team.name||"").trim() || tf("tour.teamn",{n:k+1}), color:team.color};
@@ -10865,8 +11366,8 @@ function renderTRules(){
   fillChips($("ttarget"), gd.cibles, TS.target, "target");
   var a=$("ttarget").children, i;
   for(i=0;i<a.length;i++) a[i].classList.toggle("on", +a[i].dataset.target===TS.target);
-  var mm=$("tmode").children;
-  for(i=0;i<mm.length;i++) mm[i].classList.toggle("on", mm[i].dataset.mode===TS.mode);
+  if(modesDuJeu(S.game).indexOf(TS.mode)<0) TS.mode="double";
+  peindreModes($("tmode"), S.game, TS.mode);
 }
 function renderTSetup(){ renderTCount(); renderTRows(); renderTRules(); }
 
@@ -11213,6 +11714,7 @@ function refreshTourBtn(){
 }
 
 function show(name){
+  applyStaticText();      /* les mots du jeu courant : « mène » à la pétanque seulement */
   ["games","cat","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
@@ -11238,6 +11740,8 @@ function normS(s){
   if(!s.tgt) s.tgt=ciblesParDefaut();
   if(!s.palets) s.palets=paletDefault(s.mode);
   if(!s.teams || s.teams.length!==2) s.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
+  if(modesDuJeu(s.game).indexOf(s.mode)<0) s.mode="double";
+  s.teams.forEach(function(team){ if(!team.mates) team.mates=["",""]; });
   return s;
 }
 function normG(g){

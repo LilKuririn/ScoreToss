@@ -41,13 +41,15 @@ function renderCards(){
     name.value=team.name;
     name.maxLength=22;
     name.placeholder=defaultName(i);
-    name.setAttribute("aria-label",t(S.mode==="double"?"team.name.aria":"player.name.aria")+" "+(i===0?"A":"B"));
+    name.setAttribute("aria-label",t(coequipiers(S.mode)?"team.name.aria":"player.name.aria")+" "+(i===0?"A":"B"));
     name.addEventListener("input",function(){ team.name=name.value; save(); });
     card.appendChild(name);
 
-    if(S.mode==="double"){
-      var mates=el("div","mates");
-      [0,1].forEach(function(k){
+    var nb=coequipiers(S.mode);
+    if(nb){
+      var mates=el("div","mates"+(nb===3 ? " trio" : ""));
+      while(team.mates.length<nb) team.mates.push("");
+      team.mates.slice(0,nb).forEach(function(_,k){
         var m=el("input","field-input");
         m.type="text";
         m.value=team.mates[k];
@@ -85,6 +87,9 @@ function applyGame(id){
   TOUR[S.game]  = T;                 /* ainsi que son tableau et son brouillon */
   DRAFT[S.game] = TS;
   S.game = id;
+  /* la triplette n'existe qu'à la pétanque : on se replie sur le double */
+  if(modesDuJeu(id).indexOf(S.mode)<0) changerMode("double");
+  applyStaticText();                /* ses propres mots, « mène » à la pétanque */
   T  = TOUR[id] || null;
   TS = DRAFT[id] || freshDraft(id);
   TS.open = -1;
@@ -110,35 +115,32 @@ function renderRules(){
   fillChips($("target"), gd.cibles, S.target, "target");
   montrerPropres($("s-setup"), S.game);
   if(gd.peindrePreparation) gd.peindrePreparation();
-  var i;
   /* le mode n'était synchronisé qu'au clic : au rechargement d'une partie
      en double, la bascule restait affichée sur Simple. */
-  var m=$("mode").children;
-  for(i=0;i<m.length;i++) m[i].classList.toggle("on", m[i].dataset.mode===S.mode);
+  peindreModes($("mode"), S.game, S.mode);
 }
 
 $("mode").addEventListener("click",function(e){
   var b=e.target.closest("button[data-mode]");
   if(!b || b.dataset.mode===S.mode) return;   /* rien à faire si c'est déjà le mode courant */
 
-  S.mode=b.dataset.mode;
-  /* Passer de simple à double, ou l'inverse, change la nature de ce qu'on
-     nomme : un joueur devient une équipe. Les noms précédents n'ont plus
-     de sens, on repart de zéro. Les couleurs, elles, restent. */
-  S.teams.forEach(function(team){
-    team.name="";
-    team.mates=["",""];
-  });
-
-  var d=jeuDuel(S.game);
-  if(d.auChangementDeMode) d.auChangementDeMode();
-
-  var kids=$("mode").children;
-  for(var i=0;i<kids.length;i++) kids[i].classList.toggle("on", kids[i]===b);
+  changerMode(b.dataset.mode);
   renderCards();
   renderRules();
   save();
 });
+/* Changer de format change la nature de ce qu'on nomme : un joueur devient
+   une équipe. Les noms précédents n'ont plus de sens, on repart de zéro.
+   Les couleurs, elles, restent. */
+function changerMode(mode){
+  S.mode=mode;
+  S.teams.forEach(function(team){
+    team.name="";
+    team.mates=coequipiers(mode)===3 ? ["","",""] : ["",""];
+  });
+  var d=jeuDuel(S.game);
+  if(d.auChangementDeMode) d.auChangementDeMode();
+}
 $("target").addEventListener("click",function(e){
   var b=e.target.closest("button[data-target]");
   if(!b) return;

@@ -4,7 +4,7 @@
 
 # ScoreToss — Compteur de points
 
-Compteur de points pour les jeux d'extérieur — **cornhole**, **palet breton**, **mölkky**, **bibock** —,
+Compteur de points pour les jeux d'extérieur — **cornhole**, **pétanque**, **palet breton**, **mölkky**, **bibock** —,
 d'intérieur — **fléchettes**, **tossit** — et de société — **yams**.
 
 Conçu pour être lu d'un coup d'œil depuis l'autre planche, et utilisé debout dans un jardin : deux
@@ -158,6 +158,27 @@ le maximum qu'une manche peut rapporter.
 
 La saisie s'en trouve simplifiée : une seule réglette par équipe, puisqu'une seule marque. Deux zéros
 valent manche nulle.
+
+### Pétanque
+
+Le règlement officiel de la FIPJP, que la FFPJP applique tel quel. Trois formats, et pas d'autre :
+**tête-à-tête** et **doublette** à trois boules par joueur, **triplette** à deux — six boules par
+équipe, trois en tête-à-tête, et c'est le plus qu'une mène peut rapporter. La triplette n'existe
+qu'ici : l'écran de préparation propose trois coéquipiers par équipe, et le tournoi suit.
+
+Comme au palet, seule l'équipe la plus proche du but marque, **1 point par boule mieux placée que la
+meilleure adverse** : une seule réglette par équipe, et deux zéros valent **mène nulle** — le but
+reste alors à l'équipe qui avait marqué. Le badge d'honneur devient *Lance le but*.
+
+Partie en **13 points**, en **11** dans les poules et les cadrages.
+
+La pétanque dit **mène** là où les autres jeux disent manche : ses textes renomment les clés communes
+pour elle seule, par des clés suffixées `@petanque`. Au-dessus de la saisie, un **chrono d'une
+minute** — le temps réglementaire pour jouer une boule ou lancer le but — part d'un appui, vibre à
+zéro et repart à chaque mène validée ; il n'est jamais enregistré.
+
+La fiche de règles reprend tout le règlement utile au jeu : matériel et terrain, cercle, lancer du
+but et but nul, déroulement de la mène, mesure et boules à égale distance, discipline et cartons.
 
 ### Bibock
 
@@ -325,5 +346,5 @@ site est publié par GitHub Pages depuis `main` : un `git push` suffit à déplo
 
 ## Ce qui viendra
 
-La pétanque en extérieur, et d'autres jeux de société après le yams.
+D'autres jeux de société après le yams.
 Les tournois en poules, quand l'élimination directe montrera ses limites.

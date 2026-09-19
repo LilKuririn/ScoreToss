@@ -50,7 +50,7 @@ Un nouveau jeu ajoute enfin son parcours au banc, dans `tools/banc/scenarios.js`
 
 ## Vérifier une refonte : le banc de comparaison
 
-`tools/banc/` joue vingt-cinq parcours réels — les sept jeux, tournois, palmarès, réglages, reprise,
+`tools/banc/` joue vingt-sept parcours réels — les huit jeux, tournois, palmarès, réglages, reprise,
 import, petit écran, catégories — sur deux versions de l'application, et compare ce qui s'affiche vraiment :
 chaque élément visible, sa place, ses couleurs, son texte, plus l'état enregistré. Le hasard,
 l'heure et les animations sont figés : une version comparée à elle-même donne zéro différence.

@@ -7,7 +7,7 @@
    reste annoncée sur l'accueil, mais ne s'ouvre pas.
 ------------------------------------------------------------------ */
 var CATEGORIES = [
-  {id:"exterieur", bientot:"games.soon.sub"},
+  {id:"exterieur"},
   {id:"interieur"},
   {id:"societe"}
 ];

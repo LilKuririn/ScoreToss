@@ -27,9 +27,18 @@ function HG(){
 
 function nameKey(s){ return (s||"").trim().toLocaleLowerCase("fr"); }
 
-/* Un nom peut désigner un joueur seul ou une équipe de deux : on relève le
-   format dans lequel il a joué pour pouvoir les distinguer d'un coup d'œil.
-   Un nom apparu dans les deux ne reçoit aucune marque, elle mentirait. */
+/* Un nom peut désigner un joueur seul ou une équipe : on relève le format
+   dans lequel il a joué pour pouvoir les distinguer d'un coup d'œil. Un nom
+   apparu dans plusieurs ne reçoit aucune marque, elle mentirait. */
+var TAG_MODE={simple:"hall.tag.solo", double:"hall.tag.duo", triple:"hall.tag.trio"};
+function noterMode(m, mode){
+  if(!mode) return;
+  m.modes[mode]=true;
+}
+function tagDeModes(m){
+  var k=Object.keys(m.modes);
+  return k.length===1 ? t(TAG_MODE[k[0]]||TAG_MODE.simple) : null;
+}
 function modeTags(){
   var m={};
   HG().forEach(function(g){
@@ -37,16 +46,15 @@ function modeTags(){
     for(var i=0;i<g.n.length;i++){
       var k=nameKey(g.n[i]);
       if(!k) continue;
-      if(!m[k]) m[k]={solo:false,duo:false};
-      if(g.mode==="double") m[k].duo=true; else m[k].solo=true;
+      if(!m[k]) m[k]={modes:{}};
+      noterMode(m[k], g.mode==="double"||g.mode==="triple" ? g.mode : "simple");
     }
   });
   return m;
 }
 function tagFor(tags,name){
   var i=tags[nameKey(name)];
-  if(!i || (i.solo && i.duo)) return null;
-  return t(i.duo ? "hall.tag.duo" : "hall.tag.solo");
+  return i ? tagDeModes(i) : null;
 }
 function tagEl(tags,name){
   var s=tagFor(tags,name);
@@ -83,13 +91,13 @@ function duels(){
     var flip = kb<ka;
     var id = flip ? kb+"|"+ka : ka+"|"+kb;
     var f = flip ? 1 : 0;
-    if(!map[id]){ map[id]={n:["",""], c:["",""], w:[0,0], solo:false, duo:false}; order.push(id); }
+    if(!map[id]){ map[id]={n:["",""], c:["",""], w:[0,0], modes:{}}; order.push(id); }
     var m=map[id];
     m.n=[g.n[f],g.n[1-f]];
     m.c=[g.c[f],g.c[1-f]];
     /* le mölkky et les fléchettes ne se jouent ni en simple ni en double :
        leurs confrontations ne reçoivent aucune marque */
-    if(g.mode==="double") m.duo=true; else if(g.mode) m.solo=true;
+    if(g.mode) noterMode(m, g.mode==="double"||g.mode==="triple" ? g.mode : "simple");
     if(g.w===f) m.w[0]++; else m.w[1]++;
   });
   var list=order.map(function(k){ return map[k]; });
@@ -134,9 +142,8 @@ function renderHall(){
          les noms n'en avaient pas à céder */
       var mid=el("div","duel-mid");
       mid.appendChild(el("p","duel-s",x.w[0]+" – "+x.w[1]));
-      if(x.solo !== x.duo){
-        mid.appendChild(el("span","mtag",t(x.duo ? "hall.tag.duo" : "hall.tag.solo")));
-      }
+      var tag=tagDeModes(x);
+      if(tag) mid.appendChild(el("span","mtag",tag));
       top.appendChild(mid);
 
       var right=el("div","duel-n r");

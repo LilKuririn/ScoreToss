@@ -210,7 +210,7 @@ function renderConsole(){
 }
 
 function renderGame(rebuild, gains){
-  if(rebuild){ buildFields(); buildRows(); }
+  if(rebuild){ applyStaticText(); buildFields(); buildRows(); }
 
   var ctx = (G.tour && T && T.matches[G.tour.mid]) ? roundName(T.matches[G.tour.mid].r)+" · " : "";
   $("roundLabel").textContent = ctx+t("game.frame")+" "+(G.rounds.length+1);

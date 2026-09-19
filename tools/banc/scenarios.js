@@ -529,3 +529,38 @@ scenario("tossit-jackover", async function(a){
   await a.clicN("#tiScores .ti-score", 0); await tossitBascule(a,"Jackover"); a.point("Jackover");
   await a.clic("#tiValider"); await finDePartie(a);            a.point("victoire par Jackover");
 }, [360,640]);
+
+/* --- pétanque : triplette, mènes, chrono ------------------------- */
+scenario("petanque-partie", async function(a){
+  await a.clic('#categories [data-categorie="exterieur"]');     a.point("liste de l'extérieur");
+  await a.clic("#playPetanque");                               a.point("préparation");
+  await a.clic('#mode button[data-mode="triple"]');            a.point("triplette, trois coéquipiers");
+  await a.clic("#openRules");                                  a.point("règles de la pétanque");
+  await a.clic("#rulesClose");
+  await a.clic("#start");                                      a.point("partie neuve");
+  await a.clic("#s-game .toss"); await a.attendre(100);        a.point("tirage : qui lance le but");
+  await a.clic("#tossWrap"); await a.attendre(50);
+  await palet(a,1,8);                                          a.point("plafond à six boules");
+  await palet(a,2,2);                                          a.point("l'adversaire remet à zéro");
+  await valider(a);                                            a.point("mène 1");
+  await valider(a);                                            a.point("mène nulle");
+  await a.clic("#openSheet");                                  a.point("feuille : mènes");
+  await a.clic("#closeSheet");
+  for(var k=0;k<4 && !(a.etat().g||{}).over;k++){ await palet(a,1,4); await valider(a); }
+  await finDePartie(a);                                        a.point("fin de partie en mènes");
+  await a.clic("#over .cta.ghost");
+  await a.clic("#openHall");                                   a.point("palmarès 3v3");
+});
+
+scenario("petanque-tete-a-tete", async function(a){
+  await a.clic('#categories [data-categorie="exterieur"]');
+  await a.clic("#playPetanque");
+  await a.clic('#target .chip[data-target="11"]');             a.point("tête-à-tête en 11");
+  await a.clic("#start");
+  await a.clic("#peBouton");                                   a.point("chrono lancé");
+  await palet(a,2,5);                                          a.point("plafond à trois boules");
+  for(var k=0;k<4 && !(a.etat().g||{}).over;k++){ await palet(a,2,3); await valider(a); }
+  await finDePartie(a);                                        a.point("victoire à 11");
+  await a.clic("#over .cta.ghost");
+  await a.clic("#backToGames"); await a.clic("#playCornhole"); a.point("cornhole : manche, pas de triplette");
+}, [360,640]);

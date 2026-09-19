@@ -70,6 +70,7 @@
   color:var(--muted);transition:background .18s ease,color .18s ease;
   display:flex;flex-direction:column;align-items:center;gap:2px;
 }
+.seg button[hidden]{display:none}      /* `display:flex` l'emporterait sur hidden */
 .seg button .sub{font-family:var(--fm);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
 .seg button.on{background:var(--panel-2);color:var(--ink)}
 .seg3{grid-template-columns:1fr 1fr 1fr}
@@ -97,6 +98,7 @@
 .field-input::placeholder{color:var(--muted);font-weight:500}
 .field-input:focus{border-color:color-mix(in oklab,var(--team) 55%,transparent);outline:none}
 .mates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mates.trio{grid-template-columns:1fr 1fr 1fr;gap:6px}
 .mates .field-input{font-size:14px;padding:10px 12px;font-weight:500}
 
 .swatches{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;padding:3px 0}

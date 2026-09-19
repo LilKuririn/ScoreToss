@@ -94,6 +94,7 @@ function refreshTourBtn(){
 }
 
 function show(name){
+  applyStaticText();      /* les mots du jeu courant : « mène » à la pétanque seulement */
   ["games","cat","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
@@ -119,6 +120,8 @@ function normS(s){
   if(!s.tgt) s.tgt=ciblesParDefaut();
   if(!s.palets) s.palets=paletDefault(s.mode);
   if(!s.teams || s.teams.length!==2) s.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
+  if(modesDuJeu(s.game).indexOf(s.mode)<0) s.mode="double";
+  s.teams.forEach(function(team){ if(!team.mates) team.mates=["",""]; });
   return s;
 }
 function normG(g){

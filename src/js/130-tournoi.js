@@ -76,7 +76,7 @@ function buildTournament(){
     for(var i=0;i<count;i++) matches.push({r:r,i:i,a:null,b:null,winner:-1,score:[0,0],done:false,bye:false});
   }
   T={
-    game:S.game, max:paletMax(TS.mode,S.palets),
+    game:S.game, max:maxDeManche(S.game,TS.mode),
     /* enregistre plus bas dans TOUR[S.game] */
     teams:TS.teams.slice(0,n).map(function(team,k){
       return {name:(team.name||"").trim() || tf("tour.teamn",{n:k+1}), color:team.color};
@@ -169,8 +169,8 @@ function renderTRules(){
   fillChips($("ttarget"), gd.cibles, TS.target, "target");
   var a=$("ttarget").children, i;
   for(i=0;i<a.length;i++) a[i].classList.toggle("on", +a[i].dataset.target===TS.target);
-  var mm=$("tmode").children;
-  for(i=0;i<mm.length;i++) mm[i].classList.toggle("on", mm[i].dataset.mode===TS.mode);
+  if(modesDuJeu(S.game).indexOf(TS.mode)<0) TS.mode="double";
+  peindreModes($("tmode"), S.game, TS.mode);
 }
 function renderTSetup(){ renderTCount(); renderTRows(); renderTRules(); }
 

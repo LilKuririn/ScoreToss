@@ -60,24 +60,24 @@ function langPicker(){
 }
 
 function defaultName(i){
-  return S.mode==="double" ? t(i===0?"team.a":"team.b") : t(i===0?"player.a":"player.b");
+  return coequipiers(S.mode) ? t(i===0?"team.a":"team.b") : t(i===0?"player.a":"player.b");
 }
 function teamLabel(i){
   var team=S.teams[i];
   var n=(team.name||"").trim();
   if(n) return n;
-  if(S.mode==="double"){
-    var a=(team.mates[0]||"").trim(), b=(team.mates[1]||"").trim();
-    if(a&&b) return a+" & "+b;
-    if(a||b) return a||b;
-  }
+  var m=nomsCoequipiers(i);
+  if(m.length>1) return m.slice(0,-1).join(", ")+" & "+m[m.length-1];
+  if(m.length) return m[0];
   return defaultName(i);
 }
+function nomsCoequipiers(i){
+  var m=S.teams[i].mates||[], out=[];
+  for(var k=0;k<coequipiers(S.mode);k++){ var v=(m[k]||"").trim(); if(v) out.push(v); }
+  return out;
+}
 function matesLabel(i){
-  if(S.mode!=="double") return "";
-  var team=S.teams[i];
-  var a=(team.mates[0]||"").trim(), b=(team.mates[1]||"").trim();
-  if(a&&b) return a+" · "+b;
-  return a||b||"";
+  var m=nomsCoequipiers(i);
+  return m.length>1 ? m.join(" · ") : (m[0]||"");
 }
 

@@ -39,6 +39,10 @@
      historique                reprend les enregistrements sans nom de jeu
      compteNulles              annonce le nombre de manches nulles en fin de partie
      main()                    l'équipe qui a la main, si ce n'est pas l'honneur
+     modes                     ses formats, parmi "simple", "double" et "triple" ;
+                               simple et double par défaut
+     maxParManche(mode)        ce qu'une équipe peut marquer au plus en une
+                               manche, s'il ne dépend pas du réglage des palets
      peindre()                 ce qu'il affiche en plus dans la console
      auChoix(), auChangementDeMode(), peindrePreparation()
                                ses propres réglages sur l'écran de préparation
@@ -63,7 +67,9 @@
    par des repères @@jeux:fichier@@ ; ses éléments portent
    data-propre="identifiant", et le code commun ne les affiche que pour lui.
    Ses textes, dans textes.js, rejoignent le dictionnaire commun par
-   ajouterTextes().
+   ajouterTextes(). Une clé suivie de @identifiant — "game.frame@petanque" —
+   remplace la clé commune tant que ce jeu est le jeu courant : c'est ainsi
+   que la pétanque dit « mène » là où les autres disent « manche ».
 ------------------------------------------------------------------ */
 var JEUX = {};
 var ORDRE_JEUX = [];
@@ -121,6 +127,26 @@ function ecransDesJeux(){
 }
 function liensPalmares(){
   return ORDRE_JEUX.map(function(id){ return JEUX[id].lienPalmares; }).filter(Boolean);
+}
+
+/* Les formats d'un jeu à deux camps, et le nombre de coéquipiers de chacun. */
+function modesDuJeu(id){ return jeu(id).modes || ["simple","double"]; }
+function coequipiers(mode){ return mode==="triple" ? 3 : (mode==="double" ? 2 : 0); }
+function maxDeManche(id, mode){
+  var d=jeu(id);
+  return d.maxParManche ? d.maxParManche(mode) : paletMax(mode,S.palets);
+}
+/* La bascule de format, à la préparation comme au tournoi : seuls les
+   formats du jeu s'affichent, sous les noms qu'il leur donne. */
+function peindreModes(hote, id, courant){
+  var modes=modesDuJeu(id), b=hote.children;
+  hote.classList.toggle("seg3", modes.length===3);
+  for(var i=0;i<b.length;i++){
+    b[i].hidden = modes.indexOf(b[i].dataset.mode)<0;
+    b[i].classList.toggle("on", b[i].dataset.mode===courant);
+    var n=b[i].querySelectorAll("[data-i18n]");
+    for(var k=0;k<n.length;k++) n[k].textContent=t(n[k].getAttribute("data-i18n"));
+  }
 }
 
 /* Les éléments propres à un jeu ne s'affichent que pour lui. */

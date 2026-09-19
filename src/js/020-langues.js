@@ -10,7 +10,7 @@ fr:{
   "cat.count":"{n} jeu", "cat.count_p":"{n} jeux",
   "games.soon":"En chantier", "games.soon.sub":"Pétanque…",
   "games.change":"Changer de jeu",
-  "app.desc":"Compteur de points pour les jeux d'extérieur, d'intérieur et de société. Cornhole, palet breton, mölkky, bibock, fléchettes, tossit et yams, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
+  "app.desc":"Compteur de points pour les jeux d'extérieur, d'intérieur et de société. Cornhole, pétanque, palet breton, mölkky, bibock, fléchettes, tossit et yams, en simple, en double ou en équipes, tournois à élimination directe et palmarès entre joueurs.",
   "nav.home":"Accueil", "nav.close":"Fermer",
   "mode.single":"Simple", "mode.single.sub":"1 v 1",
   "mode.double":"Double", "mode.double.sub":"2 v 2",
@@ -100,7 +100,7 @@ fr:{
   "hall.recent":"Dernières parties",
   "hall.team":"Nom", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
   "hall.beat":"{w} bat {l}", "hall.tie":"Égalité",
-  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2",
+  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Effacer le palmarès",
   "hall.clear.confirm":"Confirmer l'effacement",
   "rules.title":"Règles du jeu",
@@ -140,7 +140,7 @@ en:{
   "cat.count":"{n} game", "cat.count_p":"{n} games",
   "games.soon":"In the works", "games.soon.sub":"Pétanque…",
   "games.change":"Change game",
-  "app.desc":"A score keeper for outdoor, indoor and board games. Cornhole, Breton palet, Mölkky, Bibock, darts, Tossit and Yams, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
+  "app.desc":"A score keeper for outdoor, indoor and board games. Cornhole, pétanque, Breton palet, Mölkky, Bibock, darts, Tossit and Yams, singles, doubles or teams, single-elimination tournaments, and a record of who beats whom.",
   "nav.home":"Home", "nav.close":"Close",
   "mode.single":"Singles", "mode.single.sub":"1 v 1",
   "mode.double":"Doubles", "mode.double.sub":"2 v 2",
@@ -230,7 +230,7 @@ en:{
   "hall.recent":"Recent games",
   "hall.team":"Name", "hall.w":"W", "hall.l":"L", "hall.rate":"Win rate",
   "hall.beat":"{w} beat {l}", "hall.tie":"Draw",
-  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2",
+  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Clear the records",
   "hall.clear.confirm":"Confirm clearing",
   "rules.title":"How to play",
@@ -270,7 +270,7 @@ es:{
   "cat.count":"{n} juego", "cat.count_p":"{n} juegos",
   "games.soon":"En preparación", "games.soon.sub":"Petanca…",
   "games.change":"Cambiar de juego",
-  "app.desc":"Marcador de puntos para juegos de exterior, de interior y de mesa. Cornhole, palet bretón, mölkky, bibock, dardos, tossit y yams, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
+  "app.desc":"Marcador de puntos para juegos de exterior, de interior y de mesa. Cornhole, petanca, palet bretón, mölkky, bibock, dardos, tossit y yams, individual, por parejas o por equipos, torneos de eliminación directa e historial de enfrentamientos.",
   "nav.home":"Inicio", "nav.close":"Cerrar",
   "mode.single":"Individual", "mode.single.sub":"1 v 1",
   "mode.double":"Parejas", "mode.double.sub":"2 v 2",
@@ -360,7 +360,7 @@ es:{
   "hall.recent":"Últimas partidas",
   "hall.team":"Nombre", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
   "hall.beat":"{w} gana a {l}", "hall.tie":"Empate",
-  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2",
+  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Borrar el historial",
   "hall.clear.confirm":"Confirmar el borrado",
   "rules.title":"Cómo se juega",
@@ -466,6 +466,11 @@ var LANG = "fr";
 var DATE_LOCALE = {fr:"fr-FR", en:"en-GB", es:"es-ES"};
 function t(k){
   var d=TXT[LANG]||TXT.fr;
+  /* un jeu peut renommer une clé commune pour lui seul : voir le registre */
+  if(S){
+    var p=k+"@"+curGame();
+    if(d[p]!==undefined) return d[p];
+  }
   return d[k]!==undefined ? d[k] : (TXT.fr[k]!==undefined ? TXT.fr[k] : k);
 }
 /* Pluriel simple : suffixe _p au-delà de un, suffisant pour le français
