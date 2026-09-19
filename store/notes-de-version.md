@@ -160,6 +160,36 @@ Nouveau : l'ordre de jeu se tire au sort au mölkky, aux fléchettes et au yams.
 
 ---
 
+## Version 5.0 — Bibock et Tossit
+
+Nom de release, jamais montré aux utilisateurs : `5.0 — Bibock, Tossit`
+
+Depuis la 4.0 : le Bibock en extérieur, le Tossit en intérieur et le nouvel écran de partie du
+mölkky. Le correctif de la barre d'état ne concerne que la version web installée sur iPhone : il
+n'a rien à faire dans ces notes.
+
+### en-US *(367 / 500)*
+
+```
+New: Bibock. Closest Bocks, Bocks on the Master, the Bocks each team takes back and the knockout win: the app counts it all.
+
+New: Tossit. Tap the round winner, count their stuck darts and add the bonuses: Kiss, French Kiss, Jumpover, Jackover and more.
+
+Mölkky: a livelier game screen, with a progress bar to 50 for everyone and the pin to aim for when you're close.
+```
+
+### fr-FR *(436 / 500)*
+
+```
+Nouveau : le Bibock. Bocks les plus proches, Bocks sur le Maître, Bocks récupérés par chaque équipe et victoire par élimination : l'app compte tout.
+
+Nouveau : le Tossit. On touche le gagnant de la manche, on compte ses fléchettes collées et on ajoute ses bonus : Kiss, French Kiss, Sautez par-dessus, Jackover…
+
+Mölkky : un écran de partie plus vivant, avec la progression de chacun vers 50 et la quille à viser quand on s'en approche.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
