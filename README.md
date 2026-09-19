@@ -121,6 +121,11 @@ Un lancer vaut de 0 à 12 : le numéro de l'unique quille renversée, ou le nomb
 a plusieurs. Les deux cas donnant le même chiffre, la saisie tient en **un appui** sur un pavé de
 douze touches — le jeu va vite, l'application ne doit pas le ralentir.
 
+Le joueur qui lance tient la vedette : son score en grand, ce qu'il lui manque et, dès qu'une quille
+suffit, laquelle viser. Chacun a sa piste vers 50, marquée à 25 là où ramène un dépassement ; les
+autres suivent dans l'ordre du jeu avec leur dernier lancer, et les ratés s'affichent en trois petites
+quilles qui rougissent.
+
 Un bouton ouvre le **placement des quilles** : la formation officielle, à 3,50 m de la zone de
 lancer, consultable depuis la préparation comme en cours de partie.
 

@@ -87,12 +87,97 @@
 }
 .mk-form .line{stroke:var(--line-2);stroke-dasharray:4 4}
 .mk-form .lab{fill:var(--muted);font-size:11px;text-anchor:middle;letter-spacing:.06em}
-.mk-notice{
-  text-align:center;padding:0 14px 12px;color:var(--danger);
-}
-.mk-notice[hidden]{display:none}
 .mk-dist{
   display:flex;align-items:center;justify-content:center;gap:8px;
   margin-top:12px;font-size:12.5px;color:var(--muted);
 }
 
+/* --- la scène de la partie ---------------------------------------
+   Celui qui lance tient la vedette : son score en grand, ce qu'il lui
+   manque, et la quille qui suffit quand il est tout près. Les autres
+   suivent dans l'ordre du jeu, chacun avec sa piste vers 50, son dernier
+   lancer et ses ratés. */
+/* la carte et la liste restent ensemble, centrées tant qu'elles tiennent ;
+   au-delà, seule la liste défile et la carte reste en vue */
+.mk-zone{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.mk-zone .mk-list{flex:0 1 auto}
+.mk-scene{flex:0 0 auto;padding:12px 14px 10px}
+.mk-scene:empty{display:none}
+.mk-hero{
+  --c:#E14434;
+  display:flex;flex-direction:column;gap:10px;
+  padding:13px 15px 15px;border-radius:16px;
+  background:
+    radial-gradient(120% 150% at 100% 0%,color-mix(in oklab,var(--c) 24%,transparent),transparent 62%),
+    color-mix(in oklab,var(--c) 9%,var(--panel));
+  border:1px solid color-mix(in oklab,var(--c) 45%,transparent);
+  animation:mk-arrive .34s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes mk-arrive{from{opacity:.35;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hero-haut{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mk-hero .qui{display:flex;align-items:baseline;gap:8px;min-width:0}
+.mk-hero .dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:0 0 auto;align-self:center}
+.mk-hero .nom{
+  font-size:17px;font-weight:700;letter-spacing:-.02em;min-width:0;
+  color:color-mix(in oklab,var(--c) 72%,var(--tone));
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.mk-hero .mate{flex:0 0 auto;font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+.hero-mil{display:flex;align-items:flex-end;gap:14px}
+.hero-sc{font-size:clamp(56px,17vw,76px);line-height:.8;color:color-mix(in oklab,var(--c) 62%,var(--tone))}
+.hero-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;padding-bottom:1px}
+.hero-info .reste{font-family:var(--fm);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.hero-info .idee{font-size:14px;font-weight:600;line-height:1.3;color:var(--ink);text-wrap:balance}
+
+/* la piste vers 50 ; le trait marque 25, où ramène un dépassement */
+.mk-piste{position:relative;height:5px;border-radius:3px;background:var(--line-2)}
+.mk-piste.grande{height:8px;border-radius:4px}
+.mk-piste .fill{
+  position:absolute;left:0;top:0;bottom:0;border-radius:inherit;
+  background:color-mix(in oklab,var(--c) 80%,var(--tone));
+  animation:mk-fill .6s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes mk-fill{from{width:var(--de)}}
+.mk-piste .mi{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;margin-left:-1px;border-radius:1px;background:var(--muted);opacity:.5}
+
+/* trois ratés de suite éliminent : trois petites quilles qui rougissent */
+.mk-quilles{display:flex;align-items:flex-end;gap:4px;flex:0 0 auto}
+.mk-quilles i{width:7px;height:13px;border-radius:3.5px 3.5px 2px 2px;background:var(--line-2)}
+.mk-quilles i.f{background:var(--danger)}
+.mk-hero .mk-quilles i{width:9px;height:17px;border-radius:4.5px 4.5px 2px 2px}
+
+.mk-ligne{
+  --c:#E14434;
+  display:flex;align-items:center;gap:10px;
+  padding:10px 13px 11px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+}
+.mk-ligne .dot{width:9px;height:9px;border-radius:50%;background:var(--c);flex:0 0 auto}
+.mk-ligne .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.mk-ligne .l1{display:flex;align-items:baseline;gap:8px;min-width:0}
+.mk-ligne .who{
+  min-width:0;font-size:14.5px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.mk-ligne .suite{flex:0 0 auto;font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.mk-ligne .last{
+  flex:0 0 auto;padding:3px 7px;border-radius:7px;
+  font-family:var(--fm);font-size:12px;font-weight:700;
+  background:color-mix(in oklab,var(--c) 16%,transparent);
+  color:color-mix(in oklab,var(--c) 70%,var(--tone));
+}
+.mk-ligne .last.rate{background:var(--panel-2);color:var(--muted);font-weight:600}
+.mk-ligne .last.back{background:color-mix(in oklab,var(--danger) 18%,transparent);color:var(--danger)}
+.mk-ligne .sc{
+  flex:0 0 auto;min-width:32px;text-align:right;
+  font-family:var(--fm);font-size:19px;font-weight:800;letter-spacing:-.03em;color:var(--ink);
+}
+.mk-ligne .tag{flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--danger)}
+.mk-ligne.out{opacity:.45}
+.mk-ligne.out .sc{text-decoration:line-through}
+.mk-ligne.retour .sc{color:var(--danger)}
+/* le joueur qui vient de lancer s'éclaire un instant */
+.mk-ligne.vient{animation:mk-eclat .8s ease-out}
+.mk-ligne.vient .last{animation:mk-pop .45s cubic-bezier(.2,1.5,.4,1)}
+@keyframes mk-eclat{from{background:color-mix(in oklab,var(--c) 20%,var(--panel))}to{background:var(--panel)}}
+@keyframes mk-pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}

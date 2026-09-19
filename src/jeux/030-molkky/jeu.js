@@ -201,6 +201,7 @@ function renderMSetup(){ renderMCount(); renderMRows(); }
 
 /* --- décompte ---------------------------------------------------- */
 function mNewGame(){
+  mkVu=[]; mkVuLancers=0;
   M={ target:MK_TARGET, mode:MS.mode, per:MS.per, players:[], throws:[], turn:0, over:false, winner:-1 };
   for(var i=0;i<MS.count;i++){
     var mates=[];
@@ -355,28 +356,8 @@ function renderMGame(){
   $("mkTirer").hidden = !tirable;
   $("mkTargetLabel").hidden = tirable;
 
-  var host=$("mkList");
-  host.innerHTML="";
-  M.players.forEach(function(pl,i){
-    var row=el("div","mk-row"+(i===actif?" on":"")+(M.out[i]?" out":""));
-    row.style.setProperty("--c",pl.hex);
-    row.appendChild(el("i","dot"));
-    row.appendChild(el("span","who",pl.label));
-    if(i===actif && membre) row.appendChild(el("span","mate",membre));
-
-    if(M.out[i]){
-      row.appendChild(el("span","tag",t("mk.out")));
-    }else{
-      var miss=el("div","miss");
-      miss.setAttribute("aria-label",tn("mk.misses",M.miss[i]));
-      for(var d=0;d<MK_OUT;d++) miss.appendChild(el("b", d<M.miss[i] ? "f" : null));
-      row.appendChild(miss);
-      var reste=M.target-M.score[i];
-      if(reste>0 && reste<=12) row.appendChild(el("span","left",tf("mk.left",{n:reste})));
-    }
-    row.appendChild(el("div","sc num",String(M.score[i])));
-    host.appendChild(row);
-  });
+  mPeindreScene(actif, membre);
+  mPeindreListe(actif);
 
   var off = M.over || actif<0;
   var keys=$("mkPad").children;
@@ -388,12 +369,123 @@ function renderMGame(){
   lst.classList.remove("centre");
   if(lst.scrollHeight<=lst.clientHeight) lst.classList.add("centre");
 
-  $("mkNotice").hidden = !(M.reset>=0) || M.over;
-
   var mb=$("mkMissBtn");
   mb.disabled=off;
   mb.setAttribute("aria-label", tf("mk.miss.aria",{name:membre||nom}));
   $("mkUndo").disabled = !M.throws.length;
+
+  mkVu=M.score.slice();
+  mkVuLancers=M.throws.length;
+}
+
+/* --- la scène : celui qui lance, puis les autres ------------------ */
+/* Ce que l'écran a déjà montré : les pistes s'animent depuis l'ancien
+   score, et seul le joueur qui vient de lancer s'éclaire. */
+var mkVu=[], mkVuLancers=0;
+
+function mDernier(i){
+  for(var k=M.throws.length-1;k>=0;k--) if(M.throws[k].p===i) return M.throws[k].v;
+  return null;
+}
+/* le dernier lancer d'un joueur en une étiquette : +7, raté, ou le retour à 25 */
+function mEtiquette(i){
+  var v=mDernier(i);
+  if(v===null) return null;
+  if(M.reset===i){
+    var b=el("span","last back","↺ 25");
+    b.title=t("mk.back25");
+    b.setAttribute("aria-label",t("mk.back25"));
+    return b;
+  }
+  return el("span","last"+(v ? "" : " rate"), v ? "+"+v : t("mk.miss"));
+}
+/* ce qu'il manque pour 50 ; dès qu'une quille suffit, laquelle */
+function mIdee(reste){
+  if(reste>12) return tf("mk.encore",{n:Math.ceil(reste/12)});
+  return reste===1 ? t("mk.idee.1") : tf("mk.idee",{n:reste});
+}
+/* la piste vers 50, marquée à 25, là où ramène un dépassement */
+function mPiste(i, grande){
+  var p=el("div","mk-piste"+(grande ? " grande" : ""));
+  var f=el("i","fill");
+  var de = mkVu[i]!==undefined ? mkVu[i] : M.score[i];
+  f.style.setProperty("--de",(de/M.target*100)+"%");
+  f.style.width=(M.score[i]/M.target*100)+"%";
+  p.appendChild(f);
+  p.appendChild(el("b","mi"));
+  return p;
+}
+/* les trois ratés éliminatoires, en trois petites quilles qui rougissent */
+function mQuilles(i){
+  var q=el("div","mk-quilles");
+  q.setAttribute("aria-label",tn("mk.misses",M.miss[i]));
+  for(var d=0;d<MK_OUT;d++) q.appendChild(el("i", d<M.miss[i] ? "f" : null));
+  return q;
+}
+
+function mPeindreScene(actif, membre){
+  var host=$("mkScene");
+  host.innerHTML="";
+  var i = actif>=0 ? actif : M.winner;
+  if(i<0) return;
+  var pl=M.players[i];
+  var h=el("div","mk-hero");
+  h.style.setProperty("--c",pl.hex);
+
+  var haut=el("div","hero-haut"), qui=el("div","qui");
+  qui.appendChild(el("i","dot"));
+  qui.appendChild(el("span","nom",pl.label));
+  if(membre) qui.appendChild(el("span","mate",membre));
+  haut.appendChild(qui);
+  if(!M.over) haut.appendChild(mQuilles(i));
+  h.appendChild(haut);
+
+  var mil=el("div","hero-mil");
+  mil.appendChild(el("span","hero-sc num",String(M.score[i])));
+  if(!M.over){
+    var reste=M.target-M.score[i], info=el("div","hero-info");
+    info.appendChild(el("p","reste",tf("mk.left",{n:reste})));
+    info.appendChild(el("p","idee",mIdee(reste)));
+    mil.appendChild(info);
+  }
+  h.appendChild(mil);
+  h.appendChild(mPiste(i,true));
+  host.appendChild(h);
+}
+
+/* Les autres joueurs, dans l'ordre où ils vont lancer ; les éliminés
+   ferment la marche. */
+function mPeindreListe(actif){
+  var host=$("mkList");
+  host.innerHTML="";
+  var n=M.players.length, depart = actif>=0 ? actif : M.winner, ordre=[], k, i;
+  if(depart<0) depart=0;
+  for(k=1;k<=n;k++){ i=(depart+k)%n; if(i!==depart && !M.out[i]) ordre.push(i); }
+  for(k=1;k<=n;k++){ i=(depart+k)%n; if(i!==depart && M.out[i]) ordre.push(i); }
+  var lanceur = M.throws.length ? M.throws[M.throws.length-1].p : -1;
+  var neuf = M.throws.length>mkVuLancers;
+
+  ordre.forEach(function(i,rang){
+    var pl=M.players[i];
+    var row=el("div","mk-ligne"+(M.out[i] ? " out" : "")+(neuf && i===lanceur ? " vient" : "")+(M.reset===i ? " retour" : ""));
+    row.style.setProperty("--c",pl.hex);
+    row.appendChild(el("i","dot"));
+    var col=el("div","col"), l1=el("div","l1");
+    l1.appendChild(el("span","who",pl.label));
+    if(rang===0 && !M.out[i] && !M.over) l1.appendChild(el("span","suite",t("mk.next")));
+    col.appendChild(l1);
+    col.appendChild(mPiste(i,false));
+    row.appendChild(col);
+    if(M.out[i]){
+      row.appendChild(el("span","tag",t("mk.out")));
+    }else{
+      var et=mEtiquette(i);
+      if(et) row.appendChild(et);
+      row.appendChild(mQuilles(i));
+    }
+    row.appendChild(el("span","sc num",String(M.score[i])));
+    host.appendChild(row);
+  });
 }
 
 /* --- le placement des quilles ------------------------------------ */
