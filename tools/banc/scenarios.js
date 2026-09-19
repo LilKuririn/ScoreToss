@@ -450,7 +450,7 @@ scenario("bibock-partie", async function(a){
   await a.clic("#ordreOk");
   await bibockPoint(a,1,1,2); await bibockPoint(a,1,2,1);      a.point("7 points pour A");
   await bibockPoint(a,2,1,1);                                  a.point("B marque, A remis à zéro");
-  await bibockBocks(a,2,false,1); await bibockBocks(a,1,true,1); a.point("Bocks récupérés 5–3");
+  await bibockBocks(a,1,true,1);                               a.point("Bocks récupérés 5–3");
   await a.clic("#biValider"); await a.attendre(80);            a.point("manche 1");
   await a.clic("#biSheetBtn");                                 a.point("feuille de match");
   await a.clicN("#biSheetBody tbody tr", 0);                   a.point("éditeur");
@@ -469,6 +469,6 @@ scenario("bibock-elimination", async function(a){
   await a.clic('#categories [data-categorie="exterieur"]');
   await a.clic("#playBibock");
   await a.clic("#biStart");                                    a.point("partie en 1 contre 1");
-  await bibockBocks(a,2,false,4); await bibockBocks(a,1,true,4); a.point("B n'a plus de Bock");
+  await bibockBocks(a,2,false,4);                              a.point("B n'a plus de Bock");
   await a.clic("#biValider"); await finDePartie(a);            a.point("victoire par élimination");
 }, [360,640]);
