@@ -50,7 +50,7 @@ fr:{
 
   "pe.r.materiel":"Matériel et terrain",
   "pe.r.materiel.1":"Boules en *métal, creuses*, de 7,05 à 8 cm de diamètre et de 650 à 800 g, homologuées FIPJP, marque et poids gravés. Jamais plombées, sablées ni recuites.",
-  "pe.r.materiel.2":"But en *bois ou en synthétique* homologué : 30 mm de diamètre (± 1 mm), 10 à 18 g, qu'un aimant ne soulève pas.",
+  "pe.r.materiel.2":"But, ou *cochonnet*, en *bois ou en synthétique* homologué : 30 mm de diamètre (± 1 mm), 10 à 18 g, qu'un aimant ne soulève pas.",
   "pe.r.materiel.3":"Terrain *libre* : toutes surfaces. Terrain *tracé* : 15 × 4 m au moins en championnat, 12 × 3 m par dérogation ; ses lignes de fond sont des lignes de perte.",
 
   "pe.r.equipes":"Équipes et début de partie",
@@ -59,7 +59,7 @@ fr:{
   "pe.r.equipes.3":"Cercle tracé de *35 à 50 cm* de diamètre, ou rigide de 50 cm, à plus d'1 m de tout obstacle et à 1,50 m d'un autre cercle ou d'un autre but.",
   "pe.r.equipes.4":"Les pieds restent *entièrement dans le cercle*, sans mordre dessus ni décoller, jusqu'à ce que la boule touche le sol.",
 
-  "pe.r.but":"Lancer du but",
+  "pe.r.but":"Lancer du but (cochonnet)",
   "pe.r.but.1":"But valable à *6 à 10 m* du cercle, à 50 cm au moins de tout obstacle, et visible du joueur debout dans le cercle.",
   "pe.r.but.2":"*Un seul essai* : manqué, l'adversaire place le but, mais l'équipe qui l'a manqué joue la première boule.",
   "pe.r.but.3":"À la mène suivante, le cercle est tracé *autour du but* de la mène précédente.",
@@ -131,7 +131,7 @@ en:{
 
   "pe.r.materiel":"Equipment and ground",
   "pe.r.materiel.1":"Boules made of *hollow metal*, 7.05 to 8 cm across and 650 to 800 g, FIPJP-approved, with maker and weight engraved. Never weighted, filled or re-tempered.",
-  "pe.r.materiel.2":"Jack in approved *wood or synthetic*: 30 mm across (± 1 mm), 10 to 18 g, and not picked up by a magnet.",
+  "pe.r.materiel.2":"Jack, the *cochonnet* in French, in approved *wood or synthetic*: 30 mm across (± 1 mm), 10 to 18 g, and not picked up by a magnet.",
   "pe.r.materiel.3":"*Open* ground: any surface. *Marked* terrain: at least 15 × 4 m in championships, 12 × 3 m by exemption; its end lines are dead-ball lines.",
 
   "pe.r.equipes":"Teams and start of play",
@@ -140,7 +140,7 @@ en:{
   "pe.r.equipes.3":"Drawn circle *35 to 50 cm* across, or a rigid 50 cm one, more than 1 m from any obstacle and 1.50 m from another circle or jack.",
   "pe.r.equipes.4":"Feet stay *wholly inside the circle*, not on the line nor lifted, until the boule touches the ground.",
 
-  "pe.r.but":"Throwing the jack",
+  "pe.r.but":"Throwing the jack (cochonnet)",
   "pe.r.but.1":"The jack is valid *6 to 10 m* from the circle, at least 50 cm from any obstacle, and visible to the player standing in the circle.",
   "pe.r.but.2":"*One attempt only*: if it fails, the opponents place the jack, but the team that failed plays the first boule.",
   "pe.r.but.3":"On the next end, the circle is drawn *around the jack's* last position.",
@@ -212,7 +212,7 @@ es:{
 
   "pe.r.materiel":"Material y terreno",
   "pe.r.materiel.1":"Bolas de *metal, huecas*, de 7,05 a 8 cm de diámetro y de 650 a 800 g, homologadas por la FIPJP, con marca y peso grabados. Nunca lastradas, rellenas ni recocidas.",
-  "pe.r.materiel.2":"Boliche de *madera o sintético* homologado: 30 mm de diámetro (± 1 mm), de 10 a 18 g, y que un imán no levante.",
+  "pe.r.materiel.2":"Boliche, o *cochonnet*, de *madera o sintético* homologado: 30 mm de diámetro (± 1 mm), de 10 a 18 g, y que un imán no levante.",
   "pe.r.materiel.3":"Terreno *libre*: cualquier superficie. Terreno *marcado*: 15 × 4 m como mínimo en campeonatos, 12 × 3 m por excepción; sus líneas de fondo son líneas de pérdida.",
 
   "pe.r.equipes":"Equipos e inicio de la partida",
@@ -221,7 +221,7 @@ es:{
   "pe.r.equipes.3":"Círculo trazado de *35 a 50 cm* de diámetro, o rígido de 50 cm, a más de 1 m de cualquier obstáculo y a 1,50 m de otro círculo o boliche.",
   "pe.r.equipes.4":"Los pies quedan *por completo dentro del círculo*, sin pisar la línea ni despegarse, hasta que la bola toque el suelo.",
 
-  "pe.r.but":"Lanzamiento del boliche",
+  "pe.r.but":"Lanzamiento del boliche (cochonnet)",
   "pe.r.but.1":"El boliche es válido a *6 a 10 m* del círculo, a 50 cm como mínimo de cualquier obstáculo, y visible desde el círculo con el jugador de pie.",
   "pe.r.but.2":"*Un solo intento*: si falla, el rival coloca el boliche, pero el equipo que falló juega la primera bola.",
   "pe.r.but.3":"En la jugada siguiente, el círculo se traza *alrededor del boliche* de la jugada anterior.",
