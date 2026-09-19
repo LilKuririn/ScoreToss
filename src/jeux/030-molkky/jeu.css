@@ -93,16 +93,14 @@
 }
 
 /* --- la scène de la partie ---------------------------------------
-   Celui qui lance tient la vedette : son score en grand, ce qu'il lui
-   manque, et la quille qui suffit quand il est tout près. Les autres
-   suivent dans l'ordre du jeu, chacun avec sa piste vers 50, son dernier
-   lancer et ses ratés. */
-/* la carte et la liste restent ensemble, centrées tant qu'elles tiennent ;
-   au-delà, seule la liste défile et la carte reste en vue */
+   Chacun garde sa place ; celui qui lance s'agrandit en carte : son score
+   en grand, ce qu'il lui manque, et la quille qui suffit quand il est tout
+   près. Les autres gardent leur piste vers 50, leur dernier lancer et
+   leurs ratés. */
+/* la liste reste centrée tant qu'elle tient ; au-delà elle défile, et la
+   carte de celui qui lance est ramenée en vue */
 .mk-zone{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
-.mk-zone .mk-list{flex:0 1 auto}
-.mk-scene{flex:0 0 auto;padding:12px 14px 10px}
-.mk-scene:empty{display:none}
+.mk-zone .mk-list{flex:0 1 auto;padding-top:12px}
 .mk-hero{
   --c:#E14434;
   display:flex;flex-direction:column;gap:10px;

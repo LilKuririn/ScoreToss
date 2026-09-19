@@ -356,8 +356,7 @@ function renderMGame(){
   $("mkTirer").hidden = !tirable;
   $("mkTargetLabel").hidden = tirable;
 
-  mPeindreScene(actif, membre);
-  mPeindreListe(actif);
+  mPeindreListe(actif, membre);
 
   var off = M.over || actif<0;
   var keys=$("mkPad").children;
@@ -378,7 +377,7 @@ function renderMGame(){
   mkVuLancers=M.throws.length;
 }
 
-/* --- la scène : celui qui lance, puis les autres ------------------ */
+/* --- la scène : chacun à sa place, celui qui lance en avant ------- */
 /* Ce que l'écran a déjà montré : les pistes s'animent depuis l'ancien
    score, et seul le joueur qui vient de lancer s'éclaire. */
 var mkVu=[], mkVuLancers=0;
@@ -423,11 +422,9 @@ function mQuilles(i){
   return q;
 }
 
-function mPeindreScene(actif, membre){
-  var host=$("mkScene");
-  host.innerHTML="";
-  var i = actif>=0 ? actif : M.winner;
-  if(i<0) return;
+/* La carte de celui qui lance : son score en grand, ce qu'il lui manque,
+   et la quille qui suffit quand il est tout près. */
+function mCarte(i, membre){
   var pl=M.players[i];
   var h=el("div","mk-hero");
   h.style.setProperty("--c",pl.hex);
@@ -450,29 +447,28 @@ function mPeindreScene(actif, membre){
   }
   h.appendChild(mil);
   h.appendChild(mPiste(i,true));
-  host.appendChild(h);
+  return h;
 }
 
-/* Les autres joueurs, dans l'ordre où ils vont lancer ; les éliminés
-   ferment la marche. */
-function mPeindreListe(actif){
+/* Chacun garde sa place, dans l'ordre de la partie : seul celui qui lance
+   s'agrandit en carte, et le suivant est signalé. Déplacer les joueurs à
+   chaque lancer brouillait la lecture. */
+function mPeindreListe(actif, membre){
   var host=$("mkList");
   host.innerHTML="";
-  var n=M.players.length, depart = actif>=0 ? actif : M.winner, ordre=[], k, i;
-  if(depart<0) depart=0;
-  for(k=1;k<=n;k++){ i=(depart+k)%n; if(i!==depart && !M.out[i]) ordre.push(i); }
-  for(k=1;k<=n;k++){ i=(depart+k)%n; if(i!==depart && M.out[i]) ordre.push(i); }
+  var vedette = actif>=0 ? actif : M.winner;
+  var suivant = (actif>=0 && !M.over) ? mNext(actif) : -1;
   var lanceur = M.throws.length ? M.throws[M.throws.length-1].p : -1;
   var neuf = M.throws.length>mkVuLancers;
 
-  ordre.forEach(function(i,rang){
-    var pl=M.players[i];
+  M.players.forEach(function(pl,i){
+    if(i===vedette){ host.appendChild(mCarte(i, actif>=0 ? membre : null)); return; }
     var row=el("div","mk-ligne"+(M.out[i] ? " out" : "")+(neuf && i===lanceur ? " vient" : "")+(M.reset===i ? " retour" : ""));
     row.style.setProperty("--c",pl.hex);
     row.appendChild(el("i","dot"));
     var col=el("div","col"), l1=el("div","l1");
     l1.appendChild(el("span","who",pl.label));
-    if(rang===0 && !M.out[i] && !M.over) l1.appendChild(el("span","suite",t("mk.next")));
+    if(i===suivant) l1.appendChild(el("span","suite",t("mk.next")));
     col.appendChild(l1);
     col.appendChild(mPiste(i,false));
     row.appendChild(col);
@@ -486,6 +482,10 @@ function mPeindreListe(actif){
     row.appendChild(el("span","sc num",String(M.score[i])));
     host.appendChild(row);
   });
+
+  /* à huit, la liste défile : la carte de celui qui lance reste en vue */
+  var carte=host.querySelector(".mk-hero");
+  if(carte && host.scrollHeight>host.clientHeight) carte.scrollIntoView({block:"nearest"});
 }
 
 /* --- le placement des quilles ------------------------------------ */
