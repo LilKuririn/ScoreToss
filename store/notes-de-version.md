@@ -219,6 +219,35 @@ Un chrono d'une minute au-dessus de la saisie, et une fiche de règles complète
 
 ---
 
+## Version 7.0 — Le carnet de joueurs
+
+Nom de release, jamais montré aux utilisateurs : `7.0 — Carnet de joueurs`
+
+Depuis la 6.0 : le carnet, le choix d'un nom dans les huit jeux, le classement croisé et les
+fiches de joueur, plus l'effacement de tous les palmarès depuis À propos.
+
+### en-US *(335 / 500)*
+
+```
+New: your players. Add the people you play with once, then pick their name in all eight games instead of typing it again.
+
+Their records now cross games: overall standings, and a card for each one — games, wins, win rate, game by game. In a team, the win counts for every member.
+
+About: clear the standings of all eight games at once.
+```
+
+### fr-FR *(359 / 500)*
+
+```
+Nouveau : le carnet de joueurs. On inscrit ses habitués une fois, puis on choisit leur nom dans les huit jeux au lieu de le retaper.
+
+Leurs palmarès se croisent : un classement tous jeux, et la fiche de chacun — parties, victoires, ratio, jeu par jeu. En équipe, la victoire compte pour chaque membre.
+
+À propos : effacer les palmarès des huit jeux d'un coup.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
