@@ -122,6 +122,7 @@ function shareBracket(){
 function openAbout(){ fillAbout(); $("aboutWrap").classList.add("on"); }
 function closeAbout(){ $("aboutWrap").classList.remove("on"); }
 $("openAbout").addEventListener("click",openAbout);
+$("openAboutHome").addEventListener("click",openAbout);   /* la même fiche, depuis l'accueil */
 $("importFile").addEventListener("change",function(){
   var f=this.files && this.files[0];
   if(!f) return;

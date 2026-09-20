@@ -291,6 +291,9 @@ Aucune donnée ne quitte le téléphone. Pas de compte, pas de serveur, pas de t
 publicité. Les parties, les tournois et le palmarès sont enregistrés localement et disparaissent
 avec l'application.
 
+La fiche *À propos* s'ouvre de l'accueil, par l'icône **?** à côté du carnet, comme depuis la
+préparation : elle dit ce que l'application contient, et tient la sauvegarde, le thème et la langue.
+
 Une **sauvegarde** exportable en JSON permet de tout emporter avant de changer de téléphone, et de
 le restaurer ensuite.
 
