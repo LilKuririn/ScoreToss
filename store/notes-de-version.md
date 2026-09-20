@@ -223,29 +223,55 @@ Un chrono d'une minute au-dessus de la saisie, et une fiche de règles complète
 
 Nom de release, jamais montré aux utilisateurs : `7.0 — Carnet de joueurs`
 
-Depuis la 6.0 : le carnet, le choix d'un nom — et de sa couleur — dans les huit jeux, le classement
-croisé et les fiches de joueur, l'effacement de tous les palmarès, et À propos ouvert depuis
-l'accueil.
+Depuis la 6.0 : le carnet, le choix d'un nom dans les huit jeux, le classement croisé et les
+fiches de joueur, plus l'effacement de tous les palmarès depuis À propos.
 
-### en-US *(399 / 500)*
+### en-US *(335 / 500)*
 
 ```
-New: your players. Add the people you play with once, then pick their name — and their colour — in all eight games instead of typing it again.
+New: your players. Add the people you play with once, then pick their name in all eight games instead of typing it again.
 
 Their records now cross games: overall standings, and a card for each one — games, wins, win rate, game by game. In a team, the win counts for every member.
 
-The home screen now opens About too: backup, theme, language, and clearing every standings table.
+About: clear the standings of all eight games at once.
 ```
 
-### fr-FR *(418 / 500)*
+### fr-FR *(359 / 500)*
 
 ```
-Nouveau : le carnet de joueurs. On inscrit ses habitués une fois, puis on choisit leur nom — et sa couleur — dans les huit jeux au lieu de le retaper.
+Nouveau : le carnet de joueurs. On inscrit ses habitués une fois, puis on choisit leur nom dans les huit jeux au lieu de le retaper.
 
 Leurs palmarès se croisent : un classement tous jeux, et la fiche de chacun — parties, victoires, ratio, jeu par jeu. En équipe, la victoire compte pour chaque membre.
 
-L'accueil ouvre aussi À propos : sauvegarde, thème, langue, et l'effacement de tous les palmarès.
+À propos : effacer les palmarès des huit jeux d'un coup.
 ```
+
+---
+
+## Version 7.1 — Couleurs et À propos
+
+Nom de release, jamais montré aux utilisateurs : `7.1 — Couleurs du carnet`
+
+Depuis la 7.0, déjà en ligne : la couleur du joueur reprise par son camp, et À propos accessible
+depuis l'accueil, description de l'application comprise. Une mise au point, pas une nouveauté :
+les notes restent courtes.
+
+### en-US *(292 / 500)*
+
+```
+Your players now bring their colour with them: pick a name in a game and the side takes the colour from your players list.
+
+The home screen opens About too, for the backup, the theme, the language and clearing the standings — and it now says what the app holds: eight games, three categories.
+```
+
+### fr-FR *(298 / 500)*
+
+```
+Le carnet de joueurs apporte aussi sa couleur : choisir un nom dans un jeu donne à son camp la couleur du joueur.
+
+L'accueil ouvre À propos, pour la sauvegarde, le thème, la langue et l'effacement des palmarès — et la fiche dit désormais ce que l'application contient : huit jeux, trois catégories.
+```
+
 ---
 
 ## Modèle pour les suivantes
