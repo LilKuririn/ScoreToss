@@ -21,6 +21,22 @@
     </footer>
   </section>
 
+  <!-- la fiche d'un joueur : son nom, sa couleur, ce qu'il a joué -->
+  <div class="sheet-wrap" id="jrFiche">
+    <div class="scrim" id="jrFicheScrim"></div>
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheet-head">
+        <h3 id="jrFicheTitre">Joueur</h3>
+        <button type="button" class="icon-btn" id="jrFicheClose" data-i18n-aria="nav.close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="sheet-body" id="jrFicheBody"></div>
+    </div>
+  </div>
+
   <!-- choisir un joueur pour un champ de nom -->
   <div class="sheet-wrap" id="jrWrap">
     <div class="scrim" id="jrScrim"></div>

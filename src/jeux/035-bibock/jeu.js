@@ -251,7 +251,7 @@ function biNouvellePartie(){
   for(var i=0;i<2;i++){
     var mates=[];
     if(BS.per>1){ for(var j=0;j<BS.per;j++) mates.push(biCoequipier(i,j)); }
-    B.teams.push({ label:biNom(i), hex:color(BS.teams[i].color).hex, mates:mates });
+    B.teams.push({ label:biNom(i), hex:color(BS.teams[i].color).hex, mates:mates, ids:idsDe(BS.teams[i], mates.length) });
   }
   BE=biRejouer();
   BEDIT=null;
@@ -519,6 +519,7 @@ function biArchiver(){
   H.unshift({
     d:Date.now(), g:"bibock",
     n:B.teams.map(function(tm){ return tm.label; }),
+    p:B.teams.map(function(x){ return x.ids||[]; }),
     c:B.teams.map(function(tm){ return tm.hex; }),
     s:BE.scores.slice(), w:BE.gagnant, r:BE.fin+1, t:false
   });

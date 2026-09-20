@@ -49,13 +49,17 @@ parties à deux camps (`S.palets`, `G.max`) et les seuls formats simple et doubl
 Un champ de nom se relie au carnet de joueurs — `src/js/067-joueurs.js` — par
 `champDeJoueur(input, porteur, cle)`, appelé une fois le champ dans le DOM : le bouton ouvre le
 carnet, et l'identifiant choisi est rangé dans `porteur[cle]`, à côté du nom que le jeu enregistre
-déjà. Taper un nom à la main détache le joueur.
+déjà. Taper un nom à la main détache le joueur. Au démarrage d'une partie, le jeu range les
+identifiants de chaque camp — `idsDe(porteur, nbCoequipiers)` — et les archive dans `p`, parallèle
+aux noms de `n` : c'est de là que sortent le classement croisé et les fiches des joueurs.
+
+Le banc joue vingt-huit parcours, le carnet compris.
 
 Un nouveau jeu ajoute enfin son parcours au banc, dans `tools/banc/scenarios.js`.
 
 ## Vérifier une refonte : le banc de comparaison
 
-`tools/banc/` joue vingt-sept parcours réels — les huit jeux, tournois, palmarès, réglages, reprise,
+`tools/banc/` joue vingt-huit parcours réels — les huit jeux, tournois, palmarès, réglages, reprise,
 import, petit écran, catégories — sur deux versions de l'application, et compare ce qui s'affiche vraiment :
 chaque élément visible, sa place, ses couleurs, son texte, plus l'état enregistré. Le hasard,
 l'heure et les animations sont figés : une version comparée à elle-même donne zéro différence.

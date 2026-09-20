@@ -6,8 +6,8 @@ function newGame(){
     game:S.game, mode:S.mode, target:S.target,
     max:maxDeManche(S.game,S.mode),
     teams:[
-      {label:teamLabel(0), mates:matesLabel(0), hex:color(S.teams[0].color).hex},
-      {label:teamLabel(1), mates:matesLabel(1), hex:color(S.teams[1].color).hex}
+      {label:teamLabel(0), mates:matesLabel(0), hex:color(S.teams[0].color).hex, ids:idsDe(S.teams[0], coequipiers(S.mode))},
+      {label:teamLabel(1), mates:matesLabel(1), hex:color(S.teams[1].color).hex, ids:idsDe(S.teams[1], coequipiers(S.mode))}
     ],
     rounds:[],
     entry:newEntry(S.game),

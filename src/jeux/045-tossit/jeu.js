@@ -231,7 +231,7 @@ function tiNouvellePartie(){
   for(var i=0;i<TIS.count;i++){
     var mates=[];
     if(TIS.mode==="team"){ for(var j=0;j<TIS.per;j++) mates.push(tiCoequipier(i,j)); }
-    TI.players.push({ label:tiNom(i), hex:color(TIS.players[i].color).hex, mates:mates });
+    TI.players.push({ label:tiNom(i), hex:color(TIS.players[i].color).hex, mates:mates, ids:idsDe(TIS.players[i], mates.length) });
   }
   TIE=tiRejouer();
   TIEDIT=null;
@@ -605,6 +605,7 @@ function tiArchiver(){
   H.unshift({
     d:Date.now(), g:"tossit",
     n:TI.players.map(function(p){ return p.label; }),
+    p:TI.players.map(function(x){ return x.ids||[]; }),
     c:TI.players.map(function(p){ return p.hex; }),
     s:TIE.scores.slice(), w:TIE.gagnant, r:TIE.fin+1, t:false
   });

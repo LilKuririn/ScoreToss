@@ -208,7 +208,7 @@ function mNewGame(){
   for(var i=0;i<MS.count;i++){
     var mates=[];
     if(MS.mode==="team"){ for(var j=0;j<MS.per;j++) mates.push(mMateName(i,j)); }
-    M.players.push({ label:mName(i), hex:color(MS.players[i].color).hex, mates:mates });
+    M.players.push({ label:mName(i), hex:color(MS.players[i].color).hex, mates:mates, ids:idsDe(MS.players[i], mates.length) });
   }
   mRecompute();
   show("mgame");
@@ -670,6 +670,7 @@ function mArchive(){
   H.unshift({
     d:Date.now(), g:"molkky",
     n:M.players.map(function(pl){ return pl.label; }),
+    p:M.players.map(function(x){ return x.ids||[]; }),
     c:M.players.map(function(pl){ return pl.hex; }),
     s:M.score.slice(),
     w:M.winner, r:M.throws.length, t:false

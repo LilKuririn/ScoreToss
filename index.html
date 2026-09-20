@@ -1469,16 +1469,39 @@ h1,h2,h3,p{margin:0}
 .jr-body{flex:1;min-height:0;overflow:auto;padding:4px 16px 16px;-webkit-overflow-scrolling:touch}
 .jr-body .hint{margin-top:14px}
 
-.jr-ligne{display:flex;align-items:center;gap:9px}
-.jr-ligne + .jr-ligne,.trow-sw + .jr-ligne{margin-top:8px}
-.jr-ligne .field-input{flex:1;min-width:0;padding:10px 12px;font-size:15px}
-.jr-ligne .jr-sup{
-  width:34px;height:34px;flex:0 0 auto;border-radius:10px;
-  display:grid;place-items:center;color:var(--muted);
+#jrListe{display:flex;flex-direction:column;gap:20px}
+
+/* une ligne du carnet : la couleur, le nom, le bilan, et sa fiche */
+.jr-ligne{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  padding:12px 13px;border-radius:12px;
   background:var(--panel);border:1px solid var(--line);
 }
-.jr-ligne .jr-sup.arme{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 45%,var(--line))}
-.jr-ligne .jr-sup:active{background:var(--panel-2)}
+.jr-ligne + .jr-ligne{margin-top:8px}
+.jr-ligne:active{background:var(--panel-2)}
+.jr-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+.jr-nom{flex:1;min-width:0;font-size:15px;font-weight:600;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jr-bilan{
+  flex:0 0 auto;font-family:var(--fm);font-size:12.5px;color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.jr-chev{flex:0 0 auto;color:var(--muted);display:grid;place-items:center}
+
+/* la fiche : trois chiffres en tête, puis les tableaux du palmarès */
+.jr-chiffres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.jr-chiffre{
+  background:var(--panel-2);border-radius:12px;padding:12px 10px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+}
+.jr-chiffre b{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+.jr-chiffre span{
+  font-family:var(--fm);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);text-align:center;
+}
+#jrFicheBody{display:flex;flex-direction:column;gap:20px}
+#jrFicheBody .cta.danger{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 40%,var(--line-2))}
+#jrFicheBody .cta.danger.arme{background:var(--danger);color:var(--bg);border-color:transparent}
 
 /* la barre du bas sert à créer : le champ, puis le bouton sur un quart de
    la largeur — étiré à la hauteur du champ plutôt qu'à la sienne */
@@ -2937,6 +2960,22 @@ a.hall-link{text-decoration:none;color:inherit}
     </footer>
   </section>
 
+  <!-- la fiche d'un joueur : son nom, sa couleur, ce qu'il a joué -->
+  <div class="sheet-wrap" id="jrFiche">
+    <div class="scrim" id="jrFicheScrim"></div>
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheet-head">
+        <h3 id="jrFicheTitre">Joueur</h3>
+        <button type="button" class="icon-btn" id="jrFicheClose" data-i18n-aria="nav.close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="sheet-body" id="jrFicheBody"></div>
+    </div>
+  </div>
+
   <!-- choisir un joueur pour un champ de nom -->
   <div class="sheet-wrap" id="jrWrap">
     <div class="scrim" id="jrScrim"></div>
@@ -3558,7 +3597,7 @@ function mNewGame(){
   for(var i=0;i<MS.count;i++){
     var mates=[];
     if(MS.mode==="team"){ for(var j=0;j<MS.per;j++) mates.push(mMateName(i,j)); }
-    M.players.push({ label:mName(i), hex:color(MS.players[i].color).hex, mates:mates });
+    M.players.push({ label:mName(i), hex:color(MS.players[i].color).hex, mates:mates, ids:idsDe(MS.players[i], mates.length) });
   }
   mRecompute();
   show("mgame");
@@ -4020,6 +4059,7 @@ function mArchive(){
   H.unshift({
     d:Date.now(), g:"molkky",
     n:M.players.map(function(pl){ return pl.label; }),
+    p:M.players.map(function(x){ return x.ids||[]; }),
     c:M.players.map(function(pl){ return pl.hex; }),
     s:M.score.slice(),
     w:M.winner, r:M.throws.length, t:false
@@ -4470,7 +4510,7 @@ function biNouvellePartie(){
   for(var i=0;i<2;i++){
     var mates=[];
     if(BS.per>1){ for(var j=0;j<BS.per;j++) mates.push(biCoequipier(i,j)); }
-    B.teams.push({ label:biNom(i), hex:color(BS.teams[i].color).hex, mates:mates });
+    B.teams.push({ label:biNom(i), hex:color(BS.teams[i].color).hex, mates:mates, ids:idsDe(BS.teams[i], mates.length) });
   }
   BE=biRejouer();
   BEDIT=null;
@@ -4738,6 +4778,7 @@ function biArchiver(){
   H.unshift({
     d:Date.now(), g:"bibock",
     n:B.teams.map(function(tm){ return tm.label; }),
+    p:B.teams.map(function(x){ return x.ids||[]; }),
     c:B.teams.map(function(tm){ return tm.hex; }),
     s:BE.scores.slice(), w:BE.gagnant, r:BE.fin+1, t:false
   });
@@ -5292,7 +5333,7 @@ function flNouvellePartie(){
   for(var i=0;i<FS.count;i++){
     var mates=[];
     if(FS.mode==="team"){ for(var j=0;j<FS.per;j++) mates.push(flCoequipier(i,j)); }
-    F.players.push({ label:flNom(i), hex:color(FS.players[i].color).hex, mates:mates });
+    F.players.push({ label:flNom(i), hex:color(FS.players[i].color).hex, mates:mates, ids:idsDe(FS.players[i], mates.length) });
   }
   FE=flRejouer();
   FEDIT=null;
@@ -5716,6 +5757,7 @@ function flArchiver(){
   H.unshift({
     d:Date.now(), g:"flechettes",
     n:F.players.map(function(p){ return p.label; }),
+    p:F.players.map(function(x){ return x.ids||[]; }),
     c:F.players.map(function(p){ return p.hex; }),
     s:FE.score.map(function(r){ return F.depart-r; }),
     w:FE.gagnant, r:FE.volees.length, t:false
@@ -6184,7 +6226,7 @@ function tiNouvellePartie(){
   for(var i=0;i<TIS.count;i++){
     var mates=[];
     if(TIS.mode==="team"){ for(var j=0;j<TIS.per;j++) mates.push(tiCoequipier(i,j)); }
-    TI.players.push({ label:tiNom(i), hex:color(TIS.players[i].color).hex, mates:mates });
+    TI.players.push({ label:tiNom(i), hex:color(TIS.players[i].color).hex, mates:mates, ids:idsDe(TIS.players[i], mates.length) });
   }
   TIE=tiRejouer();
   TIEDIT=null;
@@ -6558,6 +6600,7 @@ function tiArchiver(){
   H.unshift({
     d:Date.now(), g:"tossit",
     n:TI.players.map(function(p){ return p.label; }),
+    p:TI.players.map(function(x){ return x.ids||[]; }),
     c:TI.players.map(function(p){ return p.hex; }),
     s:TIE.scores.slice(), w:TIE.gagnant, r:TIE.fin+1, t:false
   });
@@ -7028,7 +7071,7 @@ function renderYRows(){
 function yaNouvellePartie(){
   Y={ players:[], tours:[], saisie:[], choix:null };
   for(var i=0;i<YS.count;i++){
-    Y.players.push({ label:yaNom(i), hex:color(YS.players[i].color).hex });
+    Y.players.push({ label:yaNom(i), hex:color(YS.players[i].color).hex, ids:idsDe(YS.players[i], 0) });
   }
   YE=yaRejouer();
   YEDIT=null;
@@ -7402,6 +7445,7 @@ function yaArchiver(){
   H.unshift({
     d:Date.now(), g:"yams",
     n:Y.players.map(function(p){ return p.label; }),
+    p:Y.players.map(function(x){ return x.ids||[]; }),
     c:Y.players.map(function(p){ return p.hex; }),
     s:totaux, w:YE.gagnant, r:YA_TOURS, t:false
   });
@@ -7788,7 +7832,14 @@ fr:{
   "pl.new":"Nouveau joueur", "pl.new.ph":"Prénom ou surnom", "pl.add":"Ajouter",
   "pl.pick":"Choisir un joueur", "pl.search":"Rechercher",
   "pl.addname":"Ajouter « {name} » au carnet", "pl.clear":"Vider le champ",
-  "pl.name.aria":"Nom du joueur", "pl.color.aria":"Couleur de {name}", "pl.del.aria":"Supprimer {name}",
+  "pl.name.aria":"Nom du joueur",
+  "pl.rank":"Classement, tous jeux", "pl.list":"Le carnet",
+  "pl.fiche.aria":"Fiche de {name}", "pl.played":"Parties", "pl.bygame":"Par jeu",
+  "pl.count.games":"{n} partie","pl.count.games_p":"{n} parties",
+  "pl.won":"gagnée", "pl.lost":"perdue",
+  "pl.nogame":"Aucune partie enregistrée pour ce joueur. Choisissez son nom au départ d'une partie et elle comptera ici.",
+  "pl.del":"Supprimer ce joueur", "pl.del.ok":"Confirmer la suppression",
+  "hall.w2":"Victoires",
   "rules.title":"Règles du jeu",
   "about.title":"À propos",
   "about.version":"Version {v}",
@@ -7928,7 +7979,14 @@ en:{
   "pl.new":"New player", "pl.new.ph":"Name or nickname", "pl.add":"Add",
   "pl.pick":"Pick a player", "pl.search":"Search",
   "pl.addname":"Add “{name}” to your players", "pl.clear":"Clear the field",
-  "pl.name.aria":"Player name", "pl.color.aria":"Colour for {name}", "pl.del.aria":"Delete {name}",
+  "pl.name.aria":"Player name",
+  "pl.rank":"Standings, all games", "pl.list":"Your players",
+  "pl.fiche.aria":"{name}’s record", "pl.played":"Games", "pl.bygame":"By game",
+  "pl.count.games":"{n} game","pl.count.games_p":"{n} games",
+  "pl.won":"won", "pl.lost":"lost",
+  "pl.nogame":"No games recorded for this player yet. Pick their name when starting a game and it will count here.",
+  "pl.del":"Delete this player", "pl.del.ok":"Confirm deletion",
+  "hall.w2":"Wins",
   "rules.title":"How to play",
   "about.title":"About",
   "about.version":"Version {v}",
@@ -8068,7 +8126,14 @@ es:{
   "pl.new":"Nuevo jugador", "pl.new.ph":"Nombre o apodo", "pl.add":"Añadir",
   "pl.pick":"Elegir un jugador", "pl.search":"Buscar",
   "pl.addname":"Añadir «{name}» a tus jugadores", "pl.clear":"Vaciar el campo",
-  "pl.name.aria":"Nombre del jugador", "pl.color.aria":"Color de {name}", "pl.del.aria":"Eliminar {name}",
+  "pl.name.aria":"Nombre del jugador",
+  "pl.rank":"Clasificación, todos los juegos", "pl.list":"Tus jugadores",
+  "pl.fiche.aria":"Ficha de {name}", "pl.played":"Partidas", "pl.bygame":"Por juego",
+  "pl.count.games":"{n} partida","pl.count.games_p":"{n} partidas",
+  "pl.won":"ganada", "pl.lost":"perdida",
+  "pl.nogame":"Ninguna partida registrada para este jugador. Elige su nombre al empezar una partida y contará aquí.",
+  "pl.del":"Eliminar este jugador", "pl.del.ok":"Confirmar la eliminación",
+  "hall.w2":"Victorias",
   "rules.title":"Cómo se juega",
   "about.title":"Acerca de",
   "about.version":"Versión {v}",
@@ -9936,8 +10001,8 @@ function newGame(){
     game:S.game, mode:S.mode, target:S.target,
     max:maxDeManche(S.game,S.mode),
     teams:[
-      {label:teamLabel(0), mates:matesLabel(0), hex:color(S.teams[0].color).hex},
-      {label:teamLabel(1), mates:matesLabel(1), hex:color(S.teams[1].color).hex}
+      {label:teamLabel(0), mates:matesLabel(0), hex:color(S.teams[0].color).hex, ids:idsDe(S.teams[0], coequipiers(S.mode))},
+      {label:teamLabel(1), mates:matesLabel(1), hex:color(S.teams[1].color).hex, ids:idsDe(S.teams[1], coequipiers(S.mode))}
     ],
     rounds:[],
     entry:newEntry(S.game),
@@ -10427,6 +10492,15 @@ function supprimerJoueur(id){
   for(var i=0;i<J.length;i++) if(J[i].id===id){ J.splice(i,1); break; }
   save();
 }
+/* Les joueurs du carnet retenus par un camp : celui du champ principal,
+   puis ses coéquipiers, sans doublon. C'est ce que la partie archive. */
+function idsDe(porteur, nb){
+  var out=[], mids=(porteur && porteur.mids) || [];
+  function pousser(id){ if(id && joueur(id) && out.indexOf(id)<0) out.push(id); }
+  pousser(porteur && porteur.pid);
+  for(var k=0;k<nb;k++) pousser(mids[k]);
+  return out;
+}
 /* Les derniers joués en premier : c'est presque toujours la même tablée
    qui reprend une partie. */
 function joueursTries(){
@@ -10438,12 +10512,53 @@ function joueursTries(){
 /* --- l'écran du carnet -------------------------------------------- */
 var jrArme = null;          /* la suppression demande deux touchers */
 
+/* --- ce que l'historique sait d'un joueur -------------------------- */
+/* Une partie appartient à un joueur dès que son identifiant est dans l'un
+   des camps ; en équipe, la victoire compte pour chacun de ses membres. */
+function partiesDuJoueur(id){
+  var out=[];
+  H.forEach(function(g){
+    if(!g.p) return;
+    for(var i=0;i<g.p.length;i++){
+      if((g.p[i]||[]).indexOf(id)<0) continue;
+      out.push({g:g, i:i, gagne:g.w===i, nulle:g.w<0});
+      return;
+    }
+  });
+  return out;
+}
+function statsJoueur(id){
+  var parties=partiesDuJoueur(id), v=0, d=0, parJeu={}, ordre=[];
+  parties.forEach(function(x){
+    var cle=x.g.g||jeuHistorique();
+    if(!parJeu[cle]){ parJeu[cle]={id:cle, n:0, v:0}; ordre.push(cle); }
+    parJeu[cle].n++;
+    if(x.gagne){ v++; parJeu[cle].v++; }
+    else if(!x.nulle) d++;
+  });
+  ordre.sort(function(a,b){ return parJeu[b].n-parJeu[a].n; });
+  return {
+    parties:parties, n:parties.length, v:v, d:d,
+    jeux:ordre.map(function(k){ return parJeu[k]; })
+  };
+}
+/* Le classement croisé : tous les jeux confondus, ceux qui ont joué. */
+function classementGeneral(){
+  var l=[];
+  J.forEach(function(j){
+    var s=statsJoueur(j.id);
+    if(s.n) l.push({j:j, n:s.n, v:s.v, d:s.d});
+  });
+  l.sort(function(a,b){
+    return (b.v-a.v) || (b.n-a.n) || a.j.nom.localeCompare(b.j.nom,LANG);
+  });
+  return l;
+}
+
+/* --- l'écran : le classement, puis le carnet ---------------------- */
 function renderJoueurs(){
   var host=$("jrListe");
   host.innerHTML="";
-  host.style.display="flex";
-  host.style.flexDirection="column";
-  host.style.gap="0";
 
   $("jrCount").textContent = J.length ? tn("pl.count",J.length) : t("pl.carnet");
 
@@ -10452,52 +10567,180 @@ function renderJoueurs(){
     return;
   }
 
+  var cl=classementGeneral();
+  if(cl.length>1){
+    var bloc=el("div","block");
+    bloc.appendChild(el("p","eyebrow",t("pl.rank")));
+    var table=el("table","rank");
+    var thead=el("thead"), htr=el("tr");
+    htr.appendChild(el("th",null,t("hall.team")));
+    htr.appendChild(el("th",null,t("hall.w")));
+    htr.appendChild(el("th",null,t("hall.l")));
+    htr.appendChild(el("th",null,t("hall.rate")));
+    thead.appendChild(htr);
+    table.appendChild(thead);
+    var tb=el("tbody");
+    cl.forEach(function(x){
+      var tr=el("tr");
+      var td=el("td");
+      var who=el("div","who");
+      var dot=el("span","dot");
+      dot.style.background=color(x.j.couleur).hex;
+      who.appendChild(dot);
+      who.appendChild(el("span",null,x.j.nom));
+      td.appendChild(who);
+      tr.appendChild(td);
+      tr.appendChild(el("td",null,String(x.v)));
+      tr.appendChild(el("td",null,String(x.d)));
+      tr.appendChild(el("td","pct", (x.v+x.d) ? Math.round(x.v/(x.v+x.d)*100)+" %" : "—"));
+      tb.appendChild(tr);
+    });
+    table.appendChild(tb);
+    bloc.appendChild(table);
+    host.appendChild(bloc);
+  }
+
+  var liste=el("div","block");
+  liste.appendChild(el("p","eyebrow",t("pl.list")));
   J.forEach(function(j){
-    var ligne=el("div","jr-ligne");
+    var s=statsJoueur(j.id);
+    var b=el("button","jr-ligne");
+    b.type="button";
+    b.setAttribute("aria-label",tf("pl.fiche.aria",{name:j.nom}));
 
-    var pastille=el("button","pick");
-    pastille.type="button";
-    pastille.style.setProperty("--c",color(j.couleur).hex);
-    pastille.setAttribute("aria-label",tf("pl.color.aria",{name:j.nom}));
-    pastille.appendChild(el("i"));
-    pastille.addEventListener("click",function(){
-      var suite=COLORS[(COLORS.map(function(c){ return c.id; }).indexOf(j.couleur)+1) % COLORS.length];
-      j.couleur=suite.id;
-      pastille.style.setProperty("--c",suite.hex);
-      save();
-    });
-    ligne.appendChild(pastille);
+    var dot=el("span","jr-dot");
+    dot.style.background=color(j.couleur).hex;
+    b.appendChild(dot);
+    b.appendChild(el("span","jr-nom",j.nom));
+    b.appendChild(el("span","jr-bilan num", s.n ? s.v+"–"+s.d : "—"));
+    var chev=el("span","jr-chev");
+    chev.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">'+
+      '<path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    b.appendChild(chev);
 
-    var nom=el("input","field-input");
-    nom.type="text";
-    nom.value=j.nom;
-    nom.maxLength=22;
-    nom.setAttribute("aria-label",t("pl.name.aria"));
-    nom.addEventListener("input",function(){ j.nom=nom.value; save(); });
-    ligne.appendChild(nom);
-
-    var sup=el("button","jr-sup");
-    sup.type="button";
-    sup.setAttribute("aria-label",tf("pl.del.aria",{name:j.nom}));
-    sup.innerHTML='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">'+
-      '<path d="M3 4.5h10M6.5 4.5V3h3v1.5M5 4.5l.6 8.2h4.8L11 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    sup.addEventListener("click",function(){
-      if(jrArme!==j.id){
-        jrArme=j.id;
-        sup.classList.add("arme");
-        setTimeout(function(){ if(jrArme===j.id){ jrArme=null; sup.classList.remove("arme"); } },2600);
-        return;
-      }
-      jrArme=null;
-      supprimerJoueur(j.id);
-      renderJoueurs();
-      refreshJoueursLink();
-    });
-    ligne.appendChild(sup);
-
-    host.appendChild(ligne);
+    b.addEventListener("click",function(){ ouvrirFiche(j.id); });
+    liste.appendChild(b);
   });
+  host.appendChild(liste);
 }
+
+/* --- la fiche d'un joueur ----------------------------------------- */
+var jrFicheId = null;
+
+function ouvrirFiche(id){
+  jrFicheId=id;
+  jrArme=null;
+  peindreFiche();
+  $("jrFiche").classList.add("on");
+}
+function fermerFiche(){
+  $("jrFiche").classList.remove("on");
+  jrFicheId=null;
+  renderJoueurs();
+  refreshJoueursLink();
+}
+function peindreFiche(){
+  var j=joueur(jrFicheId);
+  if(!j){ fermerFiche(); return; }
+  var body=$("jrFicheBody");
+  body.innerHTML="";
+  $("jrFicheTitre").textContent=j.nom;
+
+  /* nom et couleur : la fiche est aussi l'endroit où l'on corrige */
+  var ident=el("div","block");
+  var nom=el("input","field-input");
+  nom.type="text";
+  nom.value=j.nom;
+  nom.maxLength=22;
+  nom.setAttribute("aria-label",t("pl.name.aria"));
+  nom.addEventListener("input",function(){
+    j.nom=nom.value;
+    $("jrFicheTitre").textContent=j.nom;
+    save();
+  });
+  ident.appendChild(nom);
+
+  var sw=el("div","swatches");
+  COLORS.forEach(function(col){
+    var b=el("button","sw");
+    b.type="button";
+    b.style.setProperty("--c",col.hex);
+    b.setAttribute("aria-pressed", col.id===j.couleur ? "true":"false");
+    b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
+    b.addEventListener("click",function(){ j.couleur=col.id; save(); peindreFiche(); });
+    sw.appendChild(b);
+  });
+  ident.appendChild(sw);
+  body.appendChild(ident);
+
+  var s=statsJoueur(j.id);
+  if(!s.n){
+    body.appendChild(el("p","empty",t("pl.nogame")));
+  }else{
+    var chiffres=el("div","jr-chiffres");
+    [[String(s.n), t("pl.played")], [String(s.v), t("hall.w2")],
+     [(s.v+s.d) ? Math.round(s.v/(s.v+s.d)*100)+" %" : "—", t("hall.rate")]
+    ].forEach(function(c){
+      var cell=el("div","jr-chiffre");
+      cell.appendChild(el("b","num",c[0]));
+      cell.appendChild(el("span",null,c[1]));
+      chiffres.appendChild(cell);
+    });
+    body.appendChild(chiffres);
+
+    var bj=el("div","block");
+    bj.appendChild(el("p","eyebrow",t("pl.bygame")));
+    var tj=el("table","rank");
+    var tbj=el("tbody");
+    s.jeux.forEach(function(x){
+      var tr=el("tr");
+      tr.appendChild(el("td",null,JEUX[x.id] ? jeu(x.id).nom() : x.id));
+      tr.appendChild(el("td",null,tn("pl.count.games",x.n)));
+      tr.appendChild(el("td","pct", x.v+" "+t("hall.w")));
+      tbj.appendChild(tr);
+    });
+    tj.appendChild(tbj);
+    bj.appendChild(tj);
+    body.appendChild(bj);
+
+    var br=el("div","block");
+    br.appendChild(el("p","eyebrow",t("hall.recent")));
+    s.parties.slice(0,8).forEach(function(x){
+      var row=el("div","rec");
+      var dt=new Date(x.g.d);
+      row.appendChild(el("p","d", dt.toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric",month:"short"})));
+      var m=el("p","m");
+      m.appendChild(el("b",null, JEUX[x.g.g||jeuHistorique()] ? jeu(x.g.g||jeuHistorique()).nom() : (x.g.g||"")));
+      m.appendChild(document.createTextNode(" · "+(x.nulle ? t("hall.tie") : t(x.gagne ? "pl.won" : "pl.lost"))));
+      row.appendChild(m);
+      row.appendChild(el("p","sc", String(x.g.s[x.i])));
+      br.appendChild(row);
+    });
+    body.appendChild(br);
+  }
+
+  var sup=el("button","cta ghost danger");
+  sup.type="button";
+  sup.textContent=t("pl.del");
+  sup.addEventListener("click",function(){
+    if(jrArme!==j.id){
+      jrArme=j.id;
+      sup.textContent=t("pl.del.ok");
+      sup.classList.add("arme");
+      setTimeout(function(){
+        if(jrArme!==j.id) return;
+        jrArme=null; sup.textContent=t("pl.del"); sup.classList.remove("arme");
+      },2600);
+      return;
+    }
+    jrArme=null;
+    supprimerJoueur(j.id);
+    fermerFiche();
+  });
+  body.appendChild(sup);
+}
+$("jrFicheScrim").addEventListener("click",fermerFiche);
+$("jrFicheClose").addEventListener("click",fermerFiche);
 
 function creerDepuisLeChamp(){
   var champ=$("jrNouveau");
@@ -11115,6 +11358,7 @@ function archiveGame(){
     c:[G.teams[0].hex,G.teams[1].hex],
     s:[G.scores[0],G.scores[1]],
     w:G.winner, r:G.rounds.length, ho:holes,
+    p:G.teams.map(function(tm){ return tm.ids||[]; }),
     t:!!G.tour
   });
   if(H.length>200) H.length=200;
@@ -11128,6 +11372,17 @@ function HG(){
 }
 
 function nameKey(s){ return (s||"").trim().toLocaleLowerCase("fr"); }
+
+/* Une partie qui retient un joueur du carnet s'affiche sous le nom qu'il
+   porte aujourd'hui : le renommer ne laisse pas deux personnes derrière. */
+function nomDeCamp(g,i){
+  var ids=g.p && g.p[i];
+  if(ids && ids.length===1){
+    var j=joueur(ids[0]);
+    if(j) return j.nom;
+  }
+  return g.n[i];
+}
 
 /* Un nom peut désigner un joueur seul ou une équipe : on relève le format
    dans lequel il a joué pour pouvoir les distinguer d'un coup d'œil. Un nom
@@ -11146,7 +11401,7 @@ function modeTags(){
   HG().forEach(function(g){
     if(!g.mode) return;          /* le mölkky n'est ni simple ni double */
     for(var i=0;i<g.n.length;i++){
-      var k=nameKey(g.n[i]);
+      var k=nameKey(nomDeCamp(g,i));
       if(!k) continue;
       if(!m[k]) m[k]={modes:{}};
       noterMode(m[k], g.mode==="double"||g.mode==="triple" ? g.mode : "simple");
@@ -11168,11 +11423,11 @@ function standings(){
   HG().forEach(function(g){
     if(g.n.length<2) return;      /* seul, on ne gagne contre personne */
     for(var i=0;i<g.n.length;i++){
-      var k=nameKey(g.n[i]);
+      var nom=nomDeCamp(g,i), k=nameKey(nom);
       if(!k) continue;
-      if(!map[k]){ map[k]={label:g.n[i], hex:g.c[i], v:0, d:0}; order.push(k); }
+      if(!map[k]){ map[k]={label:nom, hex:g.c[i], v:0, d:0}; order.push(k); }
       var m=map[k];
-      m.label=g.n[i]; m.hex=g.c[i];
+      m.label=nom; m.hex=g.c[i];
       if(g.w===i) m.v++; else if(g.w>=0) m.d++;   /* une égalité ne compte ni pour ni contre */
     }
   });
@@ -11188,14 +11443,14 @@ function duels(){
   HG().forEach(function(g){
     if(g.n.length!==2) return;   /* une confrontation se joue à deux */
     if(g.w<0) return;            /* une égalité ne départage personne */
-    var ka=nameKey(g.n[0]), kb=nameKey(g.n[1]);
+    var ka=nameKey(nomDeCamp(g,0)), kb=nameKey(nomDeCamp(g,1));
     if(!ka || !kb || ka===kb) return;
     var flip = kb<ka;
     var id = flip ? kb+"|"+ka : ka+"|"+kb;
     var f = flip ? 1 : 0;
     if(!map[id]){ map[id]={n:["",""], c:["",""], w:[0,0], modes:{}}; order.push(id); }
     var m=map[id];
-    m.n=[g.n[f],g.n[1-f]];
+    m.n=[nomDeCamp(g,f),nomDeCamp(g,1-f)];
     m.c=[g.c[f],g.c[1-f]];
     /* le mölkky et les fléchettes ne se jouent ni en simple ni en double :
        leurs confrontations ne reçoivent aucune marque */
@@ -11272,7 +11527,7 @@ function renderHall(){
   if(titreRecords){
     var scores=[];
     HG().forEach(function(g){
-      g.n.forEach(function(nom,i){ scores.push({n:nom, s:g.s[i], d:g.d}); });
+      g.n.forEach(function(nom,i){ scores.push({n:nomDeCamp(g,i), s:g.s[i], d:g.d}); });
     });
     scores.sort(function(a,b){ return (b.s-a.s) || (a.d-b.d); });
     var bs=blockOf(t(titreRecords));
@@ -11335,15 +11590,15 @@ function renderHall(){
     }else if(g.n.length===2){
       var mp=tf("hall.beat",{w:"\u0000",l:"\u0001"}).split(/[\u0000\u0001]/);
       m.appendChild(document.createTextNode(mp[0]||""));
-      m.appendChild(el("b",null,g.n[g.w]));
+      m.appendChild(el("b",null,nomDeCamp(g,g.w)));
       m.appendChild(document.createTextNode(mp[1]||""));
-      m.appendChild(document.createTextNode(g.n[1-g.w]));
+      m.appendChild(document.createTextNode(nomDeCamp(g,1-g.w)));
       m.appendChild(document.createTextNode(mp[2]||""));
       row.appendChild(m);
       row.appendChild(el("p","sc", g.s[g.w]+"–"+g.s[1-g.w]));
     }else{
       /* à plus de deux, on ne nomme que le vainqueur */
-      m.appendChild(el("b",null,g.n[g.w]));
+      m.appendChild(el("b",null,nomDeCamp(g,g.w)));
       row.appendChild(m);
       row.appendChild(el("p","sc", String(g.s[g.w])));
     }
@@ -12005,7 +12260,7 @@ function retourAndroid(){
   var tirage=$("tossWrap");
   if(tirage && !tirage.hidden) return true;   /* le tirage au sort se termine seul */
 
-  var fiches=[["jrWrap","jrClose"], ["ordreWrap","ordreOk"], ["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
+  var fiches=[["jrWrap","jrClose"], ["jrFiche","jrFicheClose"], ["ordreWrap","ordreOk"], ["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
   var ecrans=[["s-hall","hallBack"], ["s-joueurs","jrBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"], ["s-cat","catBack"]];
   ORDRE_JEUX.forEach(function(id){
     var r=JEUX[id].retour;

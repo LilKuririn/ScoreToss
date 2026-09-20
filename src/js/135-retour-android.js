@@ -15,7 +15,7 @@ function retourAndroid(){
   var tirage=$("tossWrap");
   if(tirage && !tirage.hidden) return true;   /* le tirage au sort se termine seul */
 
-  var fiches=[["jrWrap","jrClose"], ["ordreWrap","ordreOk"], ["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
+  var fiches=[["jrWrap","jrClose"], ["jrFiche","jrFicheClose"], ["ordreWrap","ordreOk"], ["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
   var ecrans=[["s-hall","hallBack"], ["s-joueurs","jrBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"], ["s-cat","catBack"]];
   ORDRE_JEUX.forEach(function(id){
     var r=JEUX[id].retour;

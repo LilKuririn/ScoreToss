@@ -220,7 +220,7 @@ function renderYRows(){
 function yaNouvellePartie(){
   Y={ players:[], tours:[], saisie:[], choix:null };
   for(var i=0;i<YS.count;i++){
-    Y.players.push({ label:yaNom(i), hex:color(YS.players[i].color).hex });
+    Y.players.push({ label:yaNom(i), hex:color(YS.players[i].color).hex, ids:idsDe(YS.players[i], 0) });
   }
   YE=yaRejouer();
   YEDIT=null;
@@ -594,6 +594,7 @@ function yaArchiver(){
   H.unshift({
     d:Date.now(), g:"yams",
     n:Y.players.map(function(p){ return p.label; }),
+    p:Y.players.map(function(x){ return x.ids||[]; }),
     c:Y.players.map(function(p){ return p.hex; }),
     s:totaux, w:YE.gagnant, r:YA_TOURS, t:false
   });

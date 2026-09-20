@@ -206,7 +206,7 @@ function flNouvellePartie(){
   for(var i=0;i<FS.count;i++){
     var mates=[];
     if(FS.mode==="team"){ for(var j=0;j<FS.per;j++) mates.push(flCoequipier(i,j)); }
-    F.players.push({ label:flNom(i), hex:color(FS.players[i].color).hex, mates:mates });
+    F.players.push({ label:flNom(i), hex:color(FS.players[i].color).hex, mates:mates, ids:idsDe(FS.players[i], mates.length) });
   }
   FE=flRejouer();
   FEDIT=null;
@@ -630,6 +630,7 @@ function flArchiver(){
   H.unshift({
     d:Date.now(), g:"flechettes",
     n:F.players.map(function(p){ return p.label; }),
+    p:F.players.map(function(x){ return x.ids||[]; }),
     c:F.players.map(function(p){ return p.hex; }),
     s:FE.score.map(function(r){ return F.depart-r; }),
     w:FE.gagnant, r:FE.volees.length, t:false

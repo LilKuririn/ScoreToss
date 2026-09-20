@@ -565,23 +565,40 @@ scenario("petanque-tete-a-tete", async function(a){
   await a.clic("#backToGames"); await a.clic("#playCornhole"); a.point("cornhole : manche, pas de triplette");
 }, [360,640]);
 
-/* --- le carnet de joueurs : créer, choisir, détacher -------------- */
-scenario("joueurs-carnet", async function(a){
-  await a.clic("#openJoueurs");                                a.point("carnet vide");
-  for(var i=0;i<3;i++){
-    a.d.getElementById("jrNouveau").value = ["Marius","Fanny","César"][i];
+/* --- le carnet de joueurs : créer, choisir, croiser les palmarès -- */
+async function carnetAjouter(a, noms){
+  for(var i=0;i<noms.length;i++){
+    a.d.getElementById("jrNouveau").value = noms[i];
     await a.clic("#jrAjouter");
   }
-  a.point("trois joueurs");
-  await a.clicN("#jrListe .pick", 1);                          a.point("couleur suivante");
-  await a.clic("#jrBack");                                     a.point("accueil, carnet annoncé");
+}
+async function carnetChoisir(a, sel, index, nom){
+  await a.clicN(sel, index);
+  var cible=[].slice.call(a.d.querySelectorAll("#jrChoix .jr-choix button"))
+    .find(function(b){ return b.textContent.trim()===nom; });
+  if(!cible) throw new Error("joueur "+nom+" introuvable");
+  cible.click();
+  await a.attendre(20);
+}
+
+scenario("joueurs-carnet", async function(a){
+  await a.clic("#openJoueurs");                                a.point("carnet vide");
+  await carnetAjouter(a, ["Marius","Fanny","César"]);          a.point("trois joueurs");
+  await a.clic("#jrBack");
   await a.clic('#categories [data-categorie="exterieur"]');
   await a.clic("#playPetanque");
-  await a.clicN("#cards .jr-btn", 1);                          a.point("choix d'un joueur");
-  await a.clicN("#jrChoix .jr-choix button", 0);               a.point("nom posé, bouton tenu");
-  await a.clicN("#cards .jr-btn", 1);                          a.point("le joueur posé est coché");
-  await a.clic("#jrClose");
-  await a.clic("#openJoueurs");
-  await a.clicN("#jrListe .jr-sup", 2);                        a.point("suppression armée");
-  await a.clicN("#jrListe .jr-sup", 2);                        a.point("joueur supprimé");
+  await a.clic('#mode button[data-mode="double"]');
+  await carnetChoisir(a, "#cards .jr-btn", 1, "Marius");
+  a.point("un joueur posé dans un champ");
+  await a.clic("#start");                                      a.point("partie neuve");
+  for(var k=0;k<3 && !(a.etat().g||{}).over;k++){ await palet(a,1,5); await valider(a); }
+  await finDePartie(a);                                        a.point("victoire");
+  await a.clic("#over .cta.ghost");
+  await a.clic("#backToGames"); await a.clic("#catBack");
+  await a.clic("#openJoueurs");                                a.point("classement tous jeux");
+  await a.clicN("#jrListe .jr-ligne", 0);                      a.point("fiche du joueur");
+  await a.clic("#jrFicheClose");
+  await a.clicN("#jrListe .jr-ligne", 2);
+  await a.clic("#jrFicheBody .cta.danger");                    a.point("suppression armée");
+  await a.clic("#jrFicheBody .cta.danger");                    a.point("joueur supprimé");
 }, [360,640]);

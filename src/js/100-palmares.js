@@ -13,6 +13,7 @@ function archiveGame(){
     c:[G.teams[0].hex,G.teams[1].hex],
     s:[G.scores[0],G.scores[1]],
     w:G.winner, r:G.rounds.length, ho:holes,
+    p:G.teams.map(function(tm){ return tm.ids||[]; }),
     t:!!G.tour
   });
   if(H.length>200) H.length=200;
@@ -26,6 +27,17 @@ function HG(){
 }
 
 function nameKey(s){ return (s||"").trim().toLocaleLowerCase("fr"); }
+
+/* Une partie qui retient un joueur du carnet s'affiche sous le nom qu'il
+   porte aujourd'hui : le renommer ne laisse pas deux personnes derrière. */
+function nomDeCamp(g,i){
+  var ids=g.p && g.p[i];
+  if(ids && ids.length===1){
+    var j=joueur(ids[0]);
+    if(j) return j.nom;
+  }
+  return g.n[i];
+}
 
 /* Un nom peut désigner un joueur seul ou une équipe : on relève le format
    dans lequel il a joué pour pouvoir les distinguer d'un coup d'œil. Un nom
@@ -44,7 +56,7 @@ function modeTags(){
   HG().forEach(function(g){
     if(!g.mode) return;          /* le mölkky n'est ni simple ni double */
     for(var i=0;i<g.n.length;i++){
-      var k=nameKey(g.n[i]);
+      var k=nameKey(nomDeCamp(g,i));
       if(!k) continue;
       if(!m[k]) m[k]={modes:{}};
       noterMode(m[k], g.mode==="double"||g.mode==="triple" ? g.mode : "simple");
@@ -66,11 +78,11 @@ function standings(){
   HG().forEach(function(g){
     if(g.n.length<2) return;      /* seul, on ne gagne contre personne */
     for(var i=0;i<g.n.length;i++){
-      var k=nameKey(g.n[i]);
+      var nom=nomDeCamp(g,i), k=nameKey(nom);
       if(!k) continue;
-      if(!map[k]){ map[k]={label:g.n[i], hex:g.c[i], v:0, d:0}; order.push(k); }
+      if(!map[k]){ map[k]={label:nom, hex:g.c[i], v:0, d:0}; order.push(k); }
       var m=map[k];
-      m.label=g.n[i]; m.hex=g.c[i];
+      m.label=nom; m.hex=g.c[i];
       if(g.w===i) m.v++; else if(g.w>=0) m.d++;   /* une égalité ne compte ni pour ni contre */
     }
   });
@@ -86,14 +98,14 @@ function duels(){
   HG().forEach(function(g){
     if(g.n.length!==2) return;   /* une confrontation se joue à deux */
     if(g.w<0) return;            /* une égalité ne départage personne */
-    var ka=nameKey(g.n[0]), kb=nameKey(g.n[1]);
+    var ka=nameKey(nomDeCamp(g,0)), kb=nameKey(nomDeCamp(g,1));
     if(!ka || !kb || ka===kb) return;
     var flip = kb<ka;
     var id = flip ? kb+"|"+ka : ka+"|"+kb;
     var f = flip ? 1 : 0;
     if(!map[id]){ map[id]={n:["",""], c:["",""], w:[0,0], modes:{}}; order.push(id); }
     var m=map[id];
-    m.n=[g.n[f],g.n[1-f]];
+    m.n=[nomDeCamp(g,f),nomDeCamp(g,1-f)];
     m.c=[g.c[f],g.c[1-f]];
     /* le mölkky et les fléchettes ne se jouent ni en simple ni en double :
        leurs confrontations ne reçoivent aucune marque */
@@ -170,7 +182,7 @@ function renderHall(){
   if(titreRecords){
     var scores=[];
     HG().forEach(function(g){
-      g.n.forEach(function(nom,i){ scores.push({n:nom, s:g.s[i], d:g.d}); });
+      g.n.forEach(function(nom,i){ scores.push({n:nomDeCamp(g,i), s:g.s[i], d:g.d}); });
     });
     scores.sort(function(a,b){ return (b.s-a.s) || (a.d-b.d); });
     var bs=blockOf(t(titreRecords));
@@ -233,15 +245,15 @@ function renderHall(){
     }else if(g.n.length===2){
       var mp=tf("hall.beat",{w:"\u0000",l:"\u0001"}).split(/[\u0000\u0001]/);
       m.appendChild(document.createTextNode(mp[0]||""));
-      m.appendChild(el("b",null,g.n[g.w]));
+      m.appendChild(el("b",null,nomDeCamp(g,g.w)));
       m.appendChild(document.createTextNode(mp[1]||""));
-      m.appendChild(document.createTextNode(g.n[1-g.w]));
+      m.appendChild(document.createTextNode(nomDeCamp(g,1-g.w)));
       m.appendChild(document.createTextNode(mp[2]||""));
       row.appendChild(m);
       row.appendChild(el("p","sc", g.s[g.w]+"–"+g.s[1-g.w]));
     }else{
       /* à plus de deux, on ne nomme que le vainqueur */
-      m.appendChild(el("b",null,g.n[g.w]));
+      m.appendChild(el("b",null,nomDeCamp(g,g.w)));
       row.appendChild(m);
       row.appendChild(el("p","sc", String(g.s[g.w])));
     }
