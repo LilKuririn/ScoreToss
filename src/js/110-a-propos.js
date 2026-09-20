@@ -72,6 +72,36 @@ function fillAbout(){
   data.appendChild(el("p","hint",t("data.hint")));
   body.appendChild(data);
 
+  /* Le palmarès de chaque jeu s'efface depuis le jeu ; d'ici, on efface
+     les huit d'un coup. Le carnet de joueurs, lui, reste. */
+  var net=el("div","block");
+  net.style.paddingTop="18px";
+  net.appendChild(el("p","eyebrow",t("data.wipe.title")));
+  var tout=el("button","act danger",t("data.wipe"));
+  tout.type="button";
+  tout.addEventListener("click",function(){
+    if(tout.dataset.armed!=="1"){
+      tout.dataset.armed="1";
+      tout.textContent=t("data.wipe.confirm");
+      setTimeout(function(){
+        if(tout.dataset.armed!=="1") return;
+        tout.dataset.armed="0";
+        tout.textContent=t("data.wipe");
+      },4000);
+      return;
+    }
+    tout.dataset.armed="0";
+    tout.textContent=t("data.wipe");
+    H=[];
+    save();
+    refreshHallLink();
+    if($("s-joueurs").classList.contains("on")) renderJoueurs();
+    toast(t("data.wipe.done"));
+  });
+  net.appendChild(tout);
+  net.appendChild(el("p","hint",t("data.wipe.hint")));
+  body.appendChild(net);
+
   body.appendChild(themePicker());
   body.appendChild(langPicker());
   body.appendChild(el("p","about-foot",t("about.foot")));

@@ -292,6 +292,9 @@ avec l'application.
 Une **sauvegarde** exportable en JSON permet de tout emporter avant de changer de téléphone, et de
 le restaurer ensuite.
 
+Le palmarès d'un jeu s'efface depuis ce jeu ; *À propos* efface **les huit d'un coup**, en deux
+touchers, sans toucher au carnet de joueurs, à la partie en cours ni aux tournois.
+
 ## Langues et apparence
 
 Français, anglais et espagnol. La langue suit celle du téléphone au premier lancement et se change

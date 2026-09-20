@@ -7840,6 +7840,9 @@ fr:{
   "pl.nogame":"Aucune partie enregistrée pour ce joueur. Choisissez son nom au départ d'une partie et elle comptera ici.",
   "pl.del":"Supprimer ce joueur", "pl.del.ok":"Confirmer la suppression",
   "hall.w2":"Victoires",
+  "data.wipe.title":"Repartir de zéro", "data.wipe":"Effacer tous les palmarès",
+  "data.wipe.confirm":"Confirmer l'effacement", "data.wipe.done":"Palmarès effacés",
+  "data.wipe.hint":"Efface les parties enregistrées des huit jeux, d'un coup. Le carnet de joueurs, la partie en cours et les tournois ne sont pas touchés.",
   "rules.title":"Règles du jeu",
   "about.title":"À propos",
   "about.version":"Version {v}",
@@ -7987,6 +7990,9 @@ en:{
   "pl.nogame":"No games recorded for this player yet. Pick their name when starting a game and it will count here.",
   "pl.del":"Delete this player", "pl.del.ok":"Confirm deletion",
   "hall.w2":"Wins",
+  "data.wipe.title":"Start over", "data.wipe":"Clear every standings table",
+  "data.wipe.confirm":"Confirm clearing", "data.wipe.done":"Standings cleared",
+  "data.wipe.hint":"Clears the recorded games of all eight games at once. Your players, the game in progress and tournaments are left alone.",
   "rules.title":"How to play",
   "about.title":"About",
   "about.version":"Version {v}",
@@ -8134,6 +8140,9 @@ es:{
   "pl.nogame":"Ninguna partida registrada para este jugador. Elige su nombre al empezar una partida y contará aquí.",
   "pl.del":"Eliminar este jugador", "pl.del.ok":"Confirmar la eliminación",
   "hall.w2":"Victorias",
+  "data.wipe.title":"Empezar de cero", "data.wipe":"Borrar todas las clasificaciones",
+  "data.wipe.confirm":"Confirmar el borrado", "data.wipe.done":"Clasificaciones borradas",
+  "data.wipe.hint":"Borra de una vez las partidas registradas de los ocho juegos. Tus jugadores, la partida en curso y los torneos no se tocan.",
   "rules.title":"Cómo se juega",
   "about.title":"Acerca de",
   "about.version":"Versión {v}",
@@ -11691,6 +11700,36 @@ function fillAbout(){
   data.appendChild(im);
   data.appendChild(el("p","hint",t("data.hint")));
   body.appendChild(data);
+
+  /* Le palmarès de chaque jeu s'efface depuis le jeu ; d'ici, on efface
+     les huit d'un coup. Le carnet de joueurs, lui, reste. */
+  var net=el("div","block");
+  net.style.paddingTop="18px";
+  net.appendChild(el("p","eyebrow",t("data.wipe.title")));
+  var tout=el("button","act danger",t("data.wipe"));
+  tout.type="button";
+  tout.addEventListener("click",function(){
+    if(tout.dataset.armed!=="1"){
+      tout.dataset.armed="1";
+      tout.textContent=t("data.wipe.confirm");
+      setTimeout(function(){
+        if(tout.dataset.armed!=="1") return;
+        tout.dataset.armed="0";
+        tout.textContent=t("data.wipe");
+      },4000);
+      return;
+    }
+    tout.dataset.armed="0";
+    tout.textContent=t("data.wipe");
+    H=[];
+    save();
+    refreshHallLink();
+    if($("s-joueurs").classList.contains("on")) renderJoueurs();
+    toast(t("data.wipe.done"));
+  });
+  net.appendChild(tout);
+  net.appendChild(el("p","hint",t("data.wipe.hint")));
+  body.appendChild(net);
 
   body.appendChild(themePicker());
   body.appendChild(langPicker());
