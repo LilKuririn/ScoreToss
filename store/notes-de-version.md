@@ -190,6 +190,35 @@ Mölkky : un écran de partie plus vivant, avec la progression de chacun vers 50
 
 ---
 
+## Version 6.0 — Pétanque
+
+Nom de release, jamais montré aux utilisateurs : `6.0 — Pétanque`
+
+Depuis la 5.0 : la pétanque, seule nouveauté visible. La triplette, premier format à trois joueurs
+de l'application, ne sert qu'à elle : inutile de l'annoncer à part.
+
+### en-US *(371 / 500)*
+
+```
+New: pétanque, by the official FIPJP rules. Singles, doubles and triples, with the right number of boules for each.
+
+Only the closest team scores, one point per boule closer than theirs. Games to 13, or 11 for pool play.
+
+A one-minute timer sits above the scoring, and the rules sheet covers the whole game: ground, circle, throwing the jack, dead jack, measuring, cards.
+```
+
+### fr-FR *(395 / 500)*
+
+```
+Nouveau : la pétanque, au règlement officiel de la FIPJP. Tête-à-tête, doublette et triplette, avec le bon nombre de boules pour chacun.
+
+Seule l'équipe la plus proche marque, un point par boule mieux placée. Partie en 13 points, ou en 11 comme en poules.
+
+Un chrono d'une minute au-dessus de la saisie, et une fiche de règles complète : terrain, cercle, lancer du but, but nul, mesure, cartons.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
