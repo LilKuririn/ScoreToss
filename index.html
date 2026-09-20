@@ -1480,10 +1480,9 @@ h1,h2,h3,p{margin:0}
 .jr-ligne .jr-sup.arme{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 45%,var(--line))}
 .jr-ligne .jr-sup:active{background:var(--panel-2)}
 
-/* la barre du bas sert à créer : le champ et le bouton côte à côte */
-.jr-bar{display:flex;align-items:center;gap:9px}
-.jr-bar .field-input{flex:1;min-width:0}
-.jr-bar .cta{flex:0 0 auto;width:auto;padding:0 18px}
+/* la barre du bas sert à créer : le champ, puis le bouton pleine largeur
+   comme partout ailleurs dans l'application */
+.jr-bar{display:flex;flex-direction:column;gap:9px}
 
 /* le bouton discret qui ouvre le carnet depuis un champ de nom */
 .jr-champ{position:relative;display:block;min-width:0}
