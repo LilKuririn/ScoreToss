@@ -103,6 +103,17 @@ fr:{
   "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Effacer le palmarès",
   "hall.clear.confirm":"Confirmer l'effacement",
+  "pl.title":"Joueurs", "pl.carnet":"Le carnet",
+  "pl.count":"{n} joueur","pl.count_p":"{n} joueurs",
+  "pl.link.empty":"Le carnet des habitués",
+  "pl.empty":"Personne dans le carnet. Ajoutez ceux avec qui vous jouez souvent : leur nom vous sera proposé dans tous les jeux.",
+  "pl.empty.pick":"Le carnet est vide. Tapez un nom, puis ajoutez-le d'ici.",
+  "pl.none":"Aucun joueur de ce nom.",
+  "pl.hint":"Ces noms vous sont proposés dans tous les jeux. Un invité peut toujours être tapé à la main.",
+  "pl.new":"Nouveau joueur", "pl.new.ph":"Prénom ou surnom", "pl.add":"Ajouter",
+  "pl.pick":"Choisir un joueur", "pl.search":"Rechercher",
+  "pl.addname":"Ajouter « {name} » au carnet", "pl.clear":"Vider le champ",
+  "pl.name.aria":"Nom du joueur", "pl.color.aria":"Couleur de {name}", "pl.del.aria":"Supprimer {name}",
   "rules.title":"Règles du jeu",
   "about.title":"À propos",
   "about.version":"Version {v}",
@@ -233,6 +244,17 @@ en:{
   "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Clear the records",
   "hall.clear.confirm":"Confirm clearing",
+  "pl.title":"Players", "pl.carnet":"Your players",
+  "pl.count":"{n} player","pl.count_p":"{n} players",
+  "pl.link.empty":"The people you play with",
+  "pl.empty":"No one here yet. Add the people you play with often: their name will be offered in every game.",
+  "pl.empty.pick":"No players yet. Type a name, then add it from here.",
+  "pl.none":"No player with that name.",
+  "pl.hint":"These names are offered in every game. A guest can always be typed by hand.",
+  "pl.new":"New player", "pl.new.ph":"Name or nickname", "pl.add":"Add",
+  "pl.pick":"Pick a player", "pl.search":"Search",
+  "pl.addname":"Add “{name}” to your players", "pl.clear":"Clear the field",
+  "pl.name.aria":"Player name", "pl.color.aria":"Colour for {name}", "pl.del.aria":"Delete {name}",
   "rules.title":"How to play",
   "about.title":"About",
   "about.version":"Version {v}",
@@ -363,6 +385,17 @@ es:{
   "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Borrar el historial",
   "hall.clear.confirm":"Confirmar el borrado",
+  "pl.title":"Jugadores", "pl.carnet":"Tus jugadores",
+  "pl.count":"{n} jugador","pl.count_p":"{n} jugadores",
+  "pl.link.empty":"Con quién juegas a menudo",
+  "pl.empty":"Aquí no hay nadie todavía. Añade a quienes juegan contigo: su nombre se propondrá en todos los juegos.",
+  "pl.empty.pick":"No hay jugadores. Escribe un nombre y añádelo desde aquí.",
+  "pl.none":"Ningún jugador con ese nombre.",
+  "pl.hint":"Estos nombres se proponen en todos los juegos. Un invitado siempre se puede escribir a mano.",
+  "pl.new":"Nuevo jugador", "pl.new.ph":"Nombre o apodo", "pl.add":"Añadir",
+  "pl.pick":"Elegir un jugador", "pl.search":"Buscar",
+  "pl.addname":"Añadir «{name}» a tus jugadores", "pl.clear":"Vaciar el campo",
+  "pl.name.aria":"Nombre del jugador", "pl.color.aria":"Color de {name}", "pl.del.aria":"Eliminar {name}",
   "rules.title":"Cómo se juega",
   "about.title":"Acerca de",
   "about.version":"Versión {v}",
@@ -509,6 +542,8 @@ function setLang(l){
   renderCategories();
   if($("s-cat").classList.contains("on")) peindreCategorie();
   renderCards(); renderRules(); renderTSetup();
+  refreshJoueursLink();
+  if($("s-joueurs").classList.contains("on")) renderJoueurs();
   pourChaqueJeu("changementDeLangue");
   fillRules("rulesBody");
   refreshTourBtn(); refreshHallLink();

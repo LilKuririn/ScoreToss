@@ -195,6 +195,7 @@ function renderYRows(){
       name.setAttribute("aria-label",tf("ya.player.aria",{n:k+1}));
       name.addEventListener("input",function(){ pl.name=name.value; save(); });
       row.appendChild(name);
+      champDeJoueur(name, pl, "pid");
       host.appendChild(row);
 
       var sw=el("div","trow-sw swatches");

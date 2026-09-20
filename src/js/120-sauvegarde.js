@@ -23,7 +23,7 @@ function exportName(){
 
 function exportData(){
   TOUR[S.game]=T; DRAFT[S.game]=TS;
-  var contenu={v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H};
+  var contenu={v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H, j:J};
   pourChaqueJeu("sauver", contenu);
   var payload=JSON.stringify(contenu, null, 1);
   var name=exportName();
@@ -55,6 +55,7 @@ function applyImport(text){
   TOUR=carteVide(); DRAFT=carteVide();
   adoptTour(d);
   H = (d.h && d.h.length) ? d.h : [];
+  J = normJ(d.j);
   pourChaqueJeu("importer", d);
   G = (d.g && d.g.teams) ? normG(d.g) : null;
   if(G) recompute();
@@ -62,7 +63,7 @@ function applyImport(text){
   save();
   closeAbout();
   renderCards(); renderRules(); renderTSetup();
-  refreshTourBtn(); refreshHallLink();
+  refreshTourBtn(); refreshHallLink(); refreshJoueursLink();
   if(G && !G.over){ show("game"); renderGame(true); }
   else show("setup");
   toast(t("data.imported"));

@@ -40,6 +40,13 @@ rang. En équipes, ce sont les équipes qui sont tirées.
 **Simple (1v1) ou double (2v2).** Nom d'équipe, noms des joueurs, couleur au choix parmi neuf.
 Passer d'un mode à l'autre repart de noms vides, un joueur n'étant pas une équipe.
 
+**Le carnet de joueurs.** Depuis l'accueil, une liste de ceux avec qui on joue souvent : un nom, une
+couleur, rien d'autre. Chaque champ de nom, dans les huit jeux, porte un bouton qui ouvre ce carnet
+— on choisit au lieu de retaper, et un nom tapé à la main entre au carnet d'un toucher. Le champ
+reste un champ de texte : l'invité du dimanche s'écrit comme avant, sans rien créer. En coulisse,
+le jeu retient l'identifiant du joueur à côté du nom qu'il affiche, ce qui permettra de croiser les
+palmarès des huit jeux.
+
 **Saisie par manche.** Un compteur *trou* (3 points) et un compteur *planche* (1 point) par équipe,
 plafonnés à quatre sacs. L'annulation est calculée et affichée avant validation : personne n'a de
 soustraction à faire entre deux lancers.

@@ -46,6 +46,11 @@ de l'ordre de jeu : `tirerOrdre(participants, fin)`, dans `src/js/065-tirage-ord
 Restent partagés pour l'instant, et donc à toucher pour certains jeux : le format enregistré des
 parties à deux camps (`S.palets`, `G.max`) et les seuls formats simple et double.
 
+Un champ de nom se relie au carnet de joueurs — `src/js/067-joueurs.js` — par
+`champDeJoueur(input, porteur, cle)`, appelé une fois le champ dans le DOM : le bouton ouvre le
+carnet, et l'identifiant choisi est rangé dans `porteur[cle]`, à côté du nom que le jeu enregistre
+déjà. Taper un nom à la main détache le joueur.
+
 Un nouveau jeu ajoute enfin son parcours au banc, dans `tools/banc/scenarios.js`.
 
 ## Vérifier une refonte : le banc de comparaison

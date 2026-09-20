@@ -44,6 +44,7 @@ function renderCards(){
     name.setAttribute("aria-label",t(coequipiers(S.mode)?"team.name.aria":"player.name.aria")+" "+(i===0?"A":"B"));
     name.addEventListener("input",function(){ team.name=name.value; save(); });
     card.appendChild(name);
+    champDeJoueur(name, team, "pid");
 
     var nb=coequipiers(S.mode);
     if(nb){
@@ -58,6 +59,7 @@ function renderCards(){
         m.setAttribute("aria-label",t("team.player")+" "+(k+1)+" — "+t(i===0?"team.a":"team.b"));
         m.addEventListener("input",function(){ team.mates[k]=m.value; save(); });
         mates.appendChild(m);
+        champDeJoueur(m, team.mids || (team.mids=[]), k);
       });
       card.appendChild(mates);
     }

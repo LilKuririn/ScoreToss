@@ -1,0 +1,55 @@
+/* =============================================================
+   9 bis. JOUEURS — le carnet et le choix d'un nom
+   ============================================================= */
+.jr-body{flex:1;min-height:0;overflow:auto;padding:4px 16px 16px;-webkit-overflow-scrolling:touch}
+.jr-body .hint{margin-top:14px}
+
+.jr-ligne{display:flex;align-items:center;gap:9px}
+.jr-ligne + .jr-ligne,.trow-sw + .jr-ligne{margin-top:8px}
+.jr-ligne .field-input{flex:1;min-width:0;padding:10px 12px;font-size:15px}
+.jr-ligne .jr-sup{
+  width:34px;height:34px;flex:0 0 auto;border-radius:10px;
+  display:grid;place-items:center;color:var(--muted);
+  background:var(--panel);border:1px solid var(--line);
+}
+.jr-ligne .jr-sup.arme{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 45%,var(--line))}
+.jr-ligne .jr-sup:active{background:var(--panel-2)}
+
+/* la barre du bas sert à créer : le champ et le bouton côte à côte */
+.jr-bar{display:flex;align-items:center;gap:9px}
+.jr-bar .field-input{flex:1;min-width:0}
+.jr-bar .cta{flex:0 0 auto;width:auto;padding:0 18px}
+
+/* le bouton discret qui ouvre le carnet depuis un champ de nom */
+.jr-champ{position:relative;display:block;min-width:0}
+.trow > .jr-champ,.jr-ligne > .jr-champ{flex:1}
+.jr-champ > .field-input{
+  /* le champ n'est plus un enfant direct de la rangée : sans cette règle il
+     redevient inline-block, et prend une ligne de base sous lui */
+  display:block;width:100%;padding-right:40px;
+}
+.jr-btn{
+  position:absolute;top:50%;right:4px;transform:translateY(-50%);
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  color:var(--muted);background:none;
+}
+.jr-btn:active{background:var(--line)}
+.jr-btn.tenu{color:var(--ink)}
+
+/* la liste du choix : une ligne par joueur, sa couleur en pastille */
+.jr-choix{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+.jr-choix button{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:12px 10px;border-radius:11px;font-size:15px;font-weight:600;color:var(--ink);
+}
+.jr-choix button:active{background:var(--panel-2)}
+.jr-choix button i{width:10px;height:10px;border-radius:50%;flex:0 0 auto;background:var(--c)}
+.jr-choix button span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jr-choix button.on span{color:var(--live)}
+.jr-choix .jr-vide{
+  color:var(--muted);font-weight:500;font-size:13.5px;line-height:1.55;
+  padding:10px;
+}
+.jr-choix .jr-sep{height:1px;background:var(--line);margin:6px 0}
+.jr-choix .jr-autre{color:var(--muted);font-weight:600;font-size:14px}
+.jr-search{margin-bottom:8px}

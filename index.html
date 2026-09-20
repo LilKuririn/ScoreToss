@@ -1464,6 +1464,61 @@ h1,h2,h3,p{margin:0}
 .ed-out{padding:12px 0 4px}
 
 /* =============================================================
+   9 bis. JOUEURS — le carnet et le choix d'un nom
+   ============================================================= */
+.jr-body{flex:1;min-height:0;overflow:auto;padding:4px 16px 16px;-webkit-overflow-scrolling:touch}
+.jr-body .hint{margin-top:14px}
+
+.jr-ligne{display:flex;align-items:center;gap:9px}
+.jr-ligne + .jr-ligne,.trow-sw + .jr-ligne{margin-top:8px}
+.jr-ligne .field-input{flex:1;min-width:0;padding:10px 12px;font-size:15px}
+.jr-ligne .jr-sup{
+  width:34px;height:34px;flex:0 0 auto;border-radius:10px;
+  display:grid;place-items:center;color:var(--muted);
+  background:var(--panel);border:1px solid var(--line);
+}
+.jr-ligne .jr-sup.arme{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 45%,var(--line))}
+.jr-ligne .jr-sup:active{background:var(--panel-2)}
+
+/* la barre du bas sert à créer : le champ et le bouton côte à côte */
+.jr-bar{display:flex;align-items:center;gap:9px}
+.jr-bar .field-input{flex:1;min-width:0}
+.jr-bar .cta{flex:0 0 auto;width:auto;padding:0 18px}
+
+/* le bouton discret qui ouvre le carnet depuis un champ de nom */
+.jr-champ{position:relative;display:block;min-width:0}
+.trow > .jr-champ,.jr-ligne > .jr-champ{flex:1}
+.jr-champ > .field-input{
+  /* le champ n'est plus un enfant direct de la rangée : sans cette règle il
+     redevient inline-block, et prend une ligne de base sous lui */
+  display:block;width:100%;padding-right:40px;
+}
+.jr-btn{
+  position:absolute;top:50%;right:4px;transform:translateY(-50%);
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  color:var(--muted);background:none;
+}
+.jr-btn:active{background:var(--line)}
+.jr-btn.tenu{color:var(--ink)}
+
+/* la liste du choix : une ligne par joueur, sa couleur en pastille */
+.jr-choix{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+.jr-choix button{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  padding:12px 10px;border-radius:11px;font-size:15px;font-weight:600;color:var(--ink);
+}
+.jr-choix button:active{background:var(--panel-2)}
+.jr-choix button i{width:10px;height:10px;border-radius:50%;flex:0 0 auto;background:var(--c)}
+.jr-choix button span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jr-choix button.on span{color:var(--live)}
+.jr-choix .jr-vide{
+  color:var(--muted);font-weight:500;font-size:13.5px;line-height:1.55;
+  padding:10px;
+}
+.jr-choix .jr-sep{height:1px;background:var(--line);margin:6px 0}
+.jr-choix .jr-autre{color:var(--muted);font-weight:600;font-size:14px}
+.jr-search{margin-bottom:8px}
+/* =============================================================
    8. PALMARÈS
    ============================================================= */
 .hall-link{
@@ -1626,6 +1681,18 @@ a.hall-link{text-decoration:none;color:inherit}
           <span class="tile-sub"></span>
         </span>
         <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="link-group">
+      <button type="button" class="hall-link" id="openJoueurs">
+        <span>
+          <span class="eyebrow" data-i18n="pl.title">Joueurs</span>
+          <b>Le carnet des habitués</b>
+        </span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
@@ -2846,6 +2913,44 @@ a.hall-link{text-decoration:none;color:inherit}
     </div>
   </div>
 
+  <!-- ============ JOUEURS ============ -->
+  <section class="screen" id="s-joueurs">
+    <header class="brand">
+      <div class="brand-row">
+        <div>
+          <p class="eyebrow" id="jrCount">Carnet</p>
+          <h1><span data-i18n="pl.title">Joueurs</span><span>.</span></h1>
+        </div>
+        <button type="button" class="ghost-btn" id="jrBack" data-i18n="nav.home">Accueil</button>
+      </div>
+    </header>
+
+    <div class="jr-body">
+      <div id="jrListe"></div>
+      <p class="hint" data-i18n="pl.hint">Ces noms vous sont proposés dans tous les jeux. Un invité peut toujours être tapé à la main.</p>
+    </div>
+
+    <footer class="cta-bar jr-bar">
+      <input type="text" class="field-input" id="jrNouveau" maxlength="22" data-i18n-ph="pl.new.ph" data-i18n-aria="pl.new" placeholder="Prénom ou surnom">
+      <button type="button" class="cta" id="jrAjouter" data-i18n="pl.add">Ajouter</button>
+    </footer>
+  </section>
+
+  <!-- choisir un joueur pour un champ de nom -->
+  <div class="sheet-wrap" id="jrWrap">
+    <div class="scrim" id="jrScrim"></div>
+    <div class="sheet" role="dialog" aria-modal="true" data-i18n-aria="pl.pick">
+      <div class="sheet-head">
+        <h3 data-i18n="pl.pick">Choisir un joueur</h3>
+        <button type="button" class="icon-btn" id="jrClose" data-i18n-aria="nav.close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="sheet-body" id="jrChoix"></div>
+    </div>
+  </div>
   <section class="screen" id="s-over">
     <div class="over" id="over"></div>
   </section>
@@ -3403,6 +3508,7 @@ function renderMRows(){
       name.setAttribute("aria-label",tf(eq ? "mk.team.aria" : "mk.player.aria",{n:k+1}));
       name.addEventListener("input",function(){ pl.name=name.value; save(); });
       row.appendChild(name);
+      champDeJoueur(name, pl, "pid");
       host.appendChild(row);
 
       if(eq){
@@ -3418,6 +3524,7 @@ function renderMRows(){
             mi.setAttribute("aria-label",tf("mk.mate.aria",{j:j+1, n:k+1}));
             mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
             mates.appendChild(mi);
+            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
           })(j);
         }
         host.appendChild(mates);
@@ -4317,6 +4424,7 @@ function renderBRows(){
       name.setAttribute("aria-label",tf("bi.team.aria",{n:k+1}));
       name.addEventListener("input",function(){ tm.name=name.value; save(); });
       row.appendChild(name);
+      champDeJoueur(name, tm, "pid");
       host.appendChild(row);
 
       if(eq){
@@ -4331,6 +4439,7 @@ function renderBRows(){
             mi.setAttribute("aria-label",tf("bi.mate.aria",{j:j+1, n:k+1}));
             mi.addEventListener("input",function(){ tm.mates[j]=mi.value; save(); });
             mates.appendChild(mi);
+            champDeJoueur(mi, tm.mids || (tm.mids=[]), j);
           })(j);
         }
         host.appendChild(mates);
@@ -5135,6 +5244,7 @@ function renderFRows(){
       name.setAttribute("aria-label",tf(eq ? "fl.team.aria" : "fl.player.aria",{n:k+1}));
       name.addEventListener("input",function(){ pl.name=name.value; save(); });
       row.appendChild(name);
+      champDeJoueur(name, pl, "pid");
       host.appendChild(row);
 
       if(eq){
@@ -5150,6 +5260,7 @@ function renderFRows(){
             mi.setAttribute("aria-label",tf("fl.mate.aria",{j:j+1, n:k+1}));
             mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
             mates.appendChild(mi);
+            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
           })(j);
         }
         host.appendChild(mates);
@@ -6027,6 +6138,7 @@ function renderIRows(){
       name.setAttribute("aria-label",tf(eq ? "ti.team.aria" : "ti.player.aria",{n:k+1}));
       name.addEventListener("input",function(){ pl.name=name.value; save(); });
       row.appendChild(name);
+      champDeJoueur(name, pl, "pid");
       host.appendChild(row);
 
       if(eq){
@@ -6041,6 +6153,7 @@ function renderIRows(){
             mi.setAttribute("aria-label",tf("ti.mate.aria",{j:j+1, n:k+1}));
             mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
             mates.appendChild(mi);
+            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
           })(j);
         }
         host.appendChild(mates);
@@ -6889,6 +7002,7 @@ function renderYRows(){
       name.setAttribute("aria-label",tf("ya.player.aria",{n:k+1}));
       name.addEventListener("input",function(){ pl.name=name.value; save(); });
       row.appendChild(name);
+      champDeJoueur(name, pl, "pid");
       host.appendChild(row);
 
       var sw=el("div","trow-sw swatches");
@@ -7664,6 +7778,17 @@ fr:{
   "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Effacer le palmarès",
   "hall.clear.confirm":"Confirmer l'effacement",
+  "pl.title":"Joueurs", "pl.carnet":"Le carnet",
+  "pl.count":"{n} joueur","pl.count_p":"{n} joueurs",
+  "pl.link.empty":"Le carnet des habitués",
+  "pl.empty":"Personne dans le carnet. Ajoutez ceux avec qui vous jouez souvent : leur nom vous sera proposé dans tous les jeux.",
+  "pl.empty.pick":"Le carnet est vide. Tapez un nom, puis ajoutez-le d'ici.",
+  "pl.none":"Aucun joueur de ce nom.",
+  "pl.hint":"Ces noms vous sont proposés dans tous les jeux. Un invité peut toujours être tapé à la main.",
+  "pl.new":"Nouveau joueur", "pl.new.ph":"Prénom ou surnom", "pl.add":"Ajouter",
+  "pl.pick":"Choisir un joueur", "pl.search":"Rechercher",
+  "pl.addname":"Ajouter « {name} » au carnet", "pl.clear":"Vider le champ",
+  "pl.name.aria":"Nom du joueur", "pl.color.aria":"Couleur de {name}", "pl.del.aria":"Supprimer {name}",
   "rules.title":"Règles du jeu",
   "about.title":"À propos",
   "about.version":"Version {v}",
@@ -7794,6 +7919,17 @@ en:{
   "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Clear the records",
   "hall.clear.confirm":"Confirm clearing",
+  "pl.title":"Players", "pl.carnet":"Your players",
+  "pl.count":"{n} player","pl.count_p":"{n} players",
+  "pl.link.empty":"The people you play with",
+  "pl.empty":"No one here yet. Add the people you play with often: their name will be offered in every game.",
+  "pl.empty.pick":"No players yet. Type a name, then add it from here.",
+  "pl.none":"No player with that name.",
+  "pl.hint":"These names are offered in every game. A guest can always be typed by hand.",
+  "pl.new":"New player", "pl.new.ph":"Name or nickname", "pl.add":"Add",
+  "pl.pick":"Pick a player", "pl.search":"Search",
+  "pl.addname":"Add “{name}” to your players", "pl.clear":"Clear the field",
+  "pl.name.aria":"Player name", "pl.color.aria":"Colour for {name}", "pl.del.aria":"Delete {name}",
   "rules.title":"How to play",
   "about.title":"About",
   "about.version":"Version {v}",
@@ -7924,6 +8060,17 @@ es:{
   "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
   "hall.clear":"Borrar el historial",
   "hall.clear.confirm":"Confirmar el borrado",
+  "pl.title":"Jugadores", "pl.carnet":"Tus jugadores",
+  "pl.count":"{n} jugador","pl.count_p":"{n} jugadores",
+  "pl.link.empty":"Con quién juegas a menudo",
+  "pl.empty":"Aquí no hay nadie todavía. Añade a quienes juegan contigo: su nombre se propondrá en todos los juegos.",
+  "pl.empty.pick":"No hay jugadores. Escribe un nombre y añádelo desde aquí.",
+  "pl.none":"Ningún jugador con ese nombre.",
+  "pl.hint":"Estos nombres se proponen en todos los juegos. Un invitado siempre se puede escribir a mano.",
+  "pl.new":"Nuevo jugador", "pl.new.ph":"Nombre o apodo", "pl.add":"Añadir",
+  "pl.pick":"Elegir un jugador", "pl.search":"Buscar",
+  "pl.addname":"Añadir «{name}» a tus jugadores", "pl.clear":"Vaciar el campo",
+  "pl.name.aria":"Nombre del jugador", "pl.color.aria":"Color de {name}", "pl.del.aria":"Eliminar {name}",
   "rules.title":"Cómo se juega",
   "about.title":"Acerca de",
   "about.version":"Versión {v}",
@@ -9483,6 +9630,8 @@ function setLang(l){
   renderCategories();
   if($("s-cat").classList.contains("on")) peindreCategorie();
   renderCards(); renderRules(); renderTSetup();
+  refreshJoueursLink();
+  if($("s-joueurs").classList.contains("on")) renderJoueurs();
   pourChaqueJeu("changementDeLangue");
   fillRules("rulesBody");
   refreshTourBtn(); refreshHallLink();
@@ -9673,6 +9822,7 @@ function renderCards(){
     name.setAttribute("aria-label",t(coequipiers(S.mode)?"team.name.aria":"player.name.aria")+" "+(i===0?"A":"B"));
     name.addEventListener("input",function(){ team.name=name.value; save(); });
     card.appendChild(name);
+    champDeJoueur(name, team, "pid");
 
     var nb=coequipiers(S.mode);
     if(nb){
@@ -9687,6 +9837,7 @@ function renderCards(){
         m.setAttribute("aria-label",t("team.player")+" "+(k+1)+" — "+t(i===0?"team.a":"team.b"));
         m.addEventListener("input",function(){ team.mates[k]=m.value; save(); });
         mates.appendChild(m);
+        champDeJoueur(m, team.mids || (team.mids=[]), k);
       });
       card.appendChild(mates);
     }
@@ -10233,6 +10384,263 @@ function fermerOrdre(){
   wrap.classList.remove("on");
 }
 $("ordreWrap").addEventListener("click",fermerOrdre);
+/* ------------------------------------------------------------------
+   Le carnet de joueurs
+
+   Huit jeux, huit palmarès : un même nom y vivait huit fois sans jamais
+   se rejoindre. Le carnet donne à chaque joueur un identifiant stable,
+   que les jeux rangent à côté du nom qu'ils affichent déjà — les parties
+   pourront ainsi se croiser, quel que soit le jeu.
+
+   Rien n'est obligatoire : un champ de nom reste un champ de texte, et
+   l'invité du dimanche se tape à la main comme avant. Le carnet n'est
+   qu'une liste de noms proposés, et le bouton qui l'ouvre.
+------------------------------------------------------------------ */
+var J = [];                 /* {id, nom, couleur, vu} */
+var jrPose = false;         /* vrai le temps qu'un choix remplisse un champ */
+
+function joueur(id){
+  for(var i=0;i<J.length;i++) if(J[i].id===id) return J[i];
+  return null;
+}
+function jrNouvelId(){
+  var n=1;
+  while(joueur("j"+n)) n++;
+  return "j"+n;
+}
+/* la première couleur que personne n'a encore, sinon on recommence */
+function jrCouleur(){
+  for(var i=0;i<COLORS.length;i++){
+    var libre=true;
+    for(var k=0;k<J.length;k++) if(J[k].couleur===COLORS[i].id) libre=false;
+    if(libre) return COLORS[i].id;
+  }
+  return COLORS[J.length % COLORS.length].id;
+}
+function ajouterJoueur(nom){
+  nom=(nom||"").trim();
+  if(!nom) return null;
+  var j={id:jrNouvelId(), nom:nom, couleur:jrCouleur(), vu:Date.now()};
+  J.push(j);
+  save();
+  return j;
+}
+function supprimerJoueur(id){
+  for(var i=0;i<J.length;i++) if(J[i].id===id){ J.splice(i,1); break; }
+  save();
+}
+/* Les derniers joués en premier : c'est presque toujours la même tablée
+   qui reprend une partie. */
+function joueursTries(){
+  return J.slice().sort(function(a,b){
+    return (b.vu||0)-(a.vu||0) || a.nom.localeCompare(b.nom,LANG);
+  });
+}
+
+/* --- l'écran du carnet -------------------------------------------- */
+var jrArme = null;          /* la suppression demande deux touchers */
+
+function renderJoueurs(){
+  var host=$("jrListe");
+  host.innerHTML="";
+  host.style.display="flex";
+  host.style.flexDirection="column";
+  host.style.gap="0";
+
+  $("jrCount").textContent = J.length ? tn("pl.count",J.length) : t("pl.carnet");
+
+  if(!J.length){
+    host.appendChild(el("p","empty",t("pl.empty")));
+    return;
+  }
+
+  J.forEach(function(j){
+    var ligne=el("div","jr-ligne");
+
+    var pastille=el("button","pick");
+    pastille.type="button";
+    pastille.style.setProperty("--c",color(j.couleur).hex);
+    pastille.setAttribute("aria-label",tf("pl.color.aria",{name:j.nom}));
+    pastille.appendChild(el("i"));
+    pastille.addEventListener("click",function(){
+      var suite=COLORS[(COLORS.map(function(c){ return c.id; }).indexOf(j.couleur)+1) % COLORS.length];
+      j.couleur=suite.id;
+      pastille.style.setProperty("--c",suite.hex);
+      save();
+    });
+    ligne.appendChild(pastille);
+
+    var nom=el("input","field-input");
+    nom.type="text";
+    nom.value=j.nom;
+    nom.maxLength=22;
+    nom.setAttribute("aria-label",t("pl.name.aria"));
+    nom.addEventListener("input",function(){ j.nom=nom.value; save(); });
+    ligne.appendChild(nom);
+
+    var sup=el("button","jr-sup");
+    sup.type="button";
+    sup.setAttribute("aria-label",tf("pl.del.aria",{name:j.nom}));
+    sup.innerHTML='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">'+
+      '<path d="M3 4.5h10M6.5 4.5V3h3v1.5M5 4.5l.6 8.2h4.8L11 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    sup.addEventListener("click",function(){
+      if(jrArme!==j.id){
+        jrArme=j.id;
+        sup.classList.add("arme");
+        setTimeout(function(){ if(jrArme===j.id){ jrArme=null; sup.classList.remove("arme"); } },2600);
+        return;
+      }
+      jrArme=null;
+      supprimerJoueur(j.id);
+      renderJoueurs();
+      refreshJoueursLink();
+    });
+    ligne.appendChild(sup);
+
+    host.appendChild(ligne);
+  });
+}
+
+function creerDepuisLeChamp(){
+  var champ=$("jrNouveau");
+  if(!ajouterJoueur(champ.value)) return;
+  champ.value="";
+  renderJoueurs();
+  refreshJoueursLink();
+  buzz(8);
+}
+$("jrAjouter").addEventListener("click",creerDepuisLeChamp);
+$("jrNouveau").addEventListener("keydown",function(e){ if(e.key==="Enter") creerDepuisLeChamp(); });
+$("jrBack").addEventListener("click",function(){ show("games"); });
+$("openJoueurs").addEventListener("click",function(){
+  jrArme=null;
+  renderJoueurs();
+  show("joueurs");
+});
+
+/* Le lien de l'accueil annonce ce que le carnet contient. Son texte n'est
+   pas statique : applyStaticText le remettrait à l'invite à chaque écran. */
+function refreshJoueursLink(){
+  var b=$("openJoueurs").querySelector("b");
+  if(b) b.textContent = J.length ? tn("pl.count",J.length) : t("pl.link.empty");
+}
+
+/* --- choisir un joueur pour un champ de nom ----------------------- */
+var jrChamp = null, jrPorteur = null, jrCle = null;
+
+function champDeJoueur(input, porteur, cle){
+  var wrap=el("span","jr-champ");
+  input.parentNode.insertBefore(wrap, input);
+  wrap.appendChild(input);
+
+  var b=el("button","jr-btn"+(porteur && porteur[cle] ? " tenu" : ""));
+  b.type="button";
+  b.setAttribute("aria-label",t("pl.pick"));
+  b.innerHTML='<svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">'+
+    '<circle cx="9" cy="6.4" r="3" stroke="currentColor" stroke-width="1.6"/>'+
+    '<path d="M3.6 15c.6-2.8 2.8-4.3 5.4-4.3s4.8 1.5 5.4 4.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+  b.addEventListener("click",function(){ ouvrirChoixJoueur(input, porteur, cle, b); });
+  wrap.appendChild(b);
+
+  /* taper un nom à la main détache le joueur : c'est un invité */
+  input.addEventListener("input",function(){
+    if(jrPose || !porteur || !porteur[cle]) return;
+    porteur[cle]=null;
+    b.classList.remove("tenu");
+    save();          /* le jeu a déjà enregistré son nom avant nous */
+  });
+}
+
+function poserJoueur(j){
+  var input=jrChamp, porteur=jrPorteur, cle=jrCle;
+  fermerChoixJoueur();
+  if(!input) return;
+  jrPose=true;
+  input.value = j ? j.nom : "";
+  input.dispatchEvent(new Event("input",{bubbles:true}));
+  jrPose=false;
+  if(porteur) porteur[cle] = j ? j.id : null;
+  if(j) j.vu=Date.now();
+  var b=input.parentNode.querySelector(".jr-btn");
+  if(b) b.classList.toggle("tenu", !!j);
+  buzz(8);
+  save();
+}
+
+function ouvrirChoixJoueur(input, porteur, cle, bouton){
+  jrChamp=input; jrPorteur=porteur; jrCle=cle;
+  peindreChoixJoueur("");
+  var wrap=$("jrWrap");
+  wrap.classList.add("on");
+  if(bouton) bouton.setAttribute("aria-expanded","true");
+}
+function fermerChoixJoueur(){
+  $("jrWrap").classList.remove("on");
+  var b=jrChamp && jrChamp.parentNode ? jrChamp.parentNode.querySelector(".jr-btn") : null;
+  if(b) b.setAttribute("aria-expanded","false");
+}
+
+function peindreChoixJoueur(filtre){
+  var body=$("jrChoix");
+  body.innerHTML="";
+  var courant = jrPorteur ? jrPorteur[jrCle] : null;
+  var saisi = (jrChamp && jrChamp.value || "").trim();
+
+  if(J.length>6){
+    var rech=el("input","field-input jr-search");
+    rech.type="text";
+    rech.value=filtre||"";
+    rech.placeholder=t("pl.search");
+    rech.setAttribute("aria-label",t("pl.search"));
+    rech.addEventListener("input",function(){
+      peindreChoixJoueur(rech.value);
+      var suite=$("jrChoix").querySelector(".jr-search");
+      if(suite){ suite.focus(); suite.setSelectionRange(suite.value.length, suite.value.length); }
+    });
+    body.appendChild(rech);
+  }
+
+  var liste=el("div","jr-choix");
+  var f=(filtre||"").trim().toLocaleLowerCase("fr");
+  var vus=joueursTries().filter(function(j){
+    return !f || j.nom.toLocaleLowerCase("fr").indexOf(f)>=0;
+  });
+
+  if(!vus.length) liste.appendChild(el("p","jr-vide",t(J.length ? "pl.none" : "pl.empty.pick")));
+
+  vus.forEach(function(j){
+    var b=el("button",j.id===courant ? "on" : null);
+    b.type="button";
+    var dot=el("i");
+    dot.style.setProperty("--c",color(j.couleur).hex);
+    b.appendChild(dot);
+    b.appendChild(el("span",null,j.nom));
+    b.addEventListener("click",function(){ poserJoueur(j); });
+    liste.appendChild(b);
+  });
+
+  var autres=[];
+  /* un nom tapé à la main entre au carnet d'un toucher */
+  if(saisi && !J.some(function(j){ return j.nom.toLocaleLowerCase("fr")===saisi.toLocaleLowerCase("fr"); })){
+    autres.push([tf("pl.addname",{name:saisi}), function(){ poserJoueur(ajouterJoueur(saisi)); }]);
+  }
+  if(saisi) autres.push([t("pl.clear"), function(){ poserJoueur(null); }]);
+
+  if(autres.length){
+    liste.appendChild(el("div","jr-sep"));
+    autres.forEach(function(a){
+      var b=el("button","jr-autre");
+      b.type="button";
+      b.appendChild(el("span",null,a[0]));
+      b.addEventListener("click",a[1]);
+      liste.appendChild(b);
+    });
+  }
+  body.appendChild(liste);
+}
+
+$("jrScrim").addEventListener("click",fermerChoixJoueur);
+$("jrClose").addEventListener("click",fermerChoixJoueur);
 /* ------------------------------------------------------------------
    Feuille de match
 ------------------------------------------------------------------ */
@@ -11059,7 +11467,7 @@ function exportName(){
 
 function exportData(){
   TOUR[S.game]=T; DRAFT[S.game]=TS;
-  var contenu={v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H};
+  var contenu={v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H, j:J};
   pourChaqueJeu("sauver", contenu);
   var payload=JSON.stringify(contenu, null, 1);
   var name=exportName();
@@ -11091,6 +11499,7 @@ function applyImport(text){
   TOUR=carteVide(); DRAFT=carteVide();
   adoptTour(d);
   H = (d.h && d.h.length) ? d.h : [];
+  J = normJ(d.j);
   pourChaqueJeu("importer", d);
   G = (d.g && d.g.teams) ? normG(d.g) : null;
   if(G) recompute();
@@ -11098,7 +11507,7 @@ function applyImport(text){
   save();
   closeAbout();
   renderCards(); renderRules(); renderTSetup();
-  refreshTourBtn(); refreshHallLink();
+  refreshTourBtn(); refreshHallLink(); refreshJoueursLink();
   if(G && !G.over){ show("game"); renderGame(true); }
   else show("setup");
   toast(t("data.imported"));
@@ -11596,8 +12005,8 @@ function retourAndroid(){
   var tirage=$("tossWrap");
   if(tirage && !tirage.hidden) return true;   /* le tirage au sort se termine seul */
 
-  var fiches=[["ordreWrap","ordreOk"], ["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
-  var ecrans=[["s-hall","hallBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"], ["s-cat","catBack"]];
+  var fiches=[["jrWrap","jrClose"], ["ordreWrap","ordreOk"], ["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
+  var ecrans=[["s-hall","hallBack"], ["s-joueurs","jrBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"], ["s-cat","catBack"]];
   ORDRE_JEUX.forEach(function(id){
     var r=JEUX[id].retour;
     if(!r) return;
@@ -11715,7 +12124,7 @@ function refreshTourBtn(){
 
 function show(name){
   applyStaticText();      /* les mots du jeu courant : « mène » à la pétanque seulement */
-  ["games","cat","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
+  ["games","cat","joueurs","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
   if(name!=="game") closeSheet();
@@ -11725,7 +12134,7 @@ function show(name){
 
 function save(){
   TOUR[S.game]=T; DRAFT[S.game]=TS;   /* le jeu courant avant d'ecrire */
-  var o={s:S,g:G,tg:TOUR,ds:DRAFT,h:H};
+  var o={s:S,g:G,tg:TOUR,ds:DRAFT,h:H,j:J};
   pourChaqueJeu("sauver", o);
   try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){}
 }
@@ -11743,6 +12152,12 @@ function normS(s){
   if(modesDuJeu(s.game).indexOf(s.mode)<0) s.mode="double";
   s.teams.forEach(function(team){ if(!team.mates) team.mates=["",""]; });
   return s;
+}
+function normJ(liste){
+  if(!liste || !liste.length) return [];
+  return liste.filter(function(j){ return j && j.id && j.nom; }).map(function(j){
+    return {id:j.id, nom:String(j.nom).slice(0,22), couleur:color(j.couleur).id, vu:j.vu||0};
+  });
 }
 function normG(g){
   if(!g.game) g.game=jeuHistorique();
@@ -11776,6 +12191,8 @@ function load(){
   renderTSetup();
   pourChaqueJeu("charger", d);
   if(d && d.h && d.h.length) H=d.h;
+  J=normJ(d && d.j);
+  refreshJoueursLink();
   refreshTourBtn();
   refreshHallLink();
 
@@ -11821,6 +12238,7 @@ fillRules("rulesBody");
 renderTSetup();
 refreshTourBtn();
 refreshHallLink();
+refreshJoueursLink();
 
 /* installation sur l'écran d'accueil et fonctionnement hors ligne */
 if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){

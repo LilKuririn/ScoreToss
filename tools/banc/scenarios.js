@@ -564,3 +564,24 @@ scenario("petanque-tete-a-tete", async function(a){
   await a.clic("#over .cta.ghost");
   await a.clic("#backToGames"); await a.clic("#playCornhole"); a.point("cornhole : manche, pas de triplette");
 }, [360,640]);
+
+/* --- le carnet de joueurs : créer, choisir, détacher -------------- */
+scenario("joueurs-carnet", async function(a){
+  await a.clic("#openJoueurs");                                a.point("carnet vide");
+  for(var i=0;i<3;i++){
+    a.d.getElementById("jrNouveau").value = ["Marius","Fanny","César"][i];
+    await a.clic("#jrAjouter");
+  }
+  a.point("trois joueurs");
+  await a.clicN("#jrListe .pick", 1);                          a.point("couleur suivante");
+  await a.clic("#jrBack");                                     a.point("accueil, carnet annoncé");
+  await a.clic('#categories [data-categorie="exterieur"]');
+  await a.clic("#playPetanque");
+  await a.clicN("#cards .jr-btn", 1);                          a.point("choix d'un joueur");
+  await a.clicN("#jrChoix .jr-choix button", 0);               a.point("nom posé, bouton tenu");
+  await a.clicN("#cards .jr-btn", 1);                          a.point("le joueur posé est coché");
+  await a.clic("#jrClose");
+  await a.clic("#openJoueurs");
+  await a.clicN("#jrListe .jr-sup", 2);                        a.point("suppression armée");
+  await a.clicN("#jrListe .jr-sup", 2);                        a.point("joueur supprimé");
+}, [360,640]);

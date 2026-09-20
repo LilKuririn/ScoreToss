@@ -159,6 +159,7 @@ function renderMRows(){
       name.setAttribute("aria-label",tf(eq ? "mk.team.aria" : "mk.player.aria",{n:k+1}));
       name.addEventListener("input",function(){ pl.name=name.value; save(); });
       row.appendChild(name);
+      champDeJoueur(name, pl, "pid");
       host.appendChild(row);
 
       if(eq){
@@ -174,6 +175,7 @@ function renderMRows(){
             mi.setAttribute("aria-label",tf("mk.mate.aria",{j:j+1, n:k+1}));
             mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
             mates.appendChild(mi);
+            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
           })(j);
         }
         host.appendChild(mates);

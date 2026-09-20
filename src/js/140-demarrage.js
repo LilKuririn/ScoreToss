@@ -95,7 +95,7 @@ function refreshTourBtn(){
 
 function show(name){
   applyStaticText();      /* les mots du jeu courant : « mène » à la pétanque seulement */
-  ["games","cat","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
+  ["games","cat","joueurs","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
   if(name!=="game") closeSheet();
@@ -105,7 +105,7 @@ function show(name){
 
 function save(){
   TOUR[S.game]=T; DRAFT[S.game]=TS;   /* le jeu courant avant d'ecrire */
-  var o={s:S,g:G,tg:TOUR,ds:DRAFT,h:H};
+  var o={s:S,g:G,tg:TOUR,ds:DRAFT,h:H,j:J};
   pourChaqueJeu("sauver", o);
   try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){}
 }
@@ -123,6 +123,12 @@ function normS(s){
   if(modesDuJeu(s.game).indexOf(s.mode)<0) s.mode="double";
   s.teams.forEach(function(team){ if(!team.mates) team.mates=["",""]; });
   return s;
+}
+function normJ(liste){
+  if(!liste || !liste.length) return [];
+  return liste.filter(function(j){ return j && j.id && j.nom; }).map(function(j){
+    return {id:j.id, nom:String(j.nom).slice(0,22), couleur:color(j.couleur).id, vu:j.vu||0};
+  });
 }
 function normG(g){
   if(!g.game) g.game=jeuHistorique();
@@ -156,6 +162,8 @@ function load(){
   renderTSetup();
   pourChaqueJeu("charger", d);
   if(d && d.h && d.h.length) H=d.h;
+  J=normJ(d && d.j);
+  refreshJoueursLink();
   refreshTourBtn();
   refreshHallLink();
 
@@ -201,6 +209,7 @@ fillRules("rulesBody");
 renderTSetup();
 refreshTourBtn();
 refreshHallLink();
+refreshJoueursLink();
 
 /* installation sur l'écran d'accueil et fonctionnement hors ligne */
 if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){
