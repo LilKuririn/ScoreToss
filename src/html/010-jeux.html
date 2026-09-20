@@ -2,8 +2,20 @@
   <!-- ============ ACCUEIL : LES CATÉGORIES ============ -->
   <section class="screen on" id="s-games">
     <header class="brand">
-      <p class="eyebrow" data-i18n="cat.eyebrow">Choisir une catégorie</p>
-      <h1>ScoreToss<span>.</span></h1>
+      <div class="brand-row">
+        <div>
+          <p class="eyebrow" data-i18n="cat.eyebrow">Choisir une catégorie</p>
+          <h1>ScoreToss<span>.</span></h1>
+        </div>
+        <div class="nav">
+          <button type="button" class="nav-btn" id="openJoueurs" aria-label="Joueurs">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <circle cx="9" cy="6.2" r="3.1" stroke="currentColor" stroke-width="1.7"/>
+              <path d="M3.4 15.2c.7-3 3-4.6 5.6-4.6s4.9 1.6 5.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
     </header>
 
     <div class="games" id="categories">
@@ -55,18 +67,6 @@
           <span class="tile-sub"></span>
         </span>
         <svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
-
-    <div class="link-group">
-      <button type="button" class="hall-link" id="openJoueurs">
-        <span>
-          <span class="eyebrow" data-i18n="pl.title">Joueurs</span>
-          <b>Le carnet des habitués</b>
-        </span>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>

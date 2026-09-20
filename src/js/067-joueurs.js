@@ -132,11 +132,13 @@ $("openJoueurs").addEventListener("click",function(){
   show("joueurs");
 });
 
-/* Le lien de l'accueil annonce ce que le carnet contient. Son texte n'est
-   pas statique : applyStaticText le remettrait à l'invite à chaque écran. */
+/* Le bouton de l'accueil : une icône, et ce que le carnet contient dit
+   au lecteur d'écran comme à l'appui long. */
 function refreshJoueursLink(){
-  var b=$("openJoueurs").querySelector("b");
-  if(b) b.textContent = J.length ? tn("pl.count",J.length) : t("pl.link.empty");
+  var b=$("openJoueurs");
+  var s=J.length ? t("pl.title")+" · "+tn("pl.count",J.length) : t("pl.title");
+  b.setAttribute("aria-label",s);
+  b.title=s;
 }
 
 /* --- choisir un joueur pour un champ de nom ----------------------- */
