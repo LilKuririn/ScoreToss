@@ -320,9 +320,11 @@ function refreshJoueursLink(){
 }
 
 /* --- choisir un joueur pour un champ de nom ----------------------- */
-var jrChamp = null, jrPorteur = null, jrCle = null;
+var jrChamp = null, jrPorteur = null, jrCle = null, jrGroupe = null, jrRepeindre = null;
 
-function champDeJoueur(input, porteur, cle){
+/* `groupe` et `repeindre` sont facultatifs : le jeu les fournit pour que
+   le camp prenne la couleur du joueur choisi, sans doublon chez le voisin. */
+function champDeJoueur(input, porteur, cle, groupe, repeindre){
   var wrap=el("span","jr-champ");
   input.parentNode.insertBefore(wrap, input);
   wrap.appendChild(input);
@@ -333,7 +335,7 @@ function champDeJoueur(input, porteur, cle){
   b.innerHTML='<svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true">'+
     '<circle cx="9" cy="6.4" r="3" stroke="currentColor" stroke-width="1.6"/>'+
     '<path d="M3.6 15c.6-2.8 2.8-4.3 5.4-4.3s4.8 1.5 5.4 4.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
-  b.addEventListener("click",function(){ ouvrirChoixJoueur(input, porteur, cle, b); });
+  b.addEventListener("click",function(){ ouvrirChoixJoueur(input, porteur, cle, b, groupe, repeindre); });
   wrap.appendChild(b);
 
   /* taper un nom à la main détache le joueur : c'est un invité */
@@ -345,8 +347,22 @@ function champDeJoueur(input, porteur, cle){
   });
 }
 
+/* Le camp prend la couleur du joueur, comme si l'on avait touché sa
+   pastille : si le voisin la portait déjà, les deux l'échangent. */
+function poserCouleur(porteur, couleur, groupe){
+  if(!porteur || !porteur.color || !couleur || porteur.color===couleur) return false;
+  if(groupe){
+    for(var i=0;i<groupe.length;i++){
+      if(groupe[i]!==porteur && groupe[i].color===couleur){ groupe[i].color=porteur.color; break; }
+    }
+  }
+  porteur.color=couleur;
+  return true;
+}
+
 function poserJoueur(j){
   var input=jrChamp, porteur=jrPorteur, cle=jrCle;
+  var groupe=jrGroupe, repeindre=jrRepeindre;
   fermerChoixJoueur();
   if(!input) return;
   jrPose=true;
@@ -359,10 +375,16 @@ function poserJoueur(j){
   if(b) b.classList.toggle("tenu", !!j);
   buzz(8);
   save();
+  /* la couleur en dernier : repeindre reconstruit la rangée */
+  if(j && poserCouleur(porteur, j.couleur, groupe)){
+    save();
+    if(repeindre) repeindre();
+  }
 }
 
-function ouvrirChoixJoueur(input, porteur, cle, bouton){
+function ouvrirChoixJoueur(input, porteur, cle, bouton, groupe, repeindre){
   jrChamp=input; jrPorteur=porteur; jrCle=cle;
+  jrGroupe=groupe||null; jrRepeindre=repeindre||null;
   peindreChoixJoueur("");
   var wrap=$("jrWrap");
   wrap.classList.add("on");

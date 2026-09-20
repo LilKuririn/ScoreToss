@@ -186,7 +186,7 @@ function renderIRows(){
       name.setAttribute("aria-label",tf(eq ? "ti.team.aria" : "ti.player.aria",{n:k+1}));
       name.addEventListener("input",function(){ pl.name=name.value; save(); });
       row.appendChild(name);
-      champDeJoueur(name, pl, "pid");
+      champDeJoueur(name, pl, "pid", TIS.players, renderIRows);
       host.appendChild(row);
 
       if(eq){

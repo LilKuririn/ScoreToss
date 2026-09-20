@@ -590,6 +590,8 @@ scenario("joueurs-carnet", async function(a){
   await a.clic('#mode button[data-mode="double"]');
   await carnetChoisir(a, "#cards .jr-btn", 1, "Marius");
   a.point("un joueur posé dans un champ");
+  await carnetChoisir(a, "#cards .jr-btn", 0, "Fanny");
+  a.point("l'équipe prend la couleur du joueur");
   await a.clic("#start");                                      a.point("partie neuve");
   for(var k=0;k<3 && !(a.etat().g||{}).over;k++){ await palet(a,1,5); await valider(a); }
   await finDePartie(a);                                        a.point("victoire");

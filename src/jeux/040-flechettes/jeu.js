@@ -159,7 +159,7 @@ function renderFRows(){
       name.setAttribute("aria-label",tf(eq ? "fl.team.aria" : "fl.player.aria",{n:k+1}));
       name.addEventListener("input",function(){ pl.name=name.value; save(); });
       row.appendChild(name);
-      champDeJoueur(name, pl, "pid");
+      champDeJoueur(name, pl, "pid", FS.players, renderFRows);
       host.appendChild(row);
 
       if(eq){

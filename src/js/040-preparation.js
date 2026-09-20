@@ -44,7 +44,7 @@ function renderCards(){
     name.setAttribute("aria-label",t(coequipiers(S.mode)?"team.name.aria":"player.name.aria")+" "+(i===0?"A":"B"));
     name.addEventListener("input",function(){ team.name=name.value; save(); });
     card.appendChild(name);
-    champDeJoueur(name, team, "pid");
+    champDeJoueur(name, team, "pid", S.teams, renderCards);
 
     var nb=coequipiers(S.mode);
     if(nb){

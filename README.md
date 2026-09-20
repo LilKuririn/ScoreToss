@@ -42,7 +42,9 @@ Passer d'un mode à l'autre repart de noms vides, un joueur n'étant pas une éq
 
 **Le carnet de joueurs.** Un bouton en haut de l'accueil ouvre la liste de ceux avec qui on joue souvent : un nom, une
 couleur, rien d'autre. Chaque champ de nom, dans les huit jeux, porte un bouton qui ouvre ce carnet
-— on choisit au lieu de retaper, et un nom tapé à la main entre au carnet d'un toucher. Le champ
+— on choisit au lieu de retaper, et un nom tapé à la main entre au carnet d'un toucher. Le camp
+prend alors **la couleur du joueur** ; si le voisin la portait déjà, les deux l'échangent, comme
+lorsqu'on touche une pastille. Le champ
 reste un champ de texte : l'invité du dimanche s'écrit comme avant, sans rien créer. En coulisse,
 le jeu retient l'identifiant du joueur à côté du nom qu'il affiche, et l'inscrit dans la partie
 archivée.

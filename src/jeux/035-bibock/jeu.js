@@ -206,7 +206,7 @@ function renderBRows(){
       name.setAttribute("aria-label",tf("bi.team.aria",{n:k+1}));
       name.addEventListener("input",function(){ tm.name=name.value; save(); });
       row.appendChild(name);
-      champDeJoueur(name, tm, "pid");
+      champDeJoueur(name, tm, "pid", BS.teams, renderBRows);
       host.appendChild(row);
 
       if(eq){
