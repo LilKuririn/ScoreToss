@@ -223,29 +223,29 @@ Un chrono d'une minute au-dessus de la saisie, et une fiche de règles complète
 
 Nom de release, jamais montré aux utilisateurs : `7.0 — Carnet de joueurs`
 
-Depuis la 6.0 : le carnet, le choix d'un nom dans les huit jeux, le classement croisé et les
-fiches de joueur, plus l'effacement de tous les palmarès depuis À propos.
+Depuis la 6.0 : le carnet, le choix d'un nom — et de sa couleur — dans les huit jeux, le classement
+croisé et les fiches de joueur, l'effacement de tous les palmarès, et À propos ouvert depuis
+l'accueil.
 
-### en-US *(335 / 500)*
+### en-US *(399 / 500)*
 
 ```
-New: your players. Add the people you play with once, then pick their name in all eight games instead of typing it again.
+New: your players. Add the people you play with once, then pick their name — and their colour — in all eight games instead of typing it again.
 
 Their records now cross games: overall standings, and a card for each one — games, wins, win rate, game by game. In a team, the win counts for every member.
 
-About: clear the standings of all eight games at once.
+The home screen now opens About too: backup, theme, language, and clearing every standings table.
 ```
 
-### fr-FR *(359 / 500)*
+### fr-FR *(418 / 500)*
 
 ```
-Nouveau : le carnet de joueurs. On inscrit ses habitués une fois, puis on choisit leur nom dans les huit jeux au lieu de le retaper.
+Nouveau : le carnet de joueurs. On inscrit ses habitués une fois, puis on choisit leur nom — et sa couleur — dans les huit jeux au lieu de le retaper.
 
 Leurs palmarès se croisent : un classement tous jeux, et la fiche de chacun — parties, victoires, ratio, jeu par jeu. En équipe, la victoire compte pour chaque membre.
 
-À propos : effacer les palmarès des huit jeux d'un coup.
+L'accueil ouvre aussi À propos : sauvegarde, thème, langue, et l'effacement de tous les palmarès.
 ```
-
 ---
 
 ## Modèle pour les suivantes
