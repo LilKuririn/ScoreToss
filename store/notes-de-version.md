@@ -248,28 +248,36 @@ Leurs palmarès se croisent : un classement tous jeux, et la fiche de chacun —
 
 ---
 
-## Version 7.1 — Couleurs et À propos
+## Version 7.1 — Couleurs, adversaires et clavier
 
 Nom de release, jamais montré aux utilisateurs : `7.1 — Couleurs du carnet`
 
-Depuis la 7.0, déjà en ligne : la couleur du joueur reprise par son camp, et À propos accessible
-depuis l'accueil, description de l'application comprise. Une mise au point, pas une nouveauté :
-les notes restent courtes.
+Depuis la 7.0, déjà en ligne : la couleur du joueur reprise par son camp, les adversaires nommés
+dans sa fiche, À propos ouvert depuis l'accueil, et le clavier d'Android qui ne recouvre plus la
+saisie. Une mise au point, pas une nouveauté : les notes restent courtes.
 
-### en-US *(292 / 500)*
-
-```
-Your players now bring their colour with them: pick a name in a game and the side takes the colour from your players list.
-
-The home screen opens About too, for the backup, the theme, the language and clearing the standings — and it now says what the app holds: eight games, three categories.
-```
-
-### fr-FR *(298 / 500)*
+### en-US *(301 / 500)*
 
 ```
-Le carnet de joueurs apporte aussi sa couleur : choisir un nom dans un jeu donne à son camp la couleur du joueur.
+Your players now bring their colour along: pick a name in a game and that side takes it.
 
-L'accueil ouvre À propos, pour la sauvegarde, le thème, la langue et l'effacement des palmarès — et la fiche dit désormais ce que l'application contient : huit jeux, trois catégories.
+A player's card now says who each game was played against.
+
+The home screen opens About too: backup, theme, language and clearing the standings.
+
+Fixed: the keyboard no longer covers the field you are typing in.
+```
+
+### fr-FR *(326 / 500)*
+
+```
+Le carnet de joueurs apporte aussi sa couleur : choisir un nom dans un jeu la donne à son camp.
+
+La fiche d'un joueur dit désormais contre qui chaque partie s'est jouée.
+
+L'accueil ouvre aussi À propos : sauvegarde, thème, langue et effacement des palmarès.
+
+Correction : le clavier ne recouvre plus le champ que l'on remplit.
 ```
 
 ---
