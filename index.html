@@ -93,10 +93,14 @@ h1,h2,h3,p{margin:0}
   position:relative;
   display:flex;flex-direction:column;
   width:100%;max-width:460px;margin:0 auto;
-  /* hauteur ferme, et non minimale : sans quoi la coquille s'étire avec
-     son contenu et les pieds de page descendent hors de l'écran. */
+  /* Hauteur ferme, et non minimale : sans quoi la coquille s'étire avec
+     son contenu et les pieds de page descendent hors de l'écran.
+     `--vh` suit le viewport visible : depuis Android 15, le clavier ne
+     redimensionne plus la fenêtre, il se pose par-dessus. Sans cela, le
+     champ que l'on remplit disparaît sous le clavier. */
   height:100vh;
   height:100dvh;
+  height:var(--vh,100dvh);
   background:var(--bg);
   overflow:hidden;
 }
@@ -1500,6 +1504,10 @@ h1,h2,h3,p{margin:0}
   color:var(--muted);text-align:center;
 }
 #jrFicheBody{display:flex;flex-direction:column;gap:20px}
+/* « gagnée contre X » demande plus de place que le palmarès : la date
+   se resserre et la ligne s'écrit un peu plus petit */
+#jrFicheBody .rec .d{flex:0 0 46px}
+#jrFicheBody .rec .m{font-size:12.5px}
 #jrFicheBody .cta.danger{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 40%,var(--line-2))}
 #jrFicheBody .cta.danger.arme{background:var(--danger);color:var(--bg);border-color:transparent}
 
@@ -7852,6 +7860,7 @@ fr:{
   "data.wipe.hint":"Efface les parties enregistrées des huit jeux, d'un coup. Le carnet de joueurs, la partie en cours et les tournois ne sont pas touchés.",
   "about.what":"Huit jeux à compter, en trois catégories : dehors le cornhole, la pétanque, le palet breton, le mölkky et le bibock ; dedans les fléchettes et le tossit ; à table le yams.",
   "about.what2":"Chaque jeu a ses règles, sa saisie et son palmarès ; les jeux à deux camps ont aussi des tournois. Le carnet de joueurs, lui, les traverse tous. Rien ne sort du téléphone, et tout fonctionne hors ligne.",
+  "pl.vs":"contre",
   "rules.title":"Règles du jeu",
   "about.title":"À propos",
   "about.version":"Version {v}",
@@ -8004,6 +8013,7 @@ en:{
   "data.wipe.hint":"Clears the recorded games of all eight games at once. Your players, the game in progress and tournaments are left alone.",
   "about.what":"Eight games to keep score of, in three categories: outdoors cornhole, pétanque, Breton palet, mölkky and bibock; indoors darts and Tossit; at the table Yams.",
   "about.what2":"Each game has its rules, its scoring and its standings; the two-sided ones also have tournaments. Your players carry across all of them. Nothing leaves the phone, and everything works offline.",
+  "pl.vs":"vs",
   "rules.title":"How to play",
   "about.title":"About",
   "about.version":"Version {v}",
@@ -8156,6 +8166,7 @@ es:{
   "data.wipe.hint":"Borra de una vez las partidas registradas de los ocho juegos. Tus jugadores, la partida en curso y los torneos no se tocan.",
   "about.what":"Ocho juegos para contar puntos, en tres categorías: fuera cornhole, petanca, palet bretón, mölkky y bibock; dentro dardos y tossit; en la mesa yams.",
   "about.what2":"Cada juego tiene sus reglas, su anotación y su clasificación; los de dos bandos además tienen torneos. Tus jugadores valen para todos. Nada sale del teléfono y todo funciona sin conexión.",
+  "pl.vs":"contra",
   "rules.title":"Cómo se juega",
   "about.title":"Acerca de",
   "about.version":"Versión {v}",
@@ -9790,6 +9801,23 @@ function el(tag,cls,txt){
 }
 function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
 
+/* Le clavier se pose par-dessus la page au lieu de la redimensionner : on
+   suit le viewport visible pour que la coquille s'arrête juste au-dessus,
+   et que le champ en cours de saisie reste à l'écran. */
+(function suivreLeClavier(){
+  var vv=window.visualViewport;
+  if(!vv) return;
+  function poser(){
+    var h=Math.round(vv.height);
+    /* le zoom du navigateur rétrécit aussi le viewport visible : on ne
+       touche à rien tant qu'il ne s'agit pas d'une vraie amputation */
+    if(h>0 && h < window.innerHeight - 40) document.documentElement.style.setProperty("--vh", h+"px");
+    else document.documentElement.style.removeProperty("--vh");
+  }
+  vv.addEventListener("resize", poser);
+  poser();
+})();
+
 /* « X marque 5 points » avec le nom en gras, quel que soit l'ordre des
    mots dans la langue : on découpe la phrase autour du marqueur. */
 function outcomeInto(host, name, n){
@@ -10646,6 +10674,16 @@ function renderJoueurs(){
   host.appendChild(liste);
 }
 
+/* Contre qui s'est jouée cette partie : les autres camps, sous le nom
+   qu'ils portent aujourd'hui. Au-delà de deux, on compte le reste. */
+function adversairesDe(g, moi){
+  var noms=[];
+  for(var i=0;i<g.n.length;i++) if(i!==moi) noms.push(nomDeCamp(g,i));
+  if(!noms.length) return "";
+  if(noms.length<=2) return noms.join(", ");
+  return noms.slice(0,2).join(", ")+" +"+(noms.length-2);
+}
+
 /* --- la fiche d'un joueur ----------------------------------------- */
 var jrFicheId = null;
 
@@ -10733,7 +10771,13 @@ function peindreFiche(){
       row.appendChild(el("p","d", dt.toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric",month:"short"})));
       var m=el("p","m");
       m.appendChild(el("b",null, JEUX[x.g.g||jeuHistorique()] ? jeu(x.g.g||jeuHistorique()).nom() : (x.g.g||"")));
-      m.appendChild(document.createTextNode(" · "+(x.nulle ? t("hall.tie") : t(x.gagne ? "pl.won" : "pl.lost"))));
+      var issue=x.nulle ? t("hall.tie") : t(x.gagne ? "pl.won" : "pl.lost");
+      var contre=adversairesDe(x.g, x.i);
+      m.appendChild(document.createTextNode(" · "+issue));
+      if(contre){
+        m.appendChild(document.createTextNode(" "+t("pl.vs")+" "));
+        m.appendChild(el("b",null,contre));
+      }
       row.appendChild(m);
       row.appendChild(el("p","sc", String(x.g.s[x.i])));
       br.appendChild(row);

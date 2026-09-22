@@ -10,6 +10,23 @@ function el(tag,cls,txt){
 }
 function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
 
+/* Le clavier se pose par-dessus la page au lieu de la redimensionner : on
+   suit le viewport visible pour que la coquille s'arrête juste au-dessus,
+   et que le champ en cours de saisie reste à l'écran. */
+(function suivreLeClavier(){
+  var vv=window.visualViewport;
+  if(!vv) return;
+  function poser(){
+    var h=Math.round(vv.height);
+    /* le zoom du navigateur rétrécit aussi le viewport visible : on ne
+       touche à rien tant qu'il ne s'agit pas d'une vraie amputation */
+    if(h>0 && h < window.innerHeight - 40) document.documentElement.style.setProperty("--vh", h+"px");
+    else document.documentElement.style.removeProperty("--vh");
+  }
+  vv.addEventListener("resize", poser);
+  poser();
+})();
+
 /* « X marque 5 points » avec le nom en gras, quel que soit l'ordre des
    mots dans la langue : on découpe la phrase autour du marqueur. */
 function outcomeInto(host, name, n){

@@ -175,6 +175,16 @@ function renderJoueurs(){
   host.appendChild(liste);
 }
 
+/* Contre qui s'est jouée cette partie : les autres camps, sous le nom
+   qu'ils portent aujourd'hui. Au-delà de deux, on compte le reste. */
+function adversairesDe(g, moi){
+  var noms=[];
+  for(var i=0;i<g.n.length;i++) if(i!==moi) noms.push(nomDeCamp(g,i));
+  if(!noms.length) return "";
+  if(noms.length<=2) return noms.join(", ");
+  return noms.slice(0,2).join(", ")+" +"+(noms.length-2);
+}
+
 /* --- la fiche d'un joueur ----------------------------------------- */
 var jrFicheId = null;
 
@@ -262,7 +272,13 @@ function peindreFiche(){
       row.appendChild(el("p","d", dt.toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric",month:"short"})));
       var m=el("p","m");
       m.appendChild(el("b",null, JEUX[x.g.g||jeuHistorique()] ? jeu(x.g.g||jeuHistorique()).nom() : (x.g.g||"")));
-      m.appendChild(document.createTextNode(" · "+(x.nulle ? t("hall.tie") : t(x.gagne ? "pl.won" : "pl.lost"))));
+      var issue=x.nulle ? t("hall.tie") : t(x.gagne ? "pl.won" : "pl.lost");
+      var contre=adversairesDe(x.g, x.i);
+      m.appendChild(document.createTextNode(" · "+issue));
+      if(contre){
+        m.appendChild(document.createTextNode(" "+t("pl.vs")+" "));
+        m.appendChild(el("b",null,contre));
+      }
       row.appendChild(m);
       row.appendChild(el("p","sc", String(x.g.s[x.i])));
       br.appendChild(row);

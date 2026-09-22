@@ -64,10 +64,14 @@ h1,h2,h3,p{margin:0}
   position:relative;
   display:flex;flex-direction:column;
   width:100%;max-width:460px;margin:0 auto;
-  /* hauteur ferme, et non minimale : sans quoi la coquille s'étire avec
-     son contenu et les pieds de page descendent hors de l'écran. */
+  /* Hauteur ferme, et non minimale : sans quoi la coquille s'étire avec
+     son contenu et les pieds de page descendent hors de l'écran.
+     `--vh` suit le viewport visible : depuis Android 15, le clavier ne
+     redimensionne plus la fenêtre, il se pose par-dessus. Sans cela, le
+     champ que l'on remplit disparaît sous le clavier. */
   height:100vh;
   height:100dvh;
+  height:var(--vh,100dvh);
   background:var(--bg);
   overflow:hidden;
 }

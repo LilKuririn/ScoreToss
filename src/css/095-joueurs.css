@@ -35,6 +35,10 @@
   color:var(--muted);text-align:center;
 }
 #jrFicheBody{display:flex;flex-direction:column;gap:20px}
+/* « gagnée contre X » demande plus de place que le palmarès : la date
+   se resserre et la ligne s'écrit un peu plus petit */
+#jrFicheBody .rec .d{flex:0 0 46px}
+#jrFicheBody .rec .m{font-size:12.5px}
 #jrFicheBody .cta.danger{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 40%,var(--line-2))}
 #jrFicheBody .cta.danger.arme{background:var(--danger);color:var(--bg);border-color:transparent}
 
