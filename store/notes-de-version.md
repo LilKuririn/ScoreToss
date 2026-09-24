@@ -313,6 +313,31 @@ Corrections : le clavier ne cache plus le champ de saisie, l'écran reste allum�
 
 ---
 
+## Version 7.3 — Les hauts faits
+
+Nom de release, jamais montré aux utilisateurs : `7.3 — Hauts faits`
+
+Depuis la 7.2 : les douze hauts faits de la fiche joueur, calculés sur l'historique — les joueurs
+retrouvent donc d'emblée ceux de leurs parties passées, ce que les notes invitent à aller voir.
+
+### en-US *(253 / 500)*
+
+```
+New: achievements on every player's card. La Fanny, the shutout, the win by a whisker, winning streaks, the 300 club at Yams, becoming someone's nemesis… twelve medals to earn.
+
+They count your past games too: open your cards, some may already be yours.
+```
+
+### fr-FR *(319 / 500)*
+
+```
+Nouveau : des hauts faits dans la fiche de chaque joueur. La Fanny, le blanchissage, la victoire sur le fil, les séries, la barre des 300 au yams, la bête noire de son adversaire favori… douze médailles à décrocher.
+
+Elles se calculent sur vos parties passées : ouvrez vos fiches, certaines sont peut-être déjà gagnées.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
