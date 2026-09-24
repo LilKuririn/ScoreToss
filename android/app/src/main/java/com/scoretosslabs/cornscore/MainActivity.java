@@ -136,14 +136,21 @@ public class MainActivity extends AppCompatActivity {
            chose qui empêche la page de passer sous les barres système.
            Elle s'applique à la racine du contenu — et non à la WebView avant
            son rattachement, où l'écouteur n'était jamais appelé — puis on
-           réclame explicitement une distribution des marges. */
+           réclame explicitement une distribution des marges.
+
+           Le clavier en fait partie : en bord à bord, adjustResize ne
+           redimensionne plus rien, et comme les marges sont consommées ici,
+           la WebView n'apprenait même pas qu'il était ouvert. Le champ en
+           cours de saisie passait dessous. On réserve donc aussi sa hauteur
+           en bas, là où il se pose par-dessus la barre de navigation. */
         final View root = findViewById(android.R.id.content);
         ViewCompat.setOnApplyWindowInsetsListener(root, new OnApplyWindowInsetsListener() {
             @Override
             public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
                 Insets bars = insets.getInsets(
                         WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
-                v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+                Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+                v.setPadding(bars.left, bars.top, bars.right, Math.max(bars.bottom, ime.bottom));
                 return WindowInsetsCompat.CONSUMED;
             }
         });
