@@ -61,7 +61,8 @@ déjà. Taper un nom à la main détache le joueur. Au démarrage d'une partie, 
 identifiants de chaque camp — `idsDe(porteur, nbCoequipiers)` — et les archive dans `p`, parallèle
 aux noms de `n`. Le palmarès (`src/js/100-palmares.js`) en tire tout : il compte par membres —
 `membres(g, i)` rend les joueurs du carnet d'un camp, ou son nom comme invité —, et un jeu n'a rien à
-lui fournir que son `lienPalmares`, que le palmarès câble lui-même, et ses `records` s'il se joue seul.
+lui fournir que son `lienPalmares`, que le palmarès câble lui-même, et ses `records` s'il se joue seul. Les hauts faits de la fiche (`src/js/102-hauts-faits.js`) se calculent de même sur l'historique,
+sans rien enregistrer à part : un nouveau ne peut s'appuyer que sur ce qu'une partie archive.
 
 Le banc joue vingt-huit parcours, le carnet compris.
 

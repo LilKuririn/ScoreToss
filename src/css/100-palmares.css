@@ -211,3 +211,34 @@ a.hall-link{text-decoration:none;color:inherit}
 .pal-kv .bar{grid-column:1 / 3;display:flex;height:5px;border-radius:3px;background:var(--panel-2);overflow:hidden}
 .pal-kv .bar i{display:block;height:100%}
 
+/* --- les hauts faits : des médailles, et la légende de celle qu'on touche */
+.pal-hf-tete{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.pal-hf-grille{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 6px}
+.pal-medaille{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;padding:2px 0}
+.pal-medaille .m{
+  width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  background:var(--panel-2);border:1.5px dashed var(--line-2);color:var(--muted);
+  transition:transform .16s ease,box-shadow .16s ease;
+}
+.pal-medaille .txt{font-family:var(--fm);font-weight:700;font-size:14px;letter-spacing:-.02em}
+.pal-medaille .txt.long{font-size:11.5px;letter-spacing:-.04em}
+.pal-medaille .t{
+  font-size:11px;line-height:1.25;text-align:center;color:var(--muted);
+  max-width:100%;overflow-wrap:anywhere;
+}
+.pal-medaille:not(.on) .m{opacity:.6}
+.pal-medaille.on .m{
+  border:2px solid var(--c);border-style:solid;
+  background:color-mix(in oklab,var(--c) 20%,var(--panel));
+  color:color-mix(in oklab,var(--c) 62%,var(--tone));
+}
+.pal-medaille.on .t{color:var(--ink);font-weight:600}
+.pal-medaille[aria-pressed="true"] .m{transform:scale(1.08);box-shadow:0 0 0 3px var(--bg),0 0 0 4.5px var(--line-2)}
+.pal-hf-legende{
+  display:flex;flex-direction:column;gap:3px;padding:11px 13px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--line);
+}
+.pal-hf-legende b{font-size:14.5px}
+.pal-hf-legende span{font-size:13px;line-height:1.45;color:var(--muted)}
+.pal-hf-legende em{font-style:normal;font-family:var(--fm);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.pal-hf-legende em.oui{color:var(--live)}

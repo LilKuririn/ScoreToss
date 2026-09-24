@@ -108,7 +108,15 @@ la main compte sous ce nom, marqué *invité*. Toucher un joueur du carnet ouvre
 rang général, ses parties, victoires et part de victoires, sa forme sur les cinq dernières, ses
 jeux, ses face-à-face contre chaque adversaire, ses dernières parties racontées de son point de vue
 (« Perdue contre César & Panisse, avec Fanny · 11 – 13 »), et de quoi le renommer, le recolorier
-ou le retirer du carnet. Renommer un joueur renomme aussi ses parties passées ; le retirer ne touche
+ou le retirer du carnet.
+
+La fiche porte aussi douze **hauts faits**, calculés sur l'historique — ils s'obtiennent donc aussi
+pour les parties jouées avant eux : première victoire, **la Fanny** (13 – 0 à la pétanque),
+blanchissage, victoire d'un point, trois puis cinq victoires d'affilée, cinq victoires en équipe,
+trois jeux gagnés, une victoire dans chaque catégorie, 300 au yams, vingt-cinq parties, et **bête
+noire** d'un adversaire battu trois fois sans jamais perdre contre lui. Les médailles obtenues
+prennent la couleur du joueur, les autres restent à décrocher ; toucher une médaille en dit la
+condition et la date. Renommer un joueur renomme aussi ses parties passées ; le retirer ne touche
 à rien de ce qui est archivé — ses parties retombent sous son nom, comme invité.
 
 ## Les règles appliquées
