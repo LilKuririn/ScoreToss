@@ -282,6 +282,37 @@ Correction : le clavier ne recouvre plus le champ que l'on remplit.
 
 ---
 
+## Version 7.2 — Le palmarès
+
+Nom de release, jamais montré aux utilisateurs : `7.2 — Palmarès`
+
+Depuis la 7.1, déjà en ligne : la refonte du palmarès (classement, historique et carnet réunis,
+fiche joueur en plein écran) et les correctifs de l'audit — clavier Android, écran allumé dans les
+jeux à tour de rôle, parties finies par une correction, démarrage malgré un état abîmé. Ce dernier
+est invisible pour l'utilisateur : il n'a rien à faire dans les notes.
+
+### en-US *(415 / 500)*
+
+```
+New standings, opened from the trophy on the home screen: a podium then the full ranking in plain words, the history day by day with each game in one sentence, and your players.
+
+A player's card shows their form, their games and their head-to-heads.
+
+Fixes: the keyboard no longer hides the field you're typing in, the screen stays on during every game, and a game ended by a correction now counts in the standings.
+```
+
+### fr-FR *(429 / 500)*
+
+```
+Nouveau palmarès, ouvert par le trophée de l'accueil : un podium puis le classement en toutes lettres, l'historique jour par jour avec chaque partie en une phrase, et le carnet de joueurs.
+
+La fiche d'un joueur montre sa forme, ses jeux et ses face-à-face.
+
+Corrections : le clavier ne cache plus le champ de saisie, l'écran reste allumé pendant toutes les parties, et une partie finie par une correction compte bien au palmarès.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
