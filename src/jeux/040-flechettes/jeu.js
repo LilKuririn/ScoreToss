@@ -51,16 +51,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="flechettes";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("flechettes");
     show("fsetup");
     renderFSetup();
   }
@@ -126,78 +117,15 @@ function renderFSetup(){
 }
 
 function renderFRows(){
-  var host=$("flRows");
-  host.innerHTML="";
-  host.style.display="flex";
-  host.style.flexDirection="column";
-  host.style.gap="0";
   var eq = FS.mode==="team";
-
-  for(var k=0;k<FS.count;k++){
-    (function(k){
-      var pl=FS.players[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(pl.color).hex);
-      pick.setAttribute("aria-label",tf("fl.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", FS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        FS.open = FS.open===k ? -1 : k;
-        renderFRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=pl.name;
-      name.maxLength=22;
-      name.placeholder=tf(eq ? "fl.teamn" : "fl.playern",{n:k+1});
-      name.setAttribute("aria-label",tf(eq ? "fl.team.aria" : "fl.player.aria",{n:k+1}));
-      name.addEventListener("input",function(){ pl.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, pl, "pid", FS.players, renderFRows);
-      host.appendChild(row);
-
-      if(eq){
-        if(!pl.mates) pl.mates=["","","",""];
-        var mates=el("div","mates fl-mates");
-        for(var j=0;j<FS.per;j++){
-          (function(j){
-            var mi=el("input","field-input");
-            mi.type="text";
-            mi.value=pl.mates[j]||"";
-            mi.maxLength=16;
-            mi.placeholder=t("team.player")+" "+(j+1);
-            mi.setAttribute("aria-label",tf("fl.mate.aria",{j:j+1, n:k+1}));
-            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
-            mates.appendChild(mi);
-            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
-          })(j);
-        }
-        host.appendChild(mates);
-      }
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = FS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          pl.color=col.id; FS.open=-1;
-          renderFRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("flRows"), etat:FS, liste:FS.players, nombre:FS.count, flex:true,
+    cleCouleur:"fl.color.aria",
+    nomParDefaut:function(k){ return tf(eq ? "fl.teamn" : "fl.playern",{n:k+1}); },
+    nomAria:function(k){ return tf(eq ? "fl.team.aria" : "fl.player.aria",{n:k+1}); },
+    coequipiers: eq ? FS.per : 0, classeCoequipiers:"fl-mates", cleCoequipier:"fl.mate.aria",
+    repeindre:renderFRows
+  });
 }
 
 /* --- décompte ---------------------------------------------------- */
@@ -266,19 +194,10 @@ function flApresChangement(vibration){
   var der=FE.volees[FE.volees.length-1];
   var bust = der && der.bust && der.darts[der.darts.length-1]===F.darts.length-1;
   buzz(bust ? [20,50,20] : vibration);
-  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de
-     victoire ne doit pas faire perdre la partie au palmarès */
-  if(FE.gagnant>=0 && avant<0){
-    flFermerFeuille();
-    flArchiver();
-    save();
-    renderFGame();
-    setTimeout(renderFOver, 620);
-  }else{
-    save();
-    renderFGame();
-    if($("flSheetWrap").classList.contains("on")) renderFSheet();
-  }
+  apresUnCoup(FE.gagnant>=0 && avant<0, {
+    fermerFeuille:flFermerFeuille, archiver:flArchiver, peindre:renderFGame, peindreFin:renderFOver,
+    feuille:"flSheetWrap", peindreFeuille:renderFSheet
+  });
 }
 
 /* L'ordre de jeu se tire au sort avant la première fléchette, une seule
@@ -840,29 +759,7 @@ $("flQuit").addEventListener("click",function(){
 
 /* --- fiche de règles --------------------------------------------- */
 function fillFlechettesRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("frules.count")));
-  var pts=el("div","pts");
-  [["×1",t("frules.single")],["×2",t("frules.double")],["×3",t("frules.triple")],
-   ["25",t("frules.bull")],["50",t("frules.dbull")]].forEach(function(r){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,r[0]));
-    row.appendChild(el("span",null,r[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("frules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("frules."+k+"a")));
-    li.appendChild(el("b",null,t("frules."+k+"b")));
-    li.appendChild(document.createTextNode(t("frules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("frules.count"), [["×1",t("frules.single")],["×2",t("frules.double")],["×3",t("frules.triple")],
+   ["25",t("frules.bull")],["50",t("frules.dbull")]]);
+  blocDeroule(host, "frules", 5);
 }

@@ -127,18 +127,22 @@ function renderEditor(body){
   body.appendChild(out);
 }
 
+/* Une correction peut finir la partie : elle est alors archivée — et son
+   résultat reporté au tableau du tournoi — AVANT d'être sauvegardée, sans
+   quoi fermer l'application sur l'écran de fin la faisait perdre. */
 function afterHistoryChange(){
   recompute();
   G.mpass=0;
   buzz(10);
-  save();
   if(G.over){
     closeSheet();
     archiveGame();
     applyMatchResult();
+    save();
     renderGame();
     setTimeout(renderOver, 380);
   }else{
+    save();
     renderGame();
     renderSheet();
   }

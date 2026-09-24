@@ -625,6 +625,36 @@ function fillRules(id){
   host.innerHTML="";
   jeu(curGame()).regles(host);
 }
+/* Une fiche de règles se bâtit de deux sortes de blocs : un barème — le
+   chiffre en gras, ce qu'il récompense à côté — et un déroulé, des phrases
+   dont le cœur est en gras, rangées sous les clés prefixe.1a, 1b, 1c… */
+function blocBareme(host, titre, lignes){
+  var b=el("div","block");
+  b.appendChild(el("p","eyebrow",titre));
+  var pts=el("div","pts");
+  lignes.forEach(function(r){
+    var row=el("div","pt-row");
+    row.appendChild(el("b",null,r[0]));
+    row.appendChild(el("span",null,r[1]));
+    pts.appendChild(row);
+  });
+  b.appendChild(pts);
+  host.appendChild(b);
+}
+function blocDeroule(host, prefixe, n){
+  var b=el("div","block");
+  b.appendChild(el("p","eyebrow",t(prefixe+".flow")));
+  var list=el("ul","rulist");
+  for(var k=1;k<=n;k++){
+    var li=document.createElement("li");
+    li.appendChild(document.createTextNode(t(prefixe+"."+k+"a")));
+    li.appendChild(el("b",null,t(prefixe+"."+k+"b")));
+    li.appendChild(document.createTextNode(t(prefixe+"."+k+"c")));
+    list.appendChild(li);
+  }
+  b.appendChild(list);
+  host.appendChild(b);
+}
 
 /* état de préparation */
 var S = {

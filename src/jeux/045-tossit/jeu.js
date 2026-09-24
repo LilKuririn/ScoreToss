@@ -48,16 +48,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="tossit";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("tossit");
     show("isetup");
     renderISetup();
   }
@@ -157,73 +148,15 @@ function renderISetup(){
 }
 
 function renderIRows(){
-  var host=$("tiRows");
-  host.innerHTML="";
   var eq = TIS.mode==="team";
-  for(var k=0;k<TIS.count;k++){
-    (function(k){
-      var pl=TIS.players[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(pl.color).hex);
-      pick.setAttribute("aria-label",tf("ti.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", TIS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        TIS.open = TIS.open===k ? -1 : k;
-        renderIRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=pl.name;
-      name.maxLength=22;
-      name.placeholder=tf(eq ? "ti.teamn" : "ti.playern",{n:k+1});
-      name.setAttribute("aria-label",tf(eq ? "ti.team.aria" : "ti.player.aria",{n:k+1}));
-      name.addEventListener("input",function(){ pl.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, pl, "pid", TIS.players, renderIRows);
-      host.appendChild(row);
-
-      if(eq){
-        var mates=el("div","mates ti-mates");
-        for(var j=0;j<TIS.per;j++){
-          (function(j){
-            var mi=el("input","field-input");
-            mi.type="text";
-            mi.value=pl.mates[j]||"";
-            mi.maxLength=16;
-            mi.placeholder=t("team.player")+" "+(j+1);
-            mi.setAttribute("aria-label",tf("ti.mate.aria",{j:j+1, n:k+1}));
-            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
-            mates.appendChild(mi);
-            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
-          })(j);
-        }
-        host.appendChild(mates);
-      }
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = TIS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          pl.color=col.id; TIS.open=-1;
-          renderIRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("tiRows"), etat:TIS, liste:TIS.players, nombre:TIS.count,
+    cleCouleur:"ti.color.aria",
+    nomParDefaut:function(k){ return tf(eq ? "ti.teamn" : "ti.playern",{n:k+1}); },
+    nomAria:function(k){ return tf(eq ? "ti.team.aria" : "ti.player.aria",{n:k+1}); },
+    coequipiers: eq ? TIS.per : 0, classeCoequipiers:"ti-mates", cleCoequipier:"ti.mate.aria",
+    repeindre:renderIRows
+  });
 }
 
 function tiNouvellePartie(){
@@ -334,10 +267,7 @@ function tiAnnonce(hote, s, jack){
   var nom=TI.players[j].label;
   if(s.type==="gain" && s.jackover){ hote.appendChild(el("b",null,tf("ti.win.jackover",{name:nom}))); return; }
   var p=tiPoints(s);
-  var parts=tf(p>1 ? "game.scores_p" : "game.scores",{name:" ", n:p}).split(" ");
-  hote.appendChild(document.createTextNode(parts[0]||""));
-  hote.appendChild(el("b",null,nom));
-  hote.appendChild(document.createTextNode(parts[1]||""));
+  outcomeInto(hote, nom, p);
 }
 
 /* --- la partie --------------------------------------------------- */
@@ -452,19 +382,10 @@ function tiApresChangement(vibration){
   var avant = TIE ? TIE.gagnant : -1;
   TIE=tiRejouer();
   buzz(vibration);
-  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de fin
-     ne doit pas faire perdre la partie au palmarès */
-  if(TIE.gagnant>=0 && avant<0){
-    tiFermerFeuille();
-    tiArchiver();
-    save();
-    renderIGame();
-    setTimeout(renderIOver, 620);
-  }else{
-    save();
-    renderIGame();
-    if($("tiSheetWrap").classList.contains("on")) renderISheet();
-  }
+  apresUnCoup(TIE.gagnant>=0 && avant<0, {
+    fermerFeuille:tiFermerFeuille, archiver:tiArchiver, peindre:renderIGame, peindreFin:renderIOver,
+    feuille:"tiSheetWrap", peindreFeuille:renderISheet
+  });
 }
 
 /* L'ordre de jeu se tire au sort avant la première manche : le premier
@@ -819,38 +740,13 @@ $("tiQuit").addEventListener("click",function(){
 
 /* --- fiche de règles --------------------------------------------- */
 function fillTossitRules(host){
-  function bloc(titre, lignes){
-    var b=el("div","block");
-    b.appendChild(el("p","eyebrow",titre));
-    var pts=el("div","pts");
-    lignes.forEach(function(r){
-      var row=el("div","pt-row");
-      row.appendChild(el("b",null,r[0]));
-      row.appendChild(el("span",null,r[1]));
-      pts.appendChild(row);
-    });
-    b.appendChild(pts);
-    host.appendChild(b);
-  }
-  bloc(t("tirules.count"), [["1",t("tirules.pt")]]);
-  bloc(t("tirules.bonus"), [
+  blocBareme(host, t("tirules.count"), [["1",t("tirules.pt")]]);
+  blocBareme(host, t("tirules.bonus"), [
     ["+2",t("tirules.kiss")], ["+3",t("tirules.french")], ["+3",t("tirules.jackiss")],
     ["+9",t("tirules.saut")], ["★",t("tirules.jackover")]
   ]);
-  bloc(t("tirules.fins"), [
+  blocBareme(host, t("tirules.fins"), [
     ["+1",t("tirules.quake")], ["+1",t("tirules.jackoff")], ["+1",t("tirules.jack0")]
   ]);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("tirules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("tirules."+k+"a")));
-    li.appendChild(el("b",null,t("tirules."+k+"b")));
-    li.appendChild(document.createTextNode(t("tirules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocDeroule(host, "tirules", 5);
 }

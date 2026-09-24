@@ -49,16 +49,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="bibock";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("bibock");
     show("bsetup");
     renderBSetup();
   }
@@ -177,73 +168,15 @@ function renderBSetup(){
 }
 
 function renderBRows(){
-  var host=$("biRows");
-  host.innerHTML="";
   var eq = BS.per>1;
-  for(var k=0;k<2;k++){
-    (function(k){
-      var tm=BS.teams[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(tm.color).hex);
-      pick.setAttribute("aria-label",tf("bi.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", BS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        BS.open = BS.open===k ? -1 : k;
-        renderBRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=tm.name;
-      name.maxLength=22;
-      name.placeholder=t(eq ? ["team.a","team.b"][k] : ["player.a","player.b"][k]);
-      name.setAttribute("aria-label",tf("bi.team.aria",{n:k+1}));
-      name.addEventListener("input",function(){ tm.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, tm, "pid", BS.teams, renderBRows);
-      host.appendChild(row);
-
-      if(eq){
-        var mates=el("div","mates bi-mates");
-        for(var j=0;j<BS.per;j++){
-          (function(j){
-            var mi=el("input","field-input");
-            mi.type="text";
-            mi.value=tm.mates[j]||"";
-            mi.maxLength=16;
-            mi.placeholder=t("team.player")+" "+(j+1);
-            mi.setAttribute("aria-label",tf("bi.mate.aria",{j:j+1, n:k+1}));
-            mi.addEventListener("input",function(){ tm.mates[j]=mi.value; save(); });
-            mates.appendChild(mi);
-            champDeJoueur(mi, tm.mids || (tm.mids=[]), j);
-          })(j);
-        }
-        host.appendChild(mates);
-      }
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = BS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===tm.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          tm.color=col.id; BS.open=-1;
-          renderBRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("biRows"), etat:BS, liste:BS.teams, nombre:2,
+    cleCouleur:"bi.color.aria",
+    nomParDefaut:function(k){ return t(eq ? ["team.a","team.b"][k] : ["player.a","player.b"][k]); },
+    nomAria:function(k){ return tf("bi.team.aria",{n:k+1}); },
+    coequipiers: eq ? BS.per : 0, classeCoequipiers:"bi-mates", cleCoequipier:"bi.mate.aria",
+    repeindre:renderBRows
+  });
 }
 
 function biNouvellePartie(){
@@ -324,10 +257,7 @@ function biAnnonce(hote, s){
   var g=biGain(s), w = g[0]>0 ? 0 : (g[1]>0 ? 1 : -1);
   hote.innerHTML="";
   if(w<0){ hote.textContent=t("game.void"); return; }
-  var parts=tf(g[w]>1 ? "game.scores_p" : "game.scores",{name:" ", n:g[w]}).split(" ");
-  hote.appendChild(document.createTextNode(parts[0]||""));
-  hote.appendChild(el("b",null,B.teams[w].label));
-  hote.appendChild(document.createTextNode(parts[1]||""));
+  outcomeInto(hote, B.teams[w].label, g[w]);
 }
 
 /* --- la partie --------------------------------------------------- */
@@ -395,19 +325,10 @@ function biApresChangement(vibration){
   var avant = BE ? BE.gagnant : -1;
   BE=biRejouer();
   buzz(vibration);
-  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de fin
-     ne doit pas faire perdre la partie au palmarès */
-  if(BE.gagnant>=0 && avant<0){
-    biFermerFeuille();
-    biArchiver();
-    save();
-    renderBGame();
-    setTimeout(renderBOver, 620);
-  }else{
-    save();
-    renderBGame();
-    if($("biSheetWrap").classList.contains("on")) renderBSheet();
-  }
+  apresUnCoup(BE.gagnant>=0 && avant<0, {
+    fermerFeuille:biFermerFeuille, archiver:biArchiver, peindre:renderBGame, peindreFin:renderBOver,
+    feuille:"biSheetWrap", peindreFeuille:renderBSheet
+  });
 }
 
 /* Le tirage de la première manche, ou d'une égalité parfaite. */
@@ -695,28 +616,6 @@ $("biQuit").addEventListener("click",function(){
 
 /* --- fiche de règles --------------------------------------------- */
 function fillBibockRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("birules.count")));
-  var pts=el("div","pts");
-  [["1",t("birules.pt")],["5",t("birules.maitre")],["Σ",t("birules.groupe")]].forEach(function(r){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,r[0]));
-    row.appendChild(el("span",null,r[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("birules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5,6].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("birules."+k+"a")));
-    li.appendChild(el("b",null,t("birules."+k+"b")));
-    li.appendChild(document.createTextNode(t("birules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("birules.count"), [["1",t("birules.pt")],["5",t("birules.maitre")],["Σ",t("birules.groupe")]]);
+  blocDeroule(host, "birules", 6);
 }

@@ -146,13 +146,7 @@ function doToss(){
     reel.classList.add("locked");
     wrap.style.setProperty("--flash",G.teams[final].hex);
 
-    out.innerHTML="";
-    var parts=tf("toss.result",{name:"\u0000"}).split("\u0000");
-    out.appendChild(document.createTextNode(parts[0]||""));
-    var b=el("b",null,G.teams[final].label);
-    b.style.color="color-mix(in oklab,"+G.teams[final].hex+" 62%,var(--tone))";
-    out.appendChild(b);
-    out.appendChild(document.createTextNode(parts[1]||""));
+    phraseAvecNom(out, tf("toss.result",{name:"\u0000"}), G.teams[final].label, G.teams[final].hex);
 
     buzz([16,55,30]);
     paintHonor();

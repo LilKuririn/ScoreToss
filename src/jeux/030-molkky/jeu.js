@@ -46,16 +46,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="molkky";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("molkky");
     show("msetup");
     renderMSetup();
   }
@@ -126,78 +117,15 @@ function renderMCount(){
 }
 
 function renderMRows(){
-  var host=$("mkRows");
-  host.innerHTML="";
-  host.style.display="flex";
-  host.style.flexDirection="column";
-  host.style.gap="0";
-
-  for(var k=0;k<MS.count;k++){
-    (function(k){
-      var pl=MS.players[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(pl.color).hex);
-      pick.setAttribute("aria-label",tf("mk.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", MS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        MS.open = MS.open===k ? -1 : k;
-        renderMRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=pl.name;
-      name.maxLength=22;
-      var eq = MS.mode==="team";
-      name.placeholder=tf(eq ? "mk.teamn" : "mk.playern",{n:k+1});
-      name.setAttribute("aria-label",tf(eq ? "mk.team.aria" : "mk.player.aria",{n:k+1}));
-      name.addEventListener("input",function(){ pl.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, pl, "pid", MS.players, renderMRows);
-      host.appendChild(row);
-
-      if(eq){
-        if(!pl.mates) pl.mates=["","","",""];
-        var mates=el("div","mates mk-mates");
-        for(var j=0;j<MS.per;j++){
-          (function(j){
-            var mi=el("input","field-input");
-            mi.type="text";
-            mi.value=pl.mates[j]||"";
-            mi.maxLength=16;
-            mi.placeholder=t("team.player")+" "+(j+1);
-            mi.setAttribute("aria-label",tf("mk.mate.aria",{j:j+1, n:k+1}));
-            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
-            mates.appendChild(mi);
-            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
-          })(j);
-        }
-        host.appendChild(mates);
-      }
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = MS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          pl.color=col.id; MS.open=-1;
-          renderMRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  var eq = MS.mode==="team";
+  peindreRangees({
+    hote:$("mkRows"), etat:MS, liste:MS.players, nombre:MS.count, flex:true,
+    cleCouleur:"mk.color.aria",
+    nomParDefaut:function(k){ return tf(eq ? "mk.teamn" : "mk.playern",{n:k+1}); },
+    nomAria:function(k){ return tf(eq ? "mk.team.aria" : "mk.player.aria",{n:k+1}); },
+    coequipiers: eq ? MS.per : 0, classeCoequipiers:"mk-mates", cleCoequipier:"mk.mate.aria",
+    repeindre:renderMRows
+  });
 }
 function renderMSetup(){ renderMCount(); renderMRows(); }
 
@@ -303,16 +231,10 @@ function mUndo(){
 function mAfterChange(){
   mRecompute();
   buzz(10);
-  save();
-  if(M.over){
-    mCloseSheet();
-    mArchive();
-    renderMGame();
-    setTimeout(renderMOver, 380);
-  }else{
-    renderMGame();
-    renderMSheet();
-  }
+  apresUnCoup(M.over, {
+    fermerFeuille:mCloseSheet, archiver:mArchive, peindre:renderMGame, peindreFin:renderMOver, delai:380,
+    feuille:"mkSheetWrap", peindreFeuille:renderMSheet
+  });
 }
 
 /* L'ordre de jeu se tire au sort avant le premier lancer, une seule fois ;
@@ -843,28 +765,6 @@ function normM(m){
 
 /* --- fiche de règles -------------------------------------------- */
 function fillMolkkyRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("mrules.count")));
-  var pts=el("div","pts");
-  [["1",t("mrules.one")],["2+",t("mrules.many")]].forEach(function(r){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,r[0]));
-    row.appendChild(el("span",null,r[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("mrules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("mrules."+k+"a")));
-    li.appendChild(el("b",null,t("mrules."+k+"b")));
-    li.appendChild(document.createTextNode(t("mrules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("mrules.count"), [["1",t("mrules.one")],["2+",t("mrules.many")]]);
+  blocDeroule(host, "mrules", 5);
 }

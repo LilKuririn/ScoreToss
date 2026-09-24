@@ -68,6 +68,89 @@ function renderCards(){
   });
 }
 
+/* Les rangées d'une préparation à plusieurs — jeux à tour de rôle et
+   tableau d'un tournoi : un numéro, la pastille qui déplie la palette, le
+   nom relié au carnet, puis les coéquipiers d'une équipe. Chaque écran
+   fournit son état et ses textes ; le reste était recopié six fois.
+     hote, etat (porte .open), liste, nombre, flex
+     cleCouleur, nomParDefaut(k), nomAria(k), repeindre()
+     coequipiers, classeCoequipiers, cleCoequipier
+     carnet                  faux pour ne pas relier les noms au carnet */
+function peindreRangees(o){
+  var host=o.hote, etat=o.etat;
+  host.innerHTML="";
+  if(o.flex){
+    host.style.display="flex";
+    host.style.flexDirection="column";
+    host.style.gap="0";
+  }
+  for(var k=0;k<o.nombre;k++){
+    (function(k){
+      var pl=o.liste[k];
+      var row=el("div","trow");
+      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
+
+      var pick=el("button","pick");
+      pick.type="button";
+      pick.style.setProperty("--c",color(pl.color).hex);
+      pick.setAttribute("aria-label",tf(o.cleCouleur,{n:k+1}));
+      pick.setAttribute("aria-expanded", etat.open===k ? "true":"false");
+      pick.appendChild(el("i"));
+      pick.addEventListener("click",function(){
+        etat.open = etat.open===k ? -1 : k;
+        o.repeindre();
+      });
+      row.appendChild(pick);
+
+      var name=el("input","field-input");
+      name.type="text";
+      name.value=pl.name;
+      name.maxLength=22;
+      name.placeholder=o.nomParDefaut(k);
+      name.setAttribute("aria-label",o.nomAria(k));
+      name.addEventListener("input",function(){ pl.name=name.value; save(); });
+      row.appendChild(name);
+      if(o.carnet!==false) champDeJoueur(name, pl, "pid", o.liste, o.repeindre);
+      host.appendChild(row);
+
+      if(o.coequipiers){
+        if(!pl.mates) pl.mates=["","","",""];
+        var mates=el("div","mates "+o.classeCoequipiers);
+        for(var j=0;j<o.coequipiers;j++){
+          (function(j){
+            var mi=el("input","field-input");
+            mi.type="text";
+            mi.value=pl.mates[j]||"";
+            mi.maxLength=16;
+            mi.placeholder=t("team.player")+" "+(j+1);
+            mi.setAttribute("aria-label",tf(o.cleCoequipier,{j:j+1, n:k+1}));
+            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
+            mates.appendChild(mi);
+            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
+          })(j);
+        }
+        host.appendChild(mates);
+      }
+
+      var sw=el("div","trow-sw swatches");
+      sw.hidden = etat.open!==k;
+      COLORS.forEach(function(col){
+        var b=el("button","sw");
+        b.type="button";
+        b.style.setProperty("--c",col.hex);
+        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
+        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
+        b.addEventListener("click",function(){
+          pl.color=col.id; etat.open=-1;
+          o.repeindre(); save();
+        });
+        sw.appendChild(b);
+      });
+      host.appendChild(sw);
+    })(k);
+  }
+}
+
 /* Les scores proposés changent d'un jeu à l'autre : on reconstruit la
    rangée plutôt que d'en masquer des morceaux. */
 function fillChips(host, vals, cur, attr){
@@ -84,10 +167,7 @@ function fillChips(host, vals, cur, attr){
 /* Bascule l'écran de préparation sur un jeu : titre, scores proposés,
    réglage des palets, cartes d'équipe et fiche de règles. */
 function applyGame(id){
-  if(!S.tgt) S.tgt=ciblesParDefaut();
-  S.tgt[S.game] = S.target;          /* on range le score du jeu qu'on quitte */
-  TOUR[S.game]  = T;                 /* ainsi que son tableau et son brouillon */
-  DRAFT[S.game] = TS;
+  rangerJeuDuel();                   /* le score, le tableau et le brouillon du jeu qu'on quitte */
   S.game = id;
   /* la triplette n'existe qu'à la pétanque : on se replie sur le double */
   if(modesDuJeu(id).indexOf(S.mode)<0) changerMode("double");

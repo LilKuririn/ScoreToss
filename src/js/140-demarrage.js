@@ -10,6 +10,37 @@ function ouvrirJeu(id){
   applyGame(id);
   show("setup");
 }
+/* Un jeu à tour de rôle devient le jeu courant : celui à deux camps qu'on
+   quitte range son score, son tableau et son brouillon, et la fiche de
+   règles passe à celles du nouveau jeu. */
+function devenirJeuCourant(id){
+  rangerJeuDuel();
+  S.game=id;
+  T=null;
+  fillRules("rulesBody");
+  save();
+}
+
+/* Après chaque coup d'un jeu à tour de rôle. La partie qui vient de se
+   terminer est archivée AVANT d'être sauvegardée : fermer l'application sur
+   l'écran de fin ne doit pas la faire perdre au palmarès. L'écran de fin
+   arrive ensuite, le temps de voir le dernier coup.
+     fermerFeuille, archiver, peindre, peindreFin, delai
+     feuille, peindreFeuille  la feuille de match, repeinte si elle est ouverte */
+function apresUnCoup(finie, o){
+  if(finie){
+    o.fermerFeuille();
+    o.archiver();
+    save();
+    o.peindre();
+    setTimeout(o.peindreFin, o.delai || 620);
+  }else{
+    save();
+    o.peindre();
+    if($(o.feuille).classList.contains("on")) o.peindreFeuille();
+  }
+}
+
 $("catGames").addEventListener("click",function(e){
   var b=e.target.closest("button[data-jeu]");
   if(b) ouvrirJeu(b.dataset.jeu);
@@ -103,8 +134,21 @@ function show(name){
   if(name==="setup"){ refreshTourBtn(); refreshHallLink(); }
 }
 
+/* Le tableau, le brouillon et le score d'un jeu à deux camps vivent dans
+   T, TS et S.target tant qu'il est le jeu courant : on les range avant de
+   le quitter comme avant d'écrire. Un jeu à tour de rôle n'a rien à ranger
+   là — l'écrire rangeait le brouillon du dernier jeu à deux camps sous
+   son nom, en double dans chaque sauvegarde. */
+function rangerJeuDuel(){
+  if(!S.tgt) S.tgt=ciblesParDefaut();
+  if(jeu(S.game).famille!=="duel") return;
+  S.tgt[S.game]=S.target;
+  TOUR[S.game]=T;
+  DRAFT[S.game]=TS;
+}
+
 function save(){
-  TOUR[S.game]=T; DRAFT[S.game]=TS;   /* le jeu courant avant d'ecrire */
+  rangerJeuDuel();
   var o={s:S,g:G,tg:TOUR,ds:DRAFT,h:H,j:J};
   pourChaqueJeu("sauver", o);
   try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){}
@@ -116,13 +160,33 @@ function save(){
    divergé. Un jeu qui garde son propre état fournit les siennes, par
    charger et importer. */
 function normS(s){
+  if(!s || typeof s!=="object") s={};
   if(!JEUX[s.game]) s.game=jeuHistorique();
-  if(!s.tgt) s.tgt=ciblesParDefaut();
+  if(!s.tgt || typeof s.tgt!=="object") s.tgt=ciblesParDefaut();
   if(!s.palets) s.palets=paletDefault(s.mode);
-  if(!s.teams || s.teams.length!==2) s.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
+  if(!Array.isArray(s.teams) || s.teams.length!==2) s.teams=[{},{}];
+  s.teams=s.teams.map(function(team,i){
+    if(!team || typeof team!=="object") team={};
+    if(typeof team.name!=="string") team.name="";
+    if(!Array.isArray(team.mates)) team.mates=["",""];
+    team.color=color(team.color || (i ? "bleu" : "rouge")).id;
+    return team;
+  });
+  if(!s.mode) s.mode="simple";
   if(modesDuJeu(s.game).indexOf(s.mode)<0) s.mode="double";
-  s.teams.forEach(function(team){ if(!team.mates) team.mates=["",""]; });
   return s;
+}
+/* Une partie archivée se lit par ses noms et ses scores : ce qui n'en a
+   pas est écarté, plutôt que de bloquer le palmarès — et le démarrage. */
+function normH(h){
+  if(!Array.isArray(h)) return [];
+  return h.filter(function(g){
+    return g && typeof g==="object" && Array.isArray(g.n) && Array.isArray(g.s);
+  }).map(function(g){
+    if(!Array.isArray(g.c)) g.c=[];
+    if(typeof g.w!=="number") g.w=-1;
+    return g;
+  });
 }
 function normJ(liste){
   if(!liste || !liste.length) return [];
@@ -131,6 +195,10 @@ function normJ(liste){
   });
 }
 function normG(g){
+  if(!g || typeof g!=="object" || !Array.isArray(g.teams) || g.teams.length!==2 ||
+     !g.teams[0] || !g.teams[1]) return null;
+  if(!Array.isArray(g.rounds)) g.rounds=[];
+  g.rounds=g.rounds.filter(function(rd){ return rd && Array.isArray(rd.gain); });
   if(!g.game) g.game=jeuHistorique();
   if(!g.max) g.max=4;
   if(g.mpass===undefined) g.mpass=0;
@@ -151,26 +219,58 @@ function adoptTour(d){
   TS = DRAFT[S.game] || freshDraft(S.game);
   TS.open = -1;
 }
+/* Ce qui n'a pas pu être relu n'est pas perdu : la prochaine sauvegarde
+   écraserait la clé, on en garde donc une copie à côté. */
+var KEY_SECOURS = KEY+".secours";
+function mettreDeCote(raw){
+  try{ localStorage.setItem(KEY_SECOURS, raw); }catch(e){}
+}
+/* Chaque jeu relit son propre état ; celui qui échoue repart de zéro sans
+   entraîner les autres. */
+function chargerLesJeux(d, cle){
+  ORDRE_JEUX.forEach(function(id){
+    var j=JEUX[id];
+    if(!j[cle]) return;
+    try{ j[cle](d); }
+    catch(e){ try{ if(j.importer) j.importer({}); }catch(e2){} }
+  });
+}
+
 function load(){
   var raw;
   try{ raw=localStorage.getItem(KEY); }catch(e){ return; }
   if(!raw) return;
   var d;
-  try{ d=JSON.parse(raw); }catch(e){ return; }
-  if(d && d.s) S=normS(d.s);
+  try{ d=JSON.parse(raw); }catch(e){ mettreDeCote(raw); return; }
+  if(!d || typeof d!=="object" || Array.isArray(d)){ mettreDeCote(raw); return; }
+  try{ restaurer(d); }
+  catch(e){
+    /* un état que rien n'a su relire : l'application démarre quand même,
+       vierge, et l'original reste de côté */
+    mettreDeCote(raw);
+    S=normS(null); TOUR=carteVide(); DRAFT=carteVide(); T=null;
+    TS=freshDraft(S.game); G=null; H=[]; J=[];
+    chargerLesJeux({}, "importer");
+    show("games");
+  }
+}
+function restaurer(d){
+  if(d.s) S=normS(d.s);
   adoptTour(d);
   renderTSetup();
-  pourChaqueJeu("charger", d);
-  if(d && d.h && d.h.length) H=d.h;
-  J=normJ(d && d.j);
+  chargerLesJeux(d, "charger");
+  H=normH(d.h);
+  J=normJ(d.j);
   refreshJoueursLink();
   refreshTourBtn();
   refreshHallLink();
 
   /* un jeu qui a son propre écran de partie la reprend lui-même */
-  var courant=jeu(S.game);
-  if(!(courant.reprendre && courant.reprendre()) && d && d.g && d.g.teams){
+  var courant=jeu(S.game), repris=false;
+  try{ repris = !!(courant.reprendre && courant.reprendre()); }catch(e){ show("games"); }
+  if(!repris && d.g){
     G=normG(d.g);
+    if(!G) return;
     recompute();
     if(G.over){ renderOver(); }
     else { show("game"); renderGame(true); keepAwake(); }
@@ -182,9 +282,18 @@ function keepAwake(){
   if(!("wakeLock" in navigator)) return;
   navigator.wakeLock.request("screen").then(function(l){ lock=l; }).catch(function(){});
 }
+/* Le système rend le verrou dès que l'application passe en arrière-plan :
+   on le redemande au retour si une partie est à l'écran. Toutes les
+   parties se jouent sur un écran dont l'identifiant finit par « game » —
+   celui des jeux à deux camps, comme celui de chaque jeu à tour de rôle ;
+   ne tester que G laissait le mölkky ou les fléchettes s'éteindre. */
+function partieALEcran(){
+  var e=document.querySelector(".screen.on");
+  return !!(e && /game$/.test(e.id));
+}
 document.addEventListener("visibilitychange",function(){
-  if(document.visibilityState==="visible" && G && !G.over && !lock) keepAwake();
-  if(document.visibilityState==="hidden") lock=null;
+  if(document.visibilityState==="hidden"){ lock=null; return; }
+  if(!lock && partieALEcran()) keepAwake();
 });
 
 $("start").addEventListener("click",newGame);

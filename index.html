@@ -3262,35 +3262,8 @@ declarerJeu({
 });
 
 function fillCornholeRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("rules.count")));
-  var pts=el("div","pts");
-  [["3",t("rules.hole")],["1",t("rules.board")]].forEach(function(p){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,p[0]));
-    row.appendChild(el("span",null,p[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("rules.flow")));
-  var list=el("ul","rulist");
-  [
-    [t("rules.1a"),t("rules.1b"),t("rules.1c")],
-    [t("rules.2a"),t("rules.2b"),t("rules.2c")],
-    [t("rules.3a"),t("rules.3b"),t("rules.3c")],
-    [t("rules.4a"),t("rules.4b"),t("rules.4c")]
-  ].forEach(function(r){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(r[0]));
-    li.appendChild(el("b",null,r[1]));
-    li.appendChild(document.createTextNode(r[2]));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("rules.count"), [["3",t("rules.hole")],["1",t("rules.board")]]);
+  blocDeroule(host, "rules", 4);
 }
 /* Palet breton.
 
@@ -3379,28 +3352,8 @@ $("mtrMiss").addEventListener("click",maitreMiss);
 /* Le palet compte autrement : pas de bareme a deux valeurs, mais un point
    par palet mieux place. La fiche suit donc une autre trame. */
 function fillPaletRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("prules.count")));
-  var pts=el("div","pts");
-  var row=el("div","pt-row");
-  row.appendChild(el("b",null,"1"));
-  row.appendChild(el("span",null,t("prules.pt")));
-  pts.appendChild(row);
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("prules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5,6].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("prules."+k+"a")));
-    li.appendChild(el("b",null,t("prules."+k+"b")));
-    li.appendChild(document.createTextNode(t("prules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("prules.count"), [["1",t("prules.pt")]]);
+  blocDeroule(host, "prules", 6);
 }
 /* Mölkky.
    Il ne partage ni l'écran de préparation ni le moteur à deux camps : il
@@ -3450,16 +3403,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="molkky";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("molkky");
     show("msetup");
     renderMSetup();
   }
@@ -3530,78 +3474,15 @@ function renderMCount(){
 }
 
 function renderMRows(){
-  var host=$("mkRows");
-  host.innerHTML="";
-  host.style.display="flex";
-  host.style.flexDirection="column";
-  host.style.gap="0";
-
-  for(var k=0;k<MS.count;k++){
-    (function(k){
-      var pl=MS.players[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(pl.color).hex);
-      pick.setAttribute("aria-label",tf("mk.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", MS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        MS.open = MS.open===k ? -1 : k;
-        renderMRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=pl.name;
-      name.maxLength=22;
-      var eq = MS.mode==="team";
-      name.placeholder=tf(eq ? "mk.teamn" : "mk.playern",{n:k+1});
-      name.setAttribute("aria-label",tf(eq ? "mk.team.aria" : "mk.player.aria",{n:k+1}));
-      name.addEventListener("input",function(){ pl.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, pl, "pid", MS.players, renderMRows);
-      host.appendChild(row);
-
-      if(eq){
-        if(!pl.mates) pl.mates=["","","",""];
-        var mates=el("div","mates mk-mates");
-        for(var j=0;j<MS.per;j++){
-          (function(j){
-            var mi=el("input","field-input");
-            mi.type="text";
-            mi.value=pl.mates[j]||"";
-            mi.maxLength=16;
-            mi.placeholder=t("team.player")+" "+(j+1);
-            mi.setAttribute("aria-label",tf("mk.mate.aria",{j:j+1, n:k+1}));
-            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
-            mates.appendChild(mi);
-            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
-          })(j);
-        }
-        host.appendChild(mates);
-      }
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = MS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          pl.color=col.id; MS.open=-1;
-          renderMRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  var eq = MS.mode==="team";
+  peindreRangees({
+    hote:$("mkRows"), etat:MS, liste:MS.players, nombre:MS.count, flex:true,
+    cleCouleur:"mk.color.aria",
+    nomParDefaut:function(k){ return tf(eq ? "mk.teamn" : "mk.playern",{n:k+1}); },
+    nomAria:function(k){ return tf(eq ? "mk.team.aria" : "mk.player.aria",{n:k+1}); },
+    coequipiers: eq ? MS.per : 0, classeCoequipiers:"mk-mates", cleCoequipier:"mk.mate.aria",
+    repeindre:renderMRows
+  });
 }
 function renderMSetup(){ renderMCount(); renderMRows(); }
 
@@ -3707,16 +3588,10 @@ function mUndo(){
 function mAfterChange(){
   mRecompute();
   buzz(10);
-  save();
-  if(M.over){
-    mCloseSheet();
-    mArchive();
-    renderMGame();
-    setTimeout(renderMOver, 380);
-  }else{
-    renderMGame();
-    renderMSheet();
-  }
+  apresUnCoup(M.over, {
+    fermerFeuille:mCloseSheet, archiver:mArchive, peindre:renderMGame, peindreFin:renderMOver, delai:380,
+    feuille:"mkSheetWrap", peindreFeuille:renderMSheet
+  });
 }
 
 /* L'ordre de jeu se tire au sort avant le premier lancer, une seule fois ;
@@ -4247,30 +4122,8 @@ function normM(m){
 
 /* --- fiche de règles -------------------------------------------- */
 function fillMolkkyRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("mrules.count")));
-  var pts=el("div","pts");
-  [["1",t("mrules.one")],["2+",t("mrules.many")]].forEach(function(r){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,r[0]));
-    row.appendChild(el("span",null,r[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("mrules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("mrules."+k+"a")));
-    li.appendChild(el("b",null,t("mrules."+k+"b")));
-    li.appendChild(document.createTextNode(t("mrules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("mrules.count"), [["1",t("mrules.one")],["2+",t("mrules.many")]]);
+  blocDeroule(host, "mrules", 5);
 }
 /* Bibock.
 
@@ -4323,16 +4176,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="bibock";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("bibock");
     show("bsetup");
     renderBSetup();
   }
@@ -4451,73 +4295,15 @@ function renderBSetup(){
 }
 
 function renderBRows(){
-  var host=$("biRows");
-  host.innerHTML="";
   var eq = BS.per>1;
-  for(var k=0;k<2;k++){
-    (function(k){
-      var tm=BS.teams[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(tm.color).hex);
-      pick.setAttribute("aria-label",tf("bi.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", BS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        BS.open = BS.open===k ? -1 : k;
-        renderBRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=tm.name;
-      name.maxLength=22;
-      name.placeholder=t(eq ? ["team.a","team.b"][k] : ["player.a","player.b"][k]);
-      name.setAttribute("aria-label",tf("bi.team.aria",{n:k+1}));
-      name.addEventListener("input",function(){ tm.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, tm, "pid", BS.teams, renderBRows);
-      host.appendChild(row);
-
-      if(eq){
-        var mates=el("div","mates bi-mates");
-        for(var j=0;j<BS.per;j++){
-          (function(j){
-            var mi=el("input","field-input");
-            mi.type="text";
-            mi.value=tm.mates[j]||"";
-            mi.maxLength=16;
-            mi.placeholder=t("team.player")+" "+(j+1);
-            mi.setAttribute("aria-label",tf("bi.mate.aria",{j:j+1, n:k+1}));
-            mi.addEventListener("input",function(){ tm.mates[j]=mi.value; save(); });
-            mates.appendChild(mi);
-            champDeJoueur(mi, tm.mids || (tm.mids=[]), j);
-          })(j);
-        }
-        host.appendChild(mates);
-      }
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = BS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===tm.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          tm.color=col.id; BS.open=-1;
-          renderBRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("biRows"), etat:BS, liste:BS.teams, nombre:2,
+    cleCouleur:"bi.color.aria",
+    nomParDefaut:function(k){ return t(eq ? ["team.a","team.b"][k] : ["player.a","player.b"][k]); },
+    nomAria:function(k){ return tf("bi.team.aria",{n:k+1}); },
+    coequipiers: eq ? BS.per : 0, classeCoequipiers:"bi-mates", cleCoequipier:"bi.mate.aria",
+    repeindre:renderBRows
+  });
 }
 
 function biNouvellePartie(){
@@ -4598,10 +4384,7 @@ function biAnnonce(hote, s){
   var g=biGain(s), w = g[0]>0 ? 0 : (g[1]>0 ? 1 : -1);
   hote.innerHTML="";
   if(w<0){ hote.textContent=t("game.void"); return; }
-  var parts=tf(g[w]>1 ? "game.scores_p" : "game.scores",{name:" ", n:g[w]}).split(" ");
-  hote.appendChild(document.createTextNode(parts[0]||""));
-  hote.appendChild(el("b",null,B.teams[w].label));
-  hote.appendChild(document.createTextNode(parts[1]||""));
+  outcomeInto(hote, B.teams[w].label, g[w]);
 }
 
 /* --- la partie --------------------------------------------------- */
@@ -4669,19 +4452,10 @@ function biApresChangement(vibration){
   var avant = BE ? BE.gagnant : -1;
   BE=biRejouer();
   buzz(vibration);
-  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de fin
-     ne doit pas faire perdre la partie au palmarès */
-  if(BE.gagnant>=0 && avant<0){
-    biFermerFeuille();
-    biArchiver();
-    save();
-    renderBGame();
-    setTimeout(renderBOver, 620);
-  }else{
-    save();
-    renderBGame();
-    if($("biSheetWrap").classList.contains("on")) renderBSheet();
-  }
+  apresUnCoup(BE.gagnant>=0 && avant<0, {
+    fermerFeuille:biFermerFeuille, archiver:biArchiver, peindre:renderBGame, peindreFin:renderBOver,
+    feuille:"biSheetWrap", peindreFeuille:renderBSheet
+  });
 }
 
 /* Le tirage de la première manche, ou d'une égalité parfaite. */
@@ -4969,30 +4743,8 @@ $("biQuit").addEventListener("click",function(){
 
 /* --- fiche de règles --------------------------------------------- */
 function fillBibockRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("birules.count")));
-  var pts=el("div","pts");
-  [["1",t("birules.pt")],["5",t("birules.maitre")],["Σ",t("birules.groupe")]].forEach(function(r){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,r[0]));
-    row.appendChild(el("span",null,r[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("birules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5,6].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("birules."+k+"a")));
-    li.appendChild(el("b",null,t("birules."+k+"b")));
-    li.appendChild(document.createTextNode(t("birules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("birules.count"), [["1",t("birules.pt")],["5",t("birules.maitre")],["Σ",t("birules.groupe")]]);
+  blocDeroule(host, "birules", 6);
 }
 /* Pétanque.
 
@@ -5193,16 +4945,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="flechettes";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("flechettes");
     show("fsetup");
     renderFSetup();
   }
@@ -5268,78 +5011,15 @@ function renderFSetup(){
 }
 
 function renderFRows(){
-  var host=$("flRows");
-  host.innerHTML="";
-  host.style.display="flex";
-  host.style.flexDirection="column";
-  host.style.gap="0";
   var eq = FS.mode==="team";
-
-  for(var k=0;k<FS.count;k++){
-    (function(k){
-      var pl=FS.players[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(pl.color).hex);
-      pick.setAttribute("aria-label",tf("fl.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", FS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        FS.open = FS.open===k ? -1 : k;
-        renderFRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=pl.name;
-      name.maxLength=22;
-      name.placeholder=tf(eq ? "fl.teamn" : "fl.playern",{n:k+1});
-      name.setAttribute("aria-label",tf(eq ? "fl.team.aria" : "fl.player.aria",{n:k+1}));
-      name.addEventListener("input",function(){ pl.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, pl, "pid", FS.players, renderFRows);
-      host.appendChild(row);
-
-      if(eq){
-        if(!pl.mates) pl.mates=["","","",""];
-        var mates=el("div","mates fl-mates");
-        for(var j=0;j<FS.per;j++){
-          (function(j){
-            var mi=el("input","field-input");
-            mi.type="text";
-            mi.value=pl.mates[j]||"";
-            mi.maxLength=16;
-            mi.placeholder=t("team.player")+" "+(j+1);
-            mi.setAttribute("aria-label",tf("fl.mate.aria",{j:j+1, n:k+1}));
-            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
-            mates.appendChild(mi);
-            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
-          })(j);
-        }
-        host.appendChild(mates);
-      }
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = FS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          pl.color=col.id; FS.open=-1;
-          renderFRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("flRows"), etat:FS, liste:FS.players, nombre:FS.count, flex:true,
+    cleCouleur:"fl.color.aria",
+    nomParDefaut:function(k){ return tf(eq ? "fl.teamn" : "fl.playern",{n:k+1}); },
+    nomAria:function(k){ return tf(eq ? "fl.team.aria" : "fl.player.aria",{n:k+1}); },
+    coequipiers: eq ? FS.per : 0, classeCoequipiers:"fl-mates", cleCoequipier:"fl.mate.aria",
+    repeindre:renderFRows
+  });
 }
 
 /* --- décompte ---------------------------------------------------- */
@@ -5408,19 +5088,10 @@ function flApresChangement(vibration){
   var der=FE.volees[FE.volees.length-1];
   var bust = der && der.bust && der.darts[der.darts.length-1]===F.darts.length-1;
   buzz(bust ? [20,50,20] : vibration);
-  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de
-     victoire ne doit pas faire perdre la partie au palmarès */
-  if(FE.gagnant>=0 && avant<0){
-    flFermerFeuille();
-    flArchiver();
-    save();
-    renderFGame();
-    setTimeout(renderFOver, 620);
-  }else{
-    save();
-    renderFGame();
-    if($("flSheetWrap").classList.contains("on")) renderFSheet();
-  }
+  apresUnCoup(FE.gagnant>=0 && avant<0, {
+    fermerFeuille:flFermerFeuille, archiver:flArchiver, peindre:renderFGame, peindreFin:renderFOver,
+    feuille:"flSheetWrap", peindreFeuille:renderFSheet
+  });
 }
 
 /* L'ordre de jeu se tire au sort avant la première fléchette, une seule
@@ -5982,31 +5653,9 @@ $("flQuit").addEventListener("click",function(){
 
 /* --- fiche de règles --------------------------------------------- */
 function fillFlechettesRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("frules.count")));
-  var pts=el("div","pts");
-  [["×1",t("frules.single")],["×2",t("frules.double")],["×3",t("frules.triple")],
-   ["25",t("frules.bull")],["50",t("frules.dbull")]].forEach(function(r){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,r[0]));
-    row.appendChild(el("span",null,r[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("frules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("frules."+k+"a")));
-    li.appendChild(el("b",null,t("frules."+k+"b")));
-    li.appendChild(document.createTextNode(t("frules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("frules.count"), [["×1",t("frules.single")],["×2",t("frules.double")],["×3",t("frules.triple")],
+   ["25",t("frules.bull")],["50",t("frules.dbull")]]);
+  blocDeroule(host, "frules", 5);
 }
 /* Tossit.
 
@@ -6058,16 +5707,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="tossit";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("tossit");
     show("isetup");
     renderISetup();
   }
@@ -6167,73 +5807,15 @@ function renderISetup(){
 }
 
 function renderIRows(){
-  var host=$("tiRows");
-  host.innerHTML="";
   var eq = TIS.mode==="team";
-  for(var k=0;k<TIS.count;k++){
-    (function(k){
-      var pl=TIS.players[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(pl.color).hex);
-      pick.setAttribute("aria-label",tf("ti.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", TIS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        TIS.open = TIS.open===k ? -1 : k;
-        renderIRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=pl.name;
-      name.maxLength=22;
-      name.placeholder=tf(eq ? "ti.teamn" : "ti.playern",{n:k+1});
-      name.setAttribute("aria-label",tf(eq ? "ti.team.aria" : "ti.player.aria",{n:k+1}));
-      name.addEventListener("input",function(){ pl.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, pl, "pid", TIS.players, renderIRows);
-      host.appendChild(row);
-
-      if(eq){
-        var mates=el("div","mates ti-mates");
-        for(var j=0;j<TIS.per;j++){
-          (function(j){
-            var mi=el("input","field-input");
-            mi.type="text";
-            mi.value=pl.mates[j]||"";
-            mi.maxLength=16;
-            mi.placeholder=t("team.player")+" "+(j+1);
-            mi.setAttribute("aria-label",tf("ti.mate.aria",{j:j+1, n:k+1}));
-            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
-            mates.appendChild(mi);
-            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
-          })(j);
-        }
-        host.appendChild(mates);
-      }
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = TIS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          pl.color=col.id; TIS.open=-1;
-          renderIRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("tiRows"), etat:TIS, liste:TIS.players, nombre:TIS.count,
+    cleCouleur:"ti.color.aria",
+    nomParDefaut:function(k){ return tf(eq ? "ti.teamn" : "ti.playern",{n:k+1}); },
+    nomAria:function(k){ return tf(eq ? "ti.team.aria" : "ti.player.aria",{n:k+1}); },
+    coequipiers: eq ? TIS.per : 0, classeCoequipiers:"ti-mates", cleCoequipier:"ti.mate.aria",
+    repeindre:renderIRows
+  });
 }
 
 function tiNouvellePartie(){
@@ -6344,10 +5926,7 @@ function tiAnnonce(hote, s, jack){
   var nom=TI.players[j].label;
   if(s.type==="gain" && s.jackover){ hote.appendChild(el("b",null,tf("ti.win.jackover",{name:nom}))); return; }
   var p=tiPoints(s);
-  var parts=tf(p>1 ? "game.scores_p" : "game.scores",{name:" ", n:p}).split(" ");
-  hote.appendChild(document.createTextNode(parts[0]||""));
-  hote.appendChild(el("b",null,nom));
-  hote.appendChild(document.createTextNode(parts[1]||""));
+  outcomeInto(hote, nom, p);
 }
 
 /* --- la partie --------------------------------------------------- */
@@ -6462,19 +6041,10 @@ function tiApresChangement(vibration){
   var avant = TIE ? TIE.gagnant : -1;
   TIE=tiRejouer();
   buzz(vibration);
-  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de fin
-     ne doit pas faire perdre la partie au palmarès */
-  if(TIE.gagnant>=0 && avant<0){
-    tiFermerFeuille();
-    tiArchiver();
-    save();
-    renderIGame();
-    setTimeout(renderIOver, 620);
-  }else{
-    save();
-    renderIGame();
-    if($("tiSheetWrap").classList.contains("on")) renderISheet();
-  }
+  apresUnCoup(TIE.gagnant>=0 && avant<0, {
+    fermerFeuille:tiFermerFeuille, archiver:tiArchiver, peindre:renderIGame, peindreFin:renderIOver,
+    feuille:"tiSheetWrap", peindreFeuille:renderISheet
+  });
 }
 
 /* L'ordre de jeu se tire au sort avant la première manche : le premier
@@ -6829,40 +6399,15 @@ $("tiQuit").addEventListener("click",function(){
 
 /* --- fiche de règles --------------------------------------------- */
 function fillTossitRules(host){
-  function bloc(titre, lignes){
-    var b=el("div","block");
-    b.appendChild(el("p","eyebrow",titre));
-    var pts=el("div","pts");
-    lignes.forEach(function(r){
-      var row=el("div","pt-row");
-      row.appendChild(el("b",null,r[0]));
-      row.appendChild(el("span",null,r[1]));
-      pts.appendChild(row);
-    });
-    b.appendChild(pts);
-    host.appendChild(b);
-  }
-  bloc(t("tirules.count"), [["1",t("tirules.pt")]]);
-  bloc(t("tirules.bonus"), [
+  blocBareme(host, t("tirules.count"), [["1",t("tirules.pt")]]);
+  blocBareme(host, t("tirules.bonus"), [
     ["+2",t("tirules.kiss")], ["+3",t("tirules.french")], ["+3",t("tirules.jackiss")],
     ["+9",t("tirules.saut")], ["★",t("tirules.jackover")]
   ]);
-  bloc(t("tirules.fins"), [
+  blocBareme(host, t("tirules.fins"), [
     ["+1",t("tirules.quake")], ["+1",t("tirules.jackoff")], ["+1",t("tirules.jack0")]
   ]);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("tirules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("tirules."+k+"a")));
-    li.appendChild(el("b",null,t("tirules."+k+"b")));
-    li.appendChild(document.createTextNode(t("tirules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocDeroule(host, "tirules", 5);
 }
 /* Yams.
 
@@ -6914,16 +6459,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="yams";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("yams");
     show("ysetup");
     renderYSetup();
   }
@@ -7033,54 +6569,13 @@ function renderYSetup(){
 }
 
 function renderYRows(){
-  var host=$("yaRows");
-  host.innerHTML="";
-  for(var k=0;k<YS.count;k++){
-    (function(k){
-      var pl=YS.players[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(pl.color).hex);
-      pick.setAttribute("aria-label",tf("ya.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", YS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        YS.open = YS.open===k ? -1 : k;
-        renderYRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=pl.name;
-      name.maxLength=22;
-      name.placeholder=tf("ya.playern",{n:k+1});
-      name.setAttribute("aria-label",tf("ya.player.aria",{n:k+1}));
-      name.addEventListener("input",function(){ pl.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, pl, "pid", YS.players, renderYRows);
-      host.appendChild(row);
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = YS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          pl.color=col.id; YS.open=-1;
-          renderYRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("yaRows"), etat:YS, liste:YS.players, nombre:YS.count,
+    cleCouleur:"ya.color.aria",
+    nomParDefaut:function(k){ return tf("ya.playern",{n:k+1}); },
+    nomAria:function(k){ return tf("ya.player.aria",{n:k+1}); },
+    repeindre:renderYRows
+  });
 }
 
 function yaNouvellePartie(){
@@ -7291,19 +6786,10 @@ function yaApresChangement(vibration){
   var avant = YE ? YE.fini : false;
   YE=yaRejouer();
   buzz(vibration);
-  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de fin
-     ne doit pas faire perdre la partie au palmarès */
-  if(YE.fini && !avant){
-    yaFermerFeuille();
-    yaArchiver();
-    save();
-    renderYGame();
-    setTimeout(renderYOver, 620);
-  }else{
-    save();
-    renderYGame();
-    if($("yaSheetWrap").classList.contains("on")) renderYSheet();
-  }
+  apresUnCoup(YE.fini && !avant, {
+    fermerFeuille:yaFermerFeuille, archiver:yaArchiver, peindre:renderYGame, peindreFin:renderYOver,
+    feuille:"yaSheetWrap", peindreFeuille:renderYSheet
+  });
 }
 
 /* --- tirage au sort de l'ordre ----------------------------------- */
@@ -7638,37 +7124,12 @@ $("yaQuit").addEventListener("click",function(){
 
 /* --- fiche de règles --------------------------------------------- */
 function fillYamsRules(host){
-  function bloc(titre, lignes){
-    var b=el("div","block");
-    b.appendChild(el("p","eyebrow",titre));
-    var pts=el("div","pts");
-    lignes.forEach(function(r){
-      var row=el("div","pt-row");
-      row.appendChild(el("b",null,r[0]));
-      row.appendChild(el("span",null,r[1]));
-      pts.appendChild(row);
-    });
-    b.appendChild(pts);
-    host.appendChild(b);
-  }
-  bloc(t("yrules.upper"), [["1–6",t("yrules.upper.sum")], ["+35",t("yrules.bonus")]]);
-  bloc(t("yrules.lower"), [
+  blocBareme(host, t("yrules.upper"), [["1–6",t("yrules.upper.sum")], ["+35",t("yrules.bonus")]]);
+  blocBareme(host, t("yrules.lower"), [
     ["Σ",t("yrules.brelan")], ["Σ",t("yrules.carre")], ["25",t("yrules.full")],
     ["30",t("yrules.psuite")], ["40",t("yrules.gsuite")], ["50",t("yrules.yams")], ["Σ",t("yrules.chance")]
   ]);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("yrules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("yrules."+k+"a")));
-    li.appendChild(el("b",null,t("yrules."+k+"b")));
-    li.appendChild(document.createTextNode(t("yrules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocDeroule(host, "yrules", 5);
 }
 
 /* ------------------------------------------------------------------
@@ -9773,6 +9234,36 @@ function fillRules(id){
   host.innerHTML="";
   jeu(curGame()).regles(host);
 }
+/* Une fiche de règles se bâtit de deux sortes de blocs : un barème — le
+   chiffre en gras, ce qu'il récompense à côté — et un déroulé, des phrases
+   dont le cœur est en gras, rangées sous les clés prefixe.1a, 1b, 1c… */
+function blocBareme(host, titre, lignes){
+  var b=el("div","block");
+  b.appendChild(el("p","eyebrow",titre));
+  var pts=el("div","pts");
+  lignes.forEach(function(r){
+    var row=el("div","pt-row");
+    row.appendChild(el("b",null,r[0]));
+    row.appendChild(el("span",null,r[1]));
+    pts.appendChild(row);
+  });
+  b.appendChild(pts);
+  host.appendChild(b);
+}
+function blocDeroule(host, prefixe, n){
+  var b=el("div","block");
+  b.appendChild(el("p","eyebrow",t(prefixe+".flow")));
+  var list=el("ul","rulist");
+  for(var k=1;k<=n;k++){
+    var li=document.createElement("li");
+    li.appendChild(document.createTextNode(t(prefixe+"."+k+"a")));
+    li.appendChild(el("b",null,t(prefixe+"."+k+"b")));
+    li.appendChild(document.createTextNode(t(prefixe+"."+k+"c")));
+    list.appendChild(li);
+  }
+  b.appendChild(list);
+  host.appendChild(b);
+}
 
 /* état de préparation */
 var S = {
@@ -9821,10 +9312,18 @@ function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
 /* « X marque 5 points » avec le nom en gras, quel que soit l'ordre des
    mots dans la langue : on découpe la phrase autour du marqueur. */
 function outcomeInto(host, name, n){
+  phraseAvecNom(host, tn("game.scores",n).replace(/\{name\}/g,"\u0000"), name);
+}
+/* Le nom tombe où la langue le place : la phrase porte un marqueur \u0000
+   à sa place, et le nom s'y écrit en gras — à la couleur de son équipe si
+   on la donne. */
+function phraseAvecNom(host, phrase, nom, hex){
   host.innerHTML="";
-  var parts=tn("game.scores",n).replace(/\{name\}/g,"\u0000").split("\u0000");
+  var parts=phrase.split("\u0000");
   host.appendChild(document.createTextNode(parts[0]||""));
-  host.appendChild(el("b",null,name));
+  var b=el("b",null,nom);
+  if(hex) b.style.color=teamInk(hex);
+  host.appendChild(b);
   host.appendChild(document.createTextNode(parts[1]||""));
 }
 
@@ -9959,6 +9458,89 @@ function renderCards(){
   });
 }
 
+/* Les rangées d'une préparation à plusieurs — jeux à tour de rôle et
+   tableau d'un tournoi : un numéro, la pastille qui déplie la palette, le
+   nom relié au carnet, puis les coéquipiers d'une équipe. Chaque écran
+   fournit son état et ses textes ; le reste était recopié six fois.
+     hote, etat (porte .open), liste, nombre, flex
+     cleCouleur, nomParDefaut(k), nomAria(k), repeindre()
+     coequipiers, classeCoequipiers, cleCoequipier
+     carnet                  faux pour ne pas relier les noms au carnet */
+function peindreRangees(o){
+  var host=o.hote, etat=o.etat;
+  host.innerHTML="";
+  if(o.flex){
+    host.style.display="flex";
+    host.style.flexDirection="column";
+    host.style.gap="0";
+  }
+  for(var k=0;k<o.nombre;k++){
+    (function(k){
+      var pl=o.liste[k];
+      var row=el("div","trow");
+      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
+
+      var pick=el("button","pick");
+      pick.type="button";
+      pick.style.setProperty("--c",color(pl.color).hex);
+      pick.setAttribute("aria-label",tf(o.cleCouleur,{n:k+1}));
+      pick.setAttribute("aria-expanded", etat.open===k ? "true":"false");
+      pick.appendChild(el("i"));
+      pick.addEventListener("click",function(){
+        etat.open = etat.open===k ? -1 : k;
+        o.repeindre();
+      });
+      row.appendChild(pick);
+
+      var name=el("input","field-input");
+      name.type="text";
+      name.value=pl.name;
+      name.maxLength=22;
+      name.placeholder=o.nomParDefaut(k);
+      name.setAttribute("aria-label",o.nomAria(k));
+      name.addEventListener("input",function(){ pl.name=name.value; save(); });
+      row.appendChild(name);
+      if(o.carnet!==false) champDeJoueur(name, pl, "pid", o.liste, o.repeindre);
+      host.appendChild(row);
+
+      if(o.coequipiers){
+        if(!pl.mates) pl.mates=["","","",""];
+        var mates=el("div","mates "+o.classeCoequipiers);
+        for(var j=0;j<o.coequipiers;j++){
+          (function(j){
+            var mi=el("input","field-input");
+            mi.type="text";
+            mi.value=pl.mates[j]||"";
+            mi.maxLength=16;
+            mi.placeholder=t("team.player")+" "+(j+1);
+            mi.setAttribute("aria-label",tf(o.cleCoequipier,{j:j+1, n:k+1}));
+            mi.addEventListener("input",function(){ pl.mates[j]=mi.value; save(); });
+            mates.appendChild(mi);
+            champDeJoueur(mi, pl.mids || (pl.mids=[]), j);
+          })(j);
+        }
+        host.appendChild(mates);
+      }
+
+      var sw=el("div","trow-sw swatches");
+      sw.hidden = etat.open!==k;
+      COLORS.forEach(function(col){
+        var b=el("button","sw");
+        b.type="button";
+        b.style.setProperty("--c",col.hex);
+        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
+        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
+        b.addEventListener("click",function(){
+          pl.color=col.id; etat.open=-1;
+          o.repeindre(); save();
+        });
+        sw.appendChild(b);
+      });
+      host.appendChild(sw);
+    })(k);
+  }
+}
+
 /* Les scores proposés changent d'un jeu à l'autre : on reconstruit la
    rangée plutôt que d'en masquer des morceaux. */
 function fillChips(host, vals, cur, attr){
@@ -9975,10 +9557,7 @@ function fillChips(host, vals, cur, attr){
 /* Bascule l'écran de préparation sur un jeu : titre, scores proposés,
    réglage des palets, cartes d'équipe et fiche de règles. */
 function applyGame(id){
-  if(!S.tgt) S.tgt=ciblesParDefaut();
-  S.tgt[S.game] = S.target;          /* on range le score du jeu qu'on quitte */
-  TOUR[S.game]  = T;                 /* ainsi que son tableau et son brouillon */
-  DRAFT[S.game] = TS;
+  rangerJeuDuel();                   /* le score, le tableau et le brouillon du jeu qu'on quitte */
   S.game = id;
   /* la triplette n'existe qu'à la pétanque : on se replie sur le double */
   if(modesDuJeu(id).indexOf(S.mode)<0) changerMode("double");
@@ -10256,13 +9835,7 @@ function doToss(){
     reel.classList.add("locked");
     wrap.style.setProperty("--flash",G.teams[final].hex);
 
-    out.innerHTML="";
-    var parts=tf("toss.result",{name:"\u0000"}).split("\u0000");
-    out.appendChild(document.createTextNode(parts[0]||""));
-    var b=el("b",null,G.teams[final].label);
-    b.style.color="color-mix(in oklab,"+G.teams[final].hex+" 62%,var(--tone))";
-    out.appendChild(b);
-    out.appendChild(document.createTextNode(parts[1]||""));
+    phraseAvecNom(out, tf("toss.result",{name:"\u0000"}), G.teams[final].label, G.teams[final].hex);
 
     buzz([16,55,30]);
     paintHonor();
@@ -10430,13 +10003,7 @@ function tirerOrdre(participants, fin){
   }
   function finir(){
     var premier=ordre[0];
-    out.innerHTML="";
-    var parts=tf("order.first",{name:" "}).split(" ");
-    out.appendChild(document.createTextNode(parts[0]||""));
-    var b=el("b",null,premier.label);
-    b.style.color="color-mix(in oklab,"+premier.hex+" 62%,var(--tone))";
-    out.appendChild(b);
-    out.appendChild(document.createTextNode(parts[1]||""));
+    phraseAvecNom(out, tf("order.first",{name:"\u0000"}), premier.label, premier.hex);
     /* le rouleau finit sur celui qui commence, pas sur le dernier tiré */
     strip.innerHTML="";
     strip.style.transform="translateY(0)";
@@ -11101,18 +10668,22 @@ function renderEditor(body){
   body.appendChild(out);
 }
 
+/* Une correction peut finir la partie : elle est alors archivée — et son
+   résultat reporté au tableau du tournoi — AVANT d'être sauvegardée, sans
+   quoi fermer l'application sur l'écran de fin la faisait perdre. */
 function afterHistoryChange(){
   recompute();
   G.mpass=0;
   buzz(10);
-  save();
   if(G.over){
     closeSheet();
     archiveGame();
     applyMatchResult();
+    save();
     renderGame();
     setTimeout(renderOver, 380);
   }else{
+    save();
     renderGame();
     renderSheet();
   }
@@ -11840,7 +11411,7 @@ function exportName(){
 }
 
 function exportData(){
-  TOUR[S.game]=T; DRAFT[S.game]=TS;
+  rangerJeuDuel();
   var contenu={v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H, j:J};
   pourChaqueJeu("sauver", contenu);
   var payload=JSON.stringify(contenu, null, 1);
@@ -11869,13 +11440,13 @@ function applyImport(text){
   if(!window.confirm(t("data.confirm"))) return;
 
   if(d.s && d.s.teams && d.s.teams.length===2) S=d.s;
-  normS(S);
+  S=normS(S);
   TOUR=carteVide(); DRAFT=carteVide();
   adoptTour(d);
-  H = (d.h && d.h.length) ? d.h : [];
+  H = normH(d.h);
   J = normJ(d.j);
-  pourChaqueJeu("importer", d);
-  G = (d.g && d.g.teams) ? normG(d.g) : null;
+  chargerLesJeux(d, "importer");
+  G = d.g ? normG(d.g) : null;
   if(G) recompute();
 
   save();
@@ -12092,57 +11663,14 @@ function renderTCount(){
     (byes===0 ? t("tour.byes.none") : tn("tour.byes",byes));
 }
 function renderTRows(){
-  var host=$("trows");
-  host.innerHTML="";
-  host.style.display="flex";
-  host.style.flexDirection="column";
-  host.style.gap="0";
-
-  for(var k=0;k<TS.count;k++){
-    (function(k){
-      var team=TS.teams[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(team.color).hex);
-      pick.setAttribute("aria-label",tf("tour.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", TS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        TS.open = TS.open===k ? -1 : k;
-        renderTRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=team.name;
-      name.maxLength=22;
-      name.placeholder=tf("tour.teamn",{n:k+1});
-      name.setAttribute("aria-label",tf("tour.team.aria",{n:k+1}));
-      name.addEventListener("input",function(){ team.name=name.value; save(); });
-      row.appendChild(name);
-      host.appendChild(row);
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = TS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===team.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          team.color=col.id; TS.open=-1;
-          renderTRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("trows"), etat:TS, liste:TS.teams, nombre:TS.count, flex:true,
+    cleCouleur:"tour.color.aria",
+    nomParDefaut:function(k){ return tf("tour.teamn",{n:k+1}); },
+    nomAria:function(k){ return tf("tour.team.aria",{n:k+1}); },
+    carnet:false,
+    repeindre:renderTRows
+  });
 }
 function renderTRules(){
   var gd=jeuDuel(S.game);
@@ -12414,6 +11942,37 @@ function ouvrirJeu(id){
   applyGame(id);
   show("setup");
 }
+/* Un jeu à tour de rôle devient le jeu courant : celui à deux camps qu'on
+   quitte range son score, son tableau et son brouillon, et la fiche de
+   règles passe à celles du nouveau jeu. */
+function devenirJeuCourant(id){
+  rangerJeuDuel();
+  S.game=id;
+  T=null;
+  fillRules("rulesBody");
+  save();
+}
+
+/* Après chaque coup d'un jeu à tour de rôle. La partie qui vient de se
+   terminer est archivée AVANT d'être sauvegardée : fermer l'application sur
+   l'écran de fin ne doit pas la faire perdre au palmarès. L'écran de fin
+   arrive ensuite, le temps de voir le dernier coup.
+     fermerFeuille, archiver, peindre, peindreFin, delai
+     feuille, peindreFeuille  la feuille de match, repeinte si elle est ouverte */
+function apresUnCoup(finie, o){
+  if(finie){
+    o.fermerFeuille();
+    o.archiver();
+    save();
+    o.peindre();
+    setTimeout(o.peindreFin, o.delai || 620);
+  }else{
+    save();
+    o.peindre();
+    if($(o.feuille).classList.contains("on")) o.peindreFeuille();
+  }
+}
+
 $("catGames").addEventListener("click",function(e){
   var b=e.target.closest("button[data-jeu]");
   if(b) ouvrirJeu(b.dataset.jeu);
@@ -12507,8 +12066,21 @@ function show(name){
   if(name==="setup"){ refreshTourBtn(); refreshHallLink(); }
 }
 
+/* Le tableau, le brouillon et le score d'un jeu à deux camps vivent dans
+   T, TS et S.target tant qu'il est le jeu courant : on les range avant de
+   le quitter comme avant d'écrire. Un jeu à tour de rôle n'a rien à ranger
+   là — l'écrire rangeait le brouillon du dernier jeu à deux camps sous
+   son nom, en double dans chaque sauvegarde. */
+function rangerJeuDuel(){
+  if(!S.tgt) S.tgt=ciblesParDefaut();
+  if(jeu(S.game).famille!=="duel") return;
+  S.tgt[S.game]=S.target;
+  TOUR[S.game]=T;
+  DRAFT[S.game]=TS;
+}
+
 function save(){
-  TOUR[S.game]=T; DRAFT[S.game]=TS;   /* le jeu courant avant d'ecrire */
+  rangerJeuDuel();
   var o={s:S,g:G,tg:TOUR,ds:DRAFT,h:H,j:J};
   pourChaqueJeu("sauver", o);
   try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){}
@@ -12520,13 +12092,33 @@ function save(){
    divergé. Un jeu qui garde son propre état fournit les siennes, par
    charger et importer. */
 function normS(s){
+  if(!s || typeof s!=="object") s={};
   if(!JEUX[s.game]) s.game=jeuHistorique();
-  if(!s.tgt) s.tgt=ciblesParDefaut();
+  if(!s.tgt || typeof s.tgt!=="object") s.tgt=ciblesParDefaut();
   if(!s.palets) s.palets=paletDefault(s.mode);
-  if(!s.teams || s.teams.length!==2) s.teams=[{name:"",mates:["",""],color:"rouge"},{name:"",mates:["",""],color:"bleu"}];
+  if(!Array.isArray(s.teams) || s.teams.length!==2) s.teams=[{},{}];
+  s.teams=s.teams.map(function(team,i){
+    if(!team || typeof team!=="object") team={};
+    if(typeof team.name!=="string") team.name="";
+    if(!Array.isArray(team.mates)) team.mates=["",""];
+    team.color=color(team.color || (i ? "bleu" : "rouge")).id;
+    return team;
+  });
+  if(!s.mode) s.mode="simple";
   if(modesDuJeu(s.game).indexOf(s.mode)<0) s.mode="double";
-  s.teams.forEach(function(team){ if(!team.mates) team.mates=["",""]; });
   return s;
+}
+/* Une partie archivée se lit par ses noms et ses scores : ce qui n'en a
+   pas est écarté, plutôt que de bloquer le palmarès — et le démarrage. */
+function normH(h){
+  if(!Array.isArray(h)) return [];
+  return h.filter(function(g){
+    return g && typeof g==="object" && Array.isArray(g.n) && Array.isArray(g.s);
+  }).map(function(g){
+    if(!Array.isArray(g.c)) g.c=[];
+    if(typeof g.w!=="number") g.w=-1;
+    return g;
+  });
 }
 function normJ(liste){
   if(!liste || !liste.length) return [];
@@ -12535,6 +12127,10 @@ function normJ(liste){
   });
 }
 function normG(g){
+  if(!g || typeof g!=="object" || !Array.isArray(g.teams) || g.teams.length!==2 ||
+     !g.teams[0] || !g.teams[1]) return null;
+  if(!Array.isArray(g.rounds)) g.rounds=[];
+  g.rounds=g.rounds.filter(function(rd){ return rd && Array.isArray(rd.gain); });
   if(!g.game) g.game=jeuHistorique();
   if(!g.max) g.max=4;
   if(g.mpass===undefined) g.mpass=0;
@@ -12555,26 +12151,58 @@ function adoptTour(d){
   TS = DRAFT[S.game] || freshDraft(S.game);
   TS.open = -1;
 }
+/* Ce qui n'a pas pu être relu n'est pas perdu : la prochaine sauvegarde
+   écraserait la clé, on en garde donc une copie à côté. */
+var KEY_SECOURS = KEY+".secours";
+function mettreDeCote(raw){
+  try{ localStorage.setItem(KEY_SECOURS, raw); }catch(e){}
+}
+/* Chaque jeu relit son propre état ; celui qui échoue repart de zéro sans
+   entraîner les autres. */
+function chargerLesJeux(d, cle){
+  ORDRE_JEUX.forEach(function(id){
+    var j=JEUX[id];
+    if(!j[cle]) return;
+    try{ j[cle](d); }
+    catch(e){ try{ if(j.importer) j.importer({}); }catch(e2){} }
+  });
+}
+
 function load(){
   var raw;
   try{ raw=localStorage.getItem(KEY); }catch(e){ return; }
   if(!raw) return;
   var d;
-  try{ d=JSON.parse(raw); }catch(e){ return; }
-  if(d && d.s) S=normS(d.s);
+  try{ d=JSON.parse(raw); }catch(e){ mettreDeCote(raw); return; }
+  if(!d || typeof d!=="object" || Array.isArray(d)){ mettreDeCote(raw); return; }
+  try{ restaurer(d); }
+  catch(e){
+    /* un état que rien n'a su relire : l'application démarre quand même,
+       vierge, et l'original reste de côté */
+    mettreDeCote(raw);
+    S=normS(null); TOUR=carteVide(); DRAFT=carteVide(); T=null;
+    TS=freshDraft(S.game); G=null; H=[]; J=[];
+    chargerLesJeux({}, "importer");
+    show("games");
+  }
+}
+function restaurer(d){
+  if(d.s) S=normS(d.s);
   adoptTour(d);
   renderTSetup();
-  pourChaqueJeu("charger", d);
-  if(d && d.h && d.h.length) H=d.h;
-  J=normJ(d && d.j);
+  chargerLesJeux(d, "charger");
+  H=normH(d.h);
+  J=normJ(d.j);
   refreshJoueursLink();
   refreshTourBtn();
   refreshHallLink();
 
   /* un jeu qui a son propre écran de partie la reprend lui-même */
-  var courant=jeu(S.game);
-  if(!(courant.reprendre && courant.reprendre()) && d && d.g && d.g.teams){
+  var courant=jeu(S.game), repris=false;
+  try{ repris = !!(courant.reprendre && courant.reprendre()); }catch(e){ show("games"); }
+  if(!repris && d.g){
     G=normG(d.g);
+    if(!G) return;
     recompute();
     if(G.over){ renderOver(); }
     else { show("game"); renderGame(true); keepAwake(); }
@@ -12586,9 +12214,18 @@ function keepAwake(){
   if(!("wakeLock" in navigator)) return;
   navigator.wakeLock.request("screen").then(function(l){ lock=l; }).catch(function(){});
 }
+/* Le système rend le verrou dès que l'application passe en arrière-plan :
+   on le redemande au retour si une partie est à l'écran. Toutes les
+   parties se jouent sur un écran dont l'identifiant finit par « game » —
+   celui des jeux à deux camps, comme celui de chaque jeu à tour de rôle ;
+   ne tester que G laissait le mölkky ou les fléchettes s'éteindre. */
+function partieALEcran(){
+  var e=document.querySelector(".screen.on");
+  return !!(e && /game$/.test(e.id));
+}
 document.addEventListener("visibilitychange",function(){
-  if(document.visibilityState==="visible" && G && !G.over && !lock) keepAwake();
-  if(document.visibilityState==="hidden") lock=null;
+  if(document.visibilityState==="hidden"){ lock=null; return; }
+  if(!lock && partieALEcran()) keepAwake();
 });
 
 $("start").addEventListener("click",newGame);

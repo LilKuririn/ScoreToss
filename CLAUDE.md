@@ -43,6 +43,14 @@ apporte ses propres écrans et son état, comme le mölkky — et déclare, dans
 ferme le bouton retour d'Android sur ses fiches et ses écrans. Il peut proposer le tirage au sort
 de l'ordre de jeu : `tirerOrdre(participants, fin)`, dans `src/js/065-tirage-ordre.js`.
 
+Un jeu à tour de rôle s'appuie sur les briques communes plutôt que de les recopier :
+`devenirJeuCourant(id)` dans son `ouvrir` ; `peindreRangees({...})` pour les rangées de joueurs de
+sa préparation (numéro, couleur, nom relié au carnet, coéquipiers) ; `apresUnCoup(finie, {...})`
+après chaque coup ; `blocBareme` et `blocDeroule` pour sa fiche de règles ; `phraseAvecNom` pour
+une phrase traduite dont un nom se détache en gras. **Une partie terminée est archivée avant d'être
+sauvegardée** — dans l'autre ordre, fermer l'application sur l'écran de fin la faisait perdre au
+palmarès : `apresUnCoup` et `afterHistoryChange` le garantissent.
+
 Restent partagés pour l'instant, et donc à toucher pour certains jeux : le format enregistré des
 parties à deux camps (`S.palets`, `G.max`) et les seuls formats simple et double.
 
@@ -81,6 +89,11 @@ sans cache, le navigateur gardant volontiers l'ancien fichier.
 - **Les clés `localStorage`** — `cornhole.v1`, `cornhole.lang`, `cornhole.theme`. Les renommer
   effacerait les parties et palmarès existants.
 - **L'identifiant Android** `com.scoretosslabs.cornscore`, gravé par Google Play.
+
+Un état enregistré abîmé ne doit jamais empêcher l'application de démarrer : `load()` relit chaque
+jeu à part et remet à zéro celui qui échoue, écarte les parties illisibles du palmarès (`normH`), et
+recopie ce qu'il n'a pas su relire sous `cornhole.v1.secours` avant que la prochaine sauvegarde
+ne l'écrase.
 
 ## Pièges connus
 

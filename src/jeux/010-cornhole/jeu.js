@@ -58,33 +58,6 @@ declarerJeu({
 });
 
 function fillCornholeRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("rules.count")));
-  var pts=el("div","pts");
-  [["3",t("rules.hole")],["1",t("rules.board")]].forEach(function(p){
-    var row=el("div","pt-row");
-    row.appendChild(el("b",null,p[0]));
-    row.appendChild(el("span",null,p[1]));
-    pts.appendChild(row);
-  });
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("rules.flow")));
-  var list=el("ul","rulist");
-  [
-    [t("rules.1a"),t("rules.1b"),t("rules.1c")],
-    [t("rules.2a"),t("rules.2b"),t("rules.2c")],
-    [t("rules.3a"),t("rules.3b"),t("rules.3c")],
-    [t("rules.4a"),t("rules.4b"),t("rules.4c")]
-  ].forEach(function(r){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(r[0]));
-    li.appendChild(el("b",null,r[1]));
-    li.appendChild(document.createTextNode(r[2]));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("rules.count"), [["3",t("rules.hole")],["1",t("rules.board")]]);
+  blocDeroule(host, "rules", 4);
 }

@@ -22,7 +22,7 @@ function exportName(){
 }
 
 function exportData(){
-  TOUR[S.game]=T; DRAFT[S.game]=TS;
+  rangerJeuDuel();
   var contenu={v:1, at:Date.now(), s:S, tg:TOUR, ds:DRAFT, g:G, h:H, j:J};
   pourChaqueJeu("sauver", contenu);
   var payload=JSON.stringify(contenu, null, 1);
@@ -51,13 +51,13 @@ function applyImport(text){
   if(!window.confirm(t("data.confirm"))) return;
 
   if(d.s && d.s.teams && d.s.teams.length===2) S=d.s;
-  normS(S);
+  S=normS(S);
   TOUR=carteVide(); DRAFT=carteVide();
   adoptTour(d);
-  H = (d.h && d.h.length) ? d.h : [];
+  H = normH(d.h);
   J = normJ(d.j);
-  pourChaqueJeu("importer", d);
-  G = (d.g && d.g.teams) ? normG(d.g) : null;
+  chargerLesJeux(d, "importer");
+  G = d.g ? normG(d.g) : null;
   if(G) recompute();
 
   save();

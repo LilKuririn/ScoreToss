@@ -111,57 +111,14 @@ function renderTCount(){
     (byes===0 ? t("tour.byes.none") : tn("tour.byes",byes));
 }
 function renderTRows(){
-  var host=$("trows");
-  host.innerHTML="";
-  host.style.display="flex";
-  host.style.flexDirection="column";
-  host.style.gap="0";
-
-  for(var k=0;k<TS.count;k++){
-    (function(k){
-      var team=TS.teams[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(team.color).hex);
-      pick.setAttribute("aria-label",tf("tour.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", TS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        TS.open = TS.open===k ? -1 : k;
-        renderTRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=team.name;
-      name.maxLength=22;
-      name.placeholder=tf("tour.teamn",{n:k+1});
-      name.setAttribute("aria-label",tf("tour.team.aria",{n:k+1}));
-      name.addEventListener("input",function(){ team.name=name.value; save(); });
-      row.appendChild(name);
-      host.appendChild(row);
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = TS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===team.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          team.color=col.id; TS.open=-1;
-          renderTRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("trows"), etat:TS, liste:TS.teams, nombre:TS.count, flex:true,
+    cleCouleur:"tour.color.aria",
+    nomParDefaut:function(k){ return tf("tour.teamn",{n:k+1}); },
+    nomAria:function(k){ return tf("tour.team.aria",{n:k+1}); },
+    carnet:false,
+    repeindre:renderTRows
+  });
 }
 function renderTRules(){
   var gd=jeuDuel(S.game);

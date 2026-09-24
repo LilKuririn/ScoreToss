@@ -85,26 +85,6 @@ $("mtrMiss").addEventListener("click",maitreMiss);
 /* Le palet compte autrement : pas de bareme a deux valeurs, mais un point
    par palet mieux place. La fiche suit donc une autre trame. */
 function fillPaletRules(host){
-  var comptage=el("div","block");
-  comptage.appendChild(el("p","eyebrow",t("prules.count")));
-  var pts=el("div","pts");
-  var row=el("div","pt-row");
-  row.appendChild(el("b",null,"1"));
-  row.appendChild(el("span",null,t("prules.pt")));
-  pts.appendChild(row);
-  comptage.appendChild(pts);
-  host.appendChild(comptage);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("prules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5,6].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("prules."+k+"a")));
-    li.appendChild(el("b",null,t("prules."+k+"b")));
-    li.appendChild(document.createTextNode(t("prules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocBareme(host, t("prules.count"), [["1",t("prules.pt")]]);
+  blocDeroule(host, "prules", 6);
 }

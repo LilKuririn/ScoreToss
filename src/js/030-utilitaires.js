@@ -30,10 +30,18 @@ function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
 /* « X marque 5 points » avec le nom en gras, quel que soit l'ordre des
    mots dans la langue : on découpe la phrase autour du marqueur. */
 function outcomeInto(host, name, n){
+  phraseAvecNom(host, tn("game.scores",n).replace(/\{name\}/g,"\u0000"), name);
+}
+/* Le nom tombe où la langue le place : la phrase porte un marqueur \u0000
+   à sa place, et le nom s'y écrit en gras — à la couleur de son équipe si
+   on la donne. */
+function phraseAvecNom(host, phrase, nom, hex){
   host.innerHTML="";
-  var parts=tn("game.scores",n).replace(/\{name\}/g,"\u0000").split("\u0000");
+  var parts=phrase.split("\u0000");
   host.appendChild(document.createTextNode(parts[0]||""));
-  host.appendChild(el("b",null,name));
+  var b=el("b",null,nom);
+  if(hex) b.style.color=teamInk(hex);
+  host.appendChild(b);
   host.appendChild(document.createTextNode(parts[1]||""));
 }
 

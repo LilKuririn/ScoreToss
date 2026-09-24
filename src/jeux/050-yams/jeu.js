@@ -48,16 +48,7 @@ declarerJeu({
   },
 
   ouvrir:function(){
-    if(!S.tgt) S.tgt=ciblesParDefaut();
-    if(jeu(S.game).famille==="duel"){
-      S.tgt[S.game]=S.target;
-      TOUR[S.game]=T;
-      DRAFT[S.game]=TS;
-    }
-    S.game="yams";
-    T=null;
-    fillRules("rulesBody");
-    save();
+    devenirJeuCourant("yams");
     show("ysetup");
     renderYSetup();
   }
@@ -167,54 +158,13 @@ function renderYSetup(){
 }
 
 function renderYRows(){
-  var host=$("yaRows");
-  host.innerHTML="";
-  for(var k=0;k<YS.count;k++){
-    (function(k){
-      var pl=YS.players[k];
-      var row=el("div","trow");
-      row.appendChild(el("span","seed",String(k+1).padStart(2,"0")));
-
-      var pick=el("button","pick");
-      pick.type="button";
-      pick.style.setProperty("--c",color(pl.color).hex);
-      pick.setAttribute("aria-label",tf("ya.color.aria",{n:k+1}));
-      pick.setAttribute("aria-expanded", YS.open===k ? "true":"false");
-      pick.appendChild(el("i"));
-      pick.addEventListener("click",function(){
-        YS.open = YS.open===k ? -1 : k;
-        renderYRows();
-      });
-      row.appendChild(pick);
-
-      var name=el("input","field-input");
-      name.type="text";
-      name.value=pl.name;
-      name.maxLength=22;
-      name.placeholder=tf("ya.playern",{n:k+1});
-      name.setAttribute("aria-label",tf("ya.player.aria",{n:k+1}));
-      name.addEventListener("input",function(){ pl.name=name.value; save(); });
-      row.appendChild(name);
-      champDeJoueur(name, pl, "pid", YS.players, renderYRows);
-      host.appendChild(row);
-
-      var sw=el("div","trow-sw swatches");
-      sw.hidden = YS.open!==k;
-      COLORS.forEach(function(col){
-        var b=el("button","sw");
-        b.type="button";
-        b.style.setProperty("--c",col.hex);
-        b.setAttribute("aria-pressed", col.id===pl.color ? "true":"false");
-        b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-        b.addEventListener("click",function(){
-          pl.color=col.id; YS.open=-1;
-          renderYRows(); save();
-        });
-        sw.appendChild(b);
-      });
-      host.appendChild(sw);
-    })(k);
-  }
+  peindreRangees({
+    hote:$("yaRows"), etat:YS, liste:YS.players, nombre:YS.count,
+    cleCouleur:"ya.color.aria",
+    nomParDefaut:function(k){ return tf("ya.playern",{n:k+1}); },
+    nomAria:function(k){ return tf("ya.player.aria",{n:k+1}); },
+    repeindre:renderYRows
+  });
 }
 
 function yaNouvellePartie(){
@@ -425,19 +375,10 @@ function yaApresChangement(vibration){
   var avant = YE ? YE.fini : false;
   YE=yaRejouer();
   buzz(vibration);
-  /* l'archivage précède la sauvegarde : fermer l'app sur l'écran de fin
-     ne doit pas faire perdre la partie au palmarès */
-  if(YE.fini && !avant){
-    yaFermerFeuille();
-    yaArchiver();
-    save();
-    renderYGame();
-    setTimeout(renderYOver, 620);
-  }else{
-    save();
-    renderYGame();
-    if($("yaSheetWrap").classList.contains("on")) renderYSheet();
-  }
+  apresUnCoup(YE.fini && !avant, {
+    fermerFeuille:yaFermerFeuille, archiver:yaArchiver, peindre:renderYGame, peindreFin:renderYOver,
+    feuille:"yaSheetWrap", peindreFeuille:renderYSheet
+  });
 }
 
 /* --- tirage au sort de l'ordre ----------------------------------- */
@@ -772,35 +713,10 @@ $("yaQuit").addEventListener("click",function(){
 
 /* --- fiche de règles --------------------------------------------- */
 function fillYamsRules(host){
-  function bloc(titre, lignes){
-    var b=el("div","block");
-    b.appendChild(el("p","eyebrow",titre));
-    var pts=el("div","pts");
-    lignes.forEach(function(r){
-      var row=el("div","pt-row");
-      row.appendChild(el("b",null,r[0]));
-      row.appendChild(el("span",null,r[1]));
-      pts.appendChild(row);
-    });
-    b.appendChild(pts);
-    host.appendChild(b);
-  }
-  bloc(t("yrules.upper"), [["1–6",t("yrules.upper.sum")], ["+35",t("yrules.bonus")]]);
-  bloc(t("yrules.lower"), [
+  blocBareme(host, t("yrules.upper"), [["1–6",t("yrules.upper.sum")], ["+35",t("yrules.bonus")]]);
+  blocBareme(host, t("yrules.lower"), [
     ["Σ",t("yrules.brelan")], ["Σ",t("yrules.carre")], ["25",t("yrules.full")],
     ["30",t("yrules.psuite")], ["40",t("yrules.gsuite")], ["50",t("yrules.yams")], ["Σ",t("yrules.chance")]
   ]);
-
-  var deroule=el("div","block");
-  deroule.appendChild(el("p","eyebrow",t("yrules.flow")));
-  var list=el("ul","rulist");
-  [1,2,3,4,5].forEach(function(k){
-    var li=document.createElement("li");
-    li.appendChild(document.createTextNode(t("yrules."+k+"a")));
-    li.appendChild(el("b",null,t("yrules."+k+"b")));
-    li.appendChild(document.createTextNode(t("yrules."+k+"c")));
-    list.appendChild(li);
-  });
-  deroule.appendChild(list);
-  host.appendChild(deroule);
+  blocDeroule(host, "yrules", 5);
 }
