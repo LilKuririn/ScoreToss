@@ -1,20 +1,59 @@
-  <!-- ============ PALMARÈS ============ -->
+  <!-- ============ PALMARÈS : classement, historique, joueurs ============ -->
   <section class="screen" id="s-hall">
     <header class="brand">
-      <div class="brand-row">
-        <div>
-          <p class="eyebrow" id="hallCount">Parties enregistrées</p>
-          <h1><span data-i18n="hall.title">Palmarès</span><span>.</span></h1>
-        </div>
-        <button type="button" class="ghost-btn" id="hallBack" data-i18n="nav.home">Accueil</button>
-      </div>
+      <button type="button" class="crumb" id="hallBack">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span id="hallBackLab">Accueil</span>
+      </button>
+      <h1><span data-i18n="hall.title">Palmarès</span><span>.</span></h1>
+      <p class="eyebrow pal-count" id="hallCount"></p>
     </header>
-    <div class="hall-body" id="hallBody"></div>
-    <footer class="cta-bar">
-      <button type="button" class="cta ghost" id="hallClear" data-i18n="hall.clear">Effacer le palmarès</button>
+
+    <div class="seg seg3 pal-tabs" id="palTabs" role="tablist">
+      <button type="button" data-onglet="rang" role="tab" data-i18n="pal.tab.rank">Classement</button>
+      <button type="button" data-onglet="hist" role="tab" data-i18n="pal.tab.hist">Historique</button>
+      <button type="button" data-onglet="gens" role="tab" data-i18n="pal.tab.people">Joueurs</button>
+    </div>
+    <div class="pal-filtres" id="palFiltres" role="toolbar" data-i18n-aria="pal.filter"></div>
+
+    <div class="pal-pane" id="hallBody"></div>
+
+    <footer class="cta-bar jr-bar" id="palAjout" hidden>
+      <input type="text" class="field-input" id="jrNouveau" maxlength="22" data-i18n-ph="pl.new.ph" data-i18n-aria="pl.new" placeholder="Prénom ou surnom">
+      <button type="button" class="cta" id="jrAjouter" data-i18n="pl.add">Ajouter</button>
     </footer>
   </section>
 
+  <!-- ============ FICHE D'UN JOUEUR ============ -->
+  <section class="screen" id="s-fiche">
+    <header class="brand pal-fiche-head">
+      <button type="button" class="crumb" id="ficheBack">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-i18n="hall.title">Palmarès</span>
+      </button>
+    </header>
+    <div class="pal-pane" id="ficheBody"></div>
+  </section>
+
+  <!-- le détail d'une partie archivée -->
+  <div class="sheet-wrap" id="palDetail">
+    <div class="scrim" id="palDetailScrim"></div>
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheet-head">
+        <h3 id="palDetailTitre"></h3>
+        <button type="button" class="icon-btn" id="palDetailClose" data-i18n-aria="nav.close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="sheet-body pal-detail" id="palDetailBody"></div>
+    </div>
+  </div>
+
   <input type="file" id="importFile" accept="application/json,.json" hidden>
   <p class="toast" id="toast" role="status" aria-live="polite"></p>
-

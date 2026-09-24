@@ -126,7 +126,7 @@ function refreshTourBtn(){
 
 function show(name){
   applyStaticText();      /* les mots du jeu courant : « mène » à la pétanque seulement */
-  ["games","cat","joueurs","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
+  ["games","cat","setup","tsetup","bracket","hall","fiche","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
   if(name!=="game") closeSheet();
@@ -261,7 +261,6 @@ function restaurer(d){
   chargerLesJeux(d, "charger");
   H=normH(d.h);
   J=normJ(d.j);
-  refreshJoueursLink();
   refreshTourBtn();
   refreshHallLink();
 
@@ -318,7 +317,6 @@ fillRules("rulesBody");
 renderTSetup();
 refreshTourBtn();
 refreshHallLink();
-refreshJoueursLink();
 
 /* installation sur l'écran d'accueil et fonctionnement hors ligne */
 if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){

@@ -655,7 +655,6 @@ function yaNormY(y){
 
 /* --- commandes --------------------------------------------------- */
 $("yaToGames").addEventListener("click",retourAuxJeux);
-$("yaHall").addEventListener("click",function(){ HALL_BACK="ysetup"; renderHall(); show("hall"); });
 $("yaMinus").addEventListener("click",function(){
   if(YS.count>YA_MIN){ YS.count--; YS.open=-1; renderYSetup(); save(); }
 });

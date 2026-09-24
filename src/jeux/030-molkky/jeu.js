@@ -741,7 +741,6 @@ $("mkQuit").addEventListener("click",function(){
   show("msetup");
   renderMSetup();
 });
-$("mkHall").addEventListener("click",function(){ HALL_BACK="msetup"; renderHall(); show("hall"); });
 
 /* --- état enregistré -------------------------------------------- */
 /* Normalisation de ce que le démarrage et l'import relisent. Elle vivait

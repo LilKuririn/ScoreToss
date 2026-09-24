@@ -1,56 +1,16 @@
 /* =============================================================
-   9 bis. JOUEURS — le carnet et le choix d'un nom
+   9 bis. JOUEURS — la saisie d'un nouveau joueur et le choix d'un nom
    ============================================================= */
-.jr-body{flex:1;min-height:0;overflow:auto;padding:4px 16px 16px;-webkit-overflow-scrolling:touch}
-.jr-body .hint{margin-top:14px}
-
-#jrListe{display:flex;flex-direction:column;gap:20px}
-
-/* une ligne du carnet : la couleur, le nom, le bilan, et sa fiche */
-.jr-ligne{
-  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
-  padding:12px 13px;border-radius:12px;
-  background:var(--panel);border:1px solid var(--line);
-}
-.jr-ligne + .jr-ligne{margin-top:8px}
-.jr-ligne:active{background:var(--panel-2)}
-.jr-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
-.jr-nom{flex:1;min-width:0;font-size:15px;font-weight:600;color:var(--ink);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.jr-bilan{
-  flex:0 0 auto;font-family:var(--fm);font-size:12.5px;color:var(--muted);
-  font-variant-numeric:tabular-nums;
-}
-.jr-chev{flex:0 0 auto;color:var(--muted);display:grid;place-items:center}
-
-/* la fiche : trois chiffres en tête, puis les tableaux du palmarès */
-.jr-chiffres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
-.jr-chiffre{
-  background:var(--panel-2);border-radius:12px;padding:12px 10px;
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-}
-.jr-chiffre b{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
-.jr-chiffre span{
-  font-family:var(--fm);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--muted);text-align:center;
-}
-#jrFicheBody{display:flex;flex-direction:column;gap:20px}
-/* « gagnée contre X » demande plus de place que le palmarès : la date
-   se resserre et la ligne s'écrit un peu plus petit */
-#jrFicheBody .rec .d{flex:0 0 46px}
-#jrFicheBody .rec .m{font-size:12.5px}
-#jrFicheBody .cta.danger{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 40%,var(--line-2))}
-#jrFicheBody .cta.danger.arme{background:var(--danger);color:var(--bg);border-color:transparent}
-
 /* la barre du bas sert à créer : le champ, puis le bouton sur un quart de
    la largeur — étiré à la hauteur du champ plutôt qu'à la sienne */
 .jr-bar{display:flex;align-items:stretch;gap:9px}
+.jr-bar[hidden]{display:none}
 .jr-bar .field-input{flex:1 1 auto;min-width:0}
 .jr-bar .cta{flex:0 0 25%;width:auto;padding:0 8px;border-radius:11px;font-size:15px}
 
 /* le bouton discret qui ouvre le carnet depuis un champ de nom */
 .jr-champ{position:relative;display:block;min-width:0}
-.trow > .jr-champ,.jr-ligne > .jr-champ{flex:1}
+.trow > .jr-champ{flex:1}
 .jr-champ > .field-input{
   /* le champ n'est plus un enfant direct de la rangée : sans cette règle il
      redevient inline-block, et prend une ligne de base sous lui */

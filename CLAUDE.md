@@ -59,7 +59,9 @@ Un champ de nom se relie au carnet de joueurs — `src/js/067-joueurs.js` — pa
 carnet, et l'identifiant choisi est rangé dans `porteur[cle]`, à côté du nom que le jeu enregistre
 déjà. Taper un nom à la main détache le joueur. Au démarrage d'une partie, le jeu range les
 identifiants de chaque camp — `idsDe(porteur, nbCoequipiers)` — et les archive dans `p`, parallèle
-aux noms de `n` : c'est de là que sortent le classement croisé et les fiches des joueurs.
+aux noms de `n`. Le palmarès (`src/js/100-palmares.js`) en tire tout : il compte par membres —
+`membres(g, i)` rend les joueurs du carnet d'un camp, ou son nom comme invité —, et un jeu n'a rien à
+lui fournir que son `lienPalmares`, que le palmarès câble lui-même, et ses `records` s'il se joue seul.
 
 Le banc joue vingt-huit parcours, le carnet compris.
 

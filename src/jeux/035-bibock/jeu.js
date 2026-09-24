@@ -553,7 +553,6 @@ function biNormB(b){
 
 /* --- commandes --------------------------------------------------- */
 $("biToGames").addEventListener("click",retourAuxJeux);
-$("biHall").addEventListener("click",function(){ HALL_BACK="bsetup"; renderHall(); show("hall"); });
 $("biPerMinus").addEventListener("click",function(){
   if(BS.per>BI_PER_MIN){ BS.per--; BS.open=-1; renderBSetup(); save(); }
 });

@@ -582,9 +582,10 @@ async function carnetChoisir(a, sel, index, nom){
 }
 
 scenario("joueurs-carnet", async function(a){
-  await a.clic("#openJoueurs");                                a.point("carnet vide");
+  await a.clic("#openPalmares");                               a.point("palmarès vide");
+  await a.clic('#palTabs [data-onglet="gens"]');               a.point("carnet vide");
   await carnetAjouter(a, ["Marius","Fanny","César"]);          a.point("trois joueurs");
-  await a.clic("#jrBack");
+  await a.clic("#hallBack");
   await a.clic('#categories [data-categorie="exterieur"]');
   await a.clic("#playPetanque");
   await a.clic('#mode button[data-mode="double"]');
@@ -596,11 +597,17 @@ scenario("joueurs-carnet", async function(a){
   for(var k=0;k<3 && !(a.etat().g||{}).over;k++){ await palet(a,1,5); await valider(a); }
   await finDePartie(a);                                        a.point("victoire");
   await a.clic("#over .cta.ghost");
+  await a.clic("#openHall");                                   a.point("palmarès filtré sur la pétanque");
+  await a.clic("#hallBack");                                   a.point("retour à la préparation");
   await a.clic("#backToGames"); await a.clic("#catBack");
-  await a.clic("#openJoueurs");                                a.point("classement tous jeux");
-  await a.clicN("#jrListe .jr-ligne", 0);                      a.point("fiche du joueur");
-  await a.clic("#jrFicheClose");
-  await a.clicN("#jrListe .jr-ligne", 2);
-  await a.clic("#jrFicheBody .cta.danger");                    a.point("suppression armée");
-  await a.clic("#jrFicheBody .cta.danger");                    a.point("joueur supprimé");
+  await a.clic("#openPalmares");                               a.point("classement tous jeux");
+  await a.clic('#palTabs [data-onglet="hist"]');               a.point("historique");
+  await a.clicN("#hallBody .pal-game", 0);                     a.point("détail d'une partie");
+  await a.clic("#palDetailClose");
+  await a.clic('#palTabs [data-onglet="gens"]');
+  await a.clicN("#hallBody .pal-joueur", 0);                   a.point("fiche du joueur");
+  await a.clic("#ficheBack");
+  await a.clicN("#hallBody .pal-joueur", 2);
+  await a.clic("#ficheBody .pal-danger");                      a.point("suppression armée");
+  await a.clic("#ficheBody .pal-danger");                      a.point("joueur supprimé, retour au carnet");
 }, [360,640]);

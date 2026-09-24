@@ -40,7 +40,7 @@ rang. En équipes, ce sont les équipes qui sont tirées.
 **Simple (1v1) ou double (2v2).** Nom d'équipe, noms des joueurs, couleur au choix parmi neuf.
 Passer d'un mode à l'autre repart de noms vides, un joueur n'étant pas une équipe.
 
-**Le carnet de joueurs.** Un bouton en haut de l'accueil ouvre la liste de ceux avec qui on joue souvent : un nom, une
+**Le carnet de joueurs.** L'onglet *Joueurs* du palmarès tient la liste de ceux avec qui on joue souvent : un nom, une
 couleur, rien d'autre. Chaque champ de nom, dans les huit jeux, porte un bouton qui ouvre ce carnet
 — on choisit au lieu de retaper, et un nom tapé à la main entre au carnet d'un toucher. Le camp
 prend alors **la couleur du joueur** ; si le voisin la portait déjà, les deux l'échangent, comme
@@ -49,12 +49,6 @@ reste un champ de texte : l'invité du dimanche s'écrit comme avant, sans rien 
 le jeu retient l'identifiant du joueur à côté du nom qu'il affiche, et l'inscrit dans la partie
 archivée.
 
-**Palmarès croisé.** L'écran Joueurs ouvre sur le **classement tous jeux** — victoires, défaites,
-ratio — puis la liste du carnet, chacun avec son bilan. Toucher un nom ouvre sa **fiche** : parties,
-victoires et ratio en trois chiffres, la répartition par jeu, ses dernières parties, et de quoi le
-renommer, changer sa couleur ou le supprimer. En équipe, la victoire compte pour **chacun de ses
-membres**. Renommer un joueur renomme aussi ses parties passées, y compris dans le palmarès du jeu ;
-le supprimer ne touche à rien de ce qui est archivé.
 
 **Saisie par manche.** Un compteur *trou* (3 points) et un compteur *planche* (1 point) par équipe,
 plafonnés à quatre sacs. L'annulation est calculée et affichée avant validation : personne n'a de
@@ -95,19 +89,27 @@ réapparaissent pas de l'autre. Les deux peuvent tourner en même temps sans se 
 ## Palmarès
 
 Les parties terminées sont archivées, tournoi compris, pour répondre à la seule question qui fâche
-entre deux barbecues : **qui mène**.
+entre deux barbecues : **qui mène**. Un seul écran, ouvert par le **trophée** de l'accueil — ou,
+déjà filtré, par le bouton palmarès de chaque jeu —, en trois onglets. Au-dessus, un filtre par jeu
+ne propose que les jeux réellement joués, chacun avec son nombre de parties.
 
-- **Confrontations** — le face-à-face de chaque paire, avec une barre partagée dans leurs couleurs
-- **Classement** — victoires, défaites, ratio
-- **Dernières parties** — date, vainqueur, score
+- **Classement** — un podium des trois premiers, puis la suite à partir du quatrième. Chaque ligne
+  se lit en toutes lettres : « 15 victoires sur 30 parties », puis la part de parties gagnées.
+  Classement au nombre de victoires ; une égalité ne compte ni pour ni contre, une partie jouée seul
+  ne compte pas. Le yams, qui se joue aussi seul, ajoute ses **meilleurs scores**.
+- **Historique** — regroupé par jour, chaque partie dite en une phrase, le vainqueur en gras :
+  « **Marius & Fanny** battent César & Panisse — 13 – 9 ». Un toucher en ouvre le détail : chaque
+  participant avec sa place et son score, les manches, le format, le tournoi. Filtré sur un jeu,
+  l'onglet propose d'en effacer les parties.
+- **Joueurs** — le carnet, et la barre pour y ajouter quelqu'un.
 
-Le yams, qui se joue aussi seul, ajoute ses **meilleurs scores**. Une partie seule ne compte pas au
-classement, et une égalité n'y compte ni pour ni contre personne.
-
-Au cornhole et au palet, une petite marque `1v1` ou `2v2` distingue les joueurs des équipes. Un nom apparu dans les deux
-formats n'en reçoit aucune : elle mentirait.
-
-Chaque jeu a son palmarès : les victoires ne voyagent pas de l'un à l'autre.
+On lit par **personnes** : en équipe, la victoire compte pour chacun de ses membres ; un nom tapé à
+la main compte sous ce nom, marqué *invité*. Toucher un joueur du carnet ouvre sa **fiche** : son
+rang général, ses parties, victoires et part de victoires, sa forme sur les cinq dernières, ses
+jeux, ses face-à-face contre chaque adversaire, ses dernières parties racontées de son point de vue
+(« Perdue contre César & Panisse, avec Fanny · 11 – 13 »), et de quoi le renommer, le recolorier
+ou le retirer du carnet. Renommer un joueur renomme aussi ses parties passées ; le retirer ne touche
+à rien de ce qui est archivé — ses parties retombent sous son nom, comme invité.
 
 ## Les règles appliquées
 
@@ -297,7 +299,7 @@ préparation : elle dit ce que l'application contient, et tient la sauvegarde, l
 Une **sauvegarde** exportable en JSON permet de tout emporter avant de changer de téléphone, et de
 le restaurer ensuite.
 
-Le palmarès d'un jeu s'efface depuis ce jeu ; *À propos* efface **les huit d'un coup**, en deux
+Les parties d'un jeu s'effacent depuis l'historique filtré sur ce jeu ; *À propos* efface **les huit d'un coup**, en deux
 touchers, sans toucher au carnet de joueurs, à la partie en cours ni aux tournois.
 
 ## Langues et apparence

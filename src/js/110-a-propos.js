@@ -96,7 +96,6 @@ function fillAbout(){
     H=[];
     save();
     refreshHallLink();
-    if($("s-joueurs").classList.contains("on")) renderJoueurs();
     toast(t("data.wipe.done"));
   });
   net.appendChild(tout);

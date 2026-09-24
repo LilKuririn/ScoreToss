@@ -661,7 +661,6 @@ function tiNormI(ti){
 
 /* --- commandes --------------------------------------------------- */
 $("tiToGames").addEventListener("click",retourAuxJeux);
-$("tiHall").addEventListener("click",function(){ HALL_BACK="isetup"; renderHall(); show("hall"); });
 $("tiMode").addEventListener("click",function(e){
   var b=e.target.closest("button[data-mode]");
   if(!b || b.dataset.mode===TIS.mode) return;

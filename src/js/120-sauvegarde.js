@@ -63,7 +63,7 @@ function applyImport(text){
   save();
   closeAbout();
   renderCards(); renderRules(); renderTSetup();
-  refreshTourBtn(); refreshHallLink(); refreshJoueursLink();
+  refreshTourBtn(); refreshHallLink();
   if(G && !G.over){ show("game"); renderGame(true); }
   else show("setup");
   toast(t("data.imported"));
@@ -141,23 +141,4 @@ $("openRulesT").addEventListener("click",openRules);
 $("rulesClose").addEventListener("click",closeRules);
 $("rulesScrim").addEventListener("click",closeRules);
 
-var HALL_BACK="setup";
-$("openHall").addEventListener("click",function(){ HALL_BACK="setup"; renderHall(); show("hall"); });
-$("hallBack").addEventListener("click",function(){ show(HALL_BACK); });
-$("hallClear").addEventListener("click",function(){
-  var b=$("hallClear");
-  if(b.dataset.armed!=="1"){
-    b.dataset.armed="1";
-    b.textContent=t("hall.clear.confirm");
-    setTimeout(function(){
-      if(b.dataset.armed==="1"){ b.dataset.armed="0"; b.textContent=t("hall.clear"); }
-    },4000);
-    return;
-  }
-  b.dataset.armed="0";
-  b.textContent=t("hall.clear");
-  H=H.filter(function(x){ return (x.g||jeuHistorique())!==S.game; }); save();
-  renderHall(); refreshHallLink();
-  show("setup");
-});
 

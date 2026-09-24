@@ -135,6 +135,9 @@ h1,h2,h3,p{margin:0}
   letter-spacing:-.045em;line-height:.95;margin-top:8px;
 }
 .brand h1 span{color:var(--muted)}
+/* le point final seul est estompé : un titre traduit, posé dans sa propre
+   balise, garde la couleur du texte comme les autres */
+.brand h1 span[data-i18n]{color:inherit}
 
 /* =============================================================
    0. CHOIX DU JEU
@@ -1468,58 +1471,18 @@ h1,h2,h3,p{margin:0}
 .ed-out{padding:12px 0 4px}
 
 /* =============================================================
-   9 bis. JOUEURS — le carnet et le choix d'un nom
+   9 bis. JOUEURS — la saisie d'un nouveau joueur et le choix d'un nom
    ============================================================= */
-.jr-body{flex:1;min-height:0;overflow:auto;padding:4px 16px 16px;-webkit-overflow-scrolling:touch}
-.jr-body .hint{margin-top:14px}
-
-#jrListe{display:flex;flex-direction:column;gap:20px}
-
-/* une ligne du carnet : la couleur, le nom, le bilan, et sa fiche */
-.jr-ligne{
-  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
-  padding:12px 13px;border-radius:12px;
-  background:var(--panel);border:1px solid var(--line);
-}
-.jr-ligne + .jr-ligne{margin-top:8px}
-.jr-ligne:active{background:var(--panel-2)}
-.jr-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
-.jr-nom{flex:1;min-width:0;font-size:15px;font-weight:600;color:var(--ink);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.jr-bilan{
-  flex:0 0 auto;font-family:var(--fm);font-size:12.5px;color:var(--muted);
-  font-variant-numeric:tabular-nums;
-}
-.jr-chev{flex:0 0 auto;color:var(--muted);display:grid;place-items:center}
-
-/* la fiche : trois chiffres en tête, puis les tableaux du palmarès */
-.jr-chiffres{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
-.jr-chiffre{
-  background:var(--panel-2);border-radius:12px;padding:12px 10px;
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-}
-.jr-chiffre b{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
-.jr-chiffre span{
-  font-family:var(--fm);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--muted);text-align:center;
-}
-#jrFicheBody{display:flex;flex-direction:column;gap:20px}
-/* « gagnée contre X » demande plus de place que le palmarès : la date
-   se resserre et la ligne s'écrit un peu plus petit */
-#jrFicheBody .rec .d{flex:0 0 46px}
-#jrFicheBody .rec .m{font-size:12.5px}
-#jrFicheBody .cta.danger{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 40%,var(--line-2))}
-#jrFicheBody .cta.danger.arme{background:var(--danger);color:var(--bg);border-color:transparent}
-
 /* la barre du bas sert à créer : le champ, puis le bouton sur un quart de
    la largeur — étiré à la hauteur du champ plutôt qu'à la sienne */
 .jr-bar{display:flex;align-items:stretch;gap:9px}
+.jr-bar[hidden]{display:none}
 .jr-bar .field-input{flex:1 1 auto;min-width:0}
 .jr-bar .cta{flex:0 0 25%;width:auto;padding:0 8px;border-radius:11px;font-size:15px}
 
 /* le bouton discret qui ouvre le carnet depuis un champ de nom */
 .jr-champ{position:relative;display:block;min-width:0}
-.trow > .jr-champ,.jr-ligne > .jr-champ{flex:1}
+.trow > .jr-champ{flex:1}
 .jr-champ > .field-input{
   /* le champ n'est plus un enfant direct de la rangée : sans cette règle il
      redevient inline-block, et prend une ligne de base sous lui */
@@ -1605,50 +1568,163 @@ a.hall-link{text-decoration:none;color:inherit}
   border-top:1px solid var(--line);margin-top:18px;
 }
 
-.hall-body{flex:1;min-height:0;overflow-y:auto;padding:0 16px 16px;display:flex;flex-direction:column;gap:20px}
-.hall-body > *{flex:0 0 auto}
 .block{display:flex;flex-direction:column;gap:9px}
 
-.duel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 13px;display:flex;flex-direction:column;gap:10px}
-.duel-top{display:flex;align-items:center;gap:10px}
-.duel-n{display:flex;align-items:center;gap:7px;min-width:0;flex:1}
-.duel-n span{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.duel-n.r{justify-content:flex-end}
-.duel-mid{display:flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 auto}
-.duel-s{
-  font-family:var(--fm);font-size:15px;font-weight:700;
-  font-variant-numeric:tabular-nums;flex:0 0 auto;letter-spacing:.02em;
+/* --- l'écran : onglets, filtre par jeu, panneau qui défile --------- */
+.pal-count{margin-top:10px}
+.pal-tabs{margin:0 16px;flex:0 0 auto}
+.pal-tabs button{padding:10px 6px;font-size:14px}
+.pal-filtres{
+  display:flex;gap:6px;overflow-x:auto;flex:0 0 auto;
+  padding:12px 16px 4px;scrollbar-width:none;
 }
-.duel-bar{display:flex;height:5px;border-radius:3px;overflow:hidden;background:var(--panel-2)}
-.duel-bar i{display:block;height:100%}
-
-.rank{width:100%;border-collapse:collapse}
-.rank th{
-  font-family:var(--fm);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--muted);font-weight:500;text-align:right;padding-bottom:8px;
+.pal-filtres::-webkit-scrollbar{display:none}
+.pal-filtres[hidden]{display:none}      /* sinon display:flex l'emporte sur hidden */
+.pal-pill{
+  flex:0 0 auto;display:flex;align-items:center;gap:6px;
+  padding:7px 12px;border-radius:20px;border:1px solid var(--line);
+  font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;
+  transition:color .16s ease,border-color .16s ease,background .16s ease;
 }
-.rank th:first-child{text-align:left}
-.rank td{padding:10px 0;border-top:1px solid var(--line);font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
-.rank td:first-child{text-align:left}
-.rank .who{display:flex;align-items:center;gap:8px;min-width:0}
-.rank .who span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-.rank .pct{color:var(--muted);font-size:12.5px}
-
-/* joueur seul ou équipe de deux */
-.mtag{
-  flex:0 0 auto;
-  font-family:var(--fm);font-size:8.5px;font-weight:500;
-  letter-spacing:.1em;color:var(--muted);
-  border:1px solid var(--line-2);border-radius:5px;
-  padding:2px 4px;line-height:1;
-  position:relative;top:-.5px;
+.pal-pill small{font-family:var(--fm);font-size:10px;font-weight:500;opacity:.8}
+.pal-pill.on{
+  background:color-mix(in oklab,var(--ink) 13%,var(--panel-2));color:var(--ink);
+  border-color:color-mix(in oklab,var(--ink) 42%,transparent);
 }
+.pal-pane{flex:1;min-height:0;overflow-y:auto;padding:10px 16px 20px;display:flex;flex-direction:column;gap:22px}
+.pal-pane > *{flex:0 0 auto}
+.pal-list{display:flex;flex-direction:column;gap:8px}
+.pal-tag{
+  flex:0 0 auto;font-family:var(--fm);font-size:8.5px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  border:1px solid var(--line-2);border-radius:5px;padding:2px 5px;
+}
+.pal-av{
+  width:40px;height:40px;border-radius:50%;flex:0 0 auto;
+  display:grid;place-items:center;font-weight:800;font-size:16px;color:#fff;
+}
+.pal-av.grand{width:56px;height:56px;font-size:22px}
+.pal-danger{
+  width:100%;padding:13px;border-radius:12px;font-weight:600;font-size:14.5px;
+  color:var(--danger);border:1px solid color-mix(in oklab,var(--danger) 40%,var(--line-2));
+}
+.pal-danger.armed{background:var(--danger);color:var(--bg);border-color:transparent}
 
-.rec{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
-.rec .d{font-family:var(--fm);font-size:10px;letter-spacing:.05em;color:var(--muted);flex:0 0 58px}
-.rec .m{flex:1;min-width:0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
-.rec .m b{font-weight:700;color:var(--ink)}
-.rec .sc{font-family:var(--fm);font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--muted);flex:0 0 auto}
+/* --- le podium : les trois premiers, le premier au centre ----------- */
+.pal-podium{--or:#D9BE38;display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:8px}
+.pal-step{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
+.pal-step .who{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;min-width:0}
+.pal-step .nm{font-size:13.5px;font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pal-step .v{font-size:11.5px;color:var(--muted)}
+.pal-step .crown{color:var(--or);display:grid}
+.pal-step.first .pal-av{width:52px;height:52px;font-size:20px;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--or)}
+.pal-step .plinth{
+  width:100%;display:grid;place-items:center;border-radius:12px 12px 4px 4px;
+  background:var(--panel);border:1px solid var(--line);
+  font-family:var(--fm);font-weight:700;font-size:15px;color:var(--muted);
+}
+.pal-step.first .plinth{height:74px;color:var(--or);border-color:color-mix(in oklab,var(--or) 45%,var(--line))}
+.pal-step.second .plinth{height:54px}
+.pal-step.third .plinth{height:40px}
+.pal-step:disabled{cursor:default}
+
+/* --- une ligne du classement ---------------------------------------- */
+.pal-row{
+  display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:10px;
+  width:100%;text-align:left;padding:12px 12px 10px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+}
+.pal-row:disabled{cursor:default}
+.pal-row .rk{font-family:var(--fm);font-size:12px;color:var(--muted);text-align:center}
+.pal-row .main{min-width:0;display:flex;flex-direction:column;gap:3px}
+.pal-row .nm{display:flex;align-items:center;gap:7px;min-width:0;font-size:15px;font-weight:700;letter-spacing:-.01em}
+.pal-row .nm span:not(.dot):not(.pal-tag){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pal-row .sub{font-size:12px;color:var(--muted)}
+.pal-row .pc{font-size:17px;text-align:right}
+.pal-row .pc small{
+  display:block;margin-top:2px;font-family:var(--fm);font-size:9px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+.pal-row .bar{grid-column:2 / 4;height:4px;margin-top:4px;border-radius:2px;background:var(--panel-2);overflow:hidden}
+.pal-row .bar i{display:block;height:100%;border-radius:2px}
+
+/* les meilleurs scores d'un jeu qui se joue aussi seul */
+.pal-best{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.pal-best:nth-child(2){border-top:0}
+.pal-best .o{font-family:var(--fm);font-size:11px;color:var(--muted)}
+.pal-best .n{display:flex;align-items:center;gap:8px;min-width:0;font-size:14px}
+.pal-best .n b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pal-best .d{font-family:var(--fm);font-size:10px;color:var(--muted);flex:0 0 auto}
+.pal-best .s{font-size:17px}
+
+/* --- une partie de l'historique ------------------------------------- */
+.pal-game{
+  display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center;
+  width:100%;text-align:left;padding:12px 13px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+}
+.pal-game:active{background:var(--panel-2)}
+.pal-game .top{grid-column:1 / 3;display:flex;align-items:center;gap:8px}
+.pal-game .top .eyebrow{font-size:9.5px}
+.pal-game .top .t{margin-left:auto;font-family:var(--fm);font-size:10px;color:var(--muted)}
+.pal-game .say{min-width:0;font-size:14px;line-height:1.35;color:var(--muted)}
+.pal-game .say b{color:var(--ink);font-weight:700}
+.pal-game .sc{font-size:18px;text-align:right;white-space:nowrap}
+.pal-game .sc.win{color:var(--live)}
+.pal-game .sc.loss{color:var(--muted)}
+
+/* le détail d'une partie */
+.pal-detail{display:flex;flex-direction:column;gap:14px;padding-top:12px}
+.pal-meta{display:flex;flex-wrap:wrap;gap:6px}
+.pal-meta span{font-size:12px;color:var(--muted);background:var(--panel-2);border-radius:8px;padding:5px 9px}
+.pal-place{display:grid;grid-template-columns:30px 1fr auto;gap:4px 10px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.pal-place:first-child{border-top:0}
+.pal-place.lien{cursor:pointer}
+.pal-place .p{font-family:var(--fm);font-size:12px;color:var(--muted);text-align:center}
+.pal-place .p.gold{color:#D9BE38;font-weight:700}
+.pal-place .n{display:flex;align-items:center;gap:8px;min-width:0;font-weight:700;font-size:14.5px}
+.pal-place .n span:not(.dot){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pal-place .s{font-size:18px}
+.pal-place .m{grid-column:2 / 3;margin-top:-4px;font-size:12px;color:var(--muted)}
+
+/* --- le carnet ------------------------------------------------------ */
+.pal-joueur{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:13px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+}
+.pal-joueur:active{background:var(--panel-2)}
+.pal-joueur .nm{flex:1;min-width:0;font-size:15px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pal-joueur .sub{flex:0 0 auto;font-size:12px;color:var(--muted)}
+.pal-joueur .chev{flex:0 0 auto;display:grid;color:var(--muted)}
+
+/* --- la fiche d'un joueur ------------------------------------------- */
+.pal-fiche-head{padding-bottom:6px}
+.pal-hero{display:flex;align-items:center;gap:14px}
+.pal-hero .id{min-width:0}
+.pal-hero h2{margin:4px 0 4px;font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:1.05;overflow-wrap:anywhere}
+.pal-hero .rang{font-size:13px;line-height:1.45;color:var(--muted)}
+.pal-hero .rang b{color:var(--ink)}
+.pal-figs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pal-figs .fig{
+  display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+}
+.pal-figs .fig b{font-size:24px}
+.pal-figs .fig span{font-size:11.5px;line-height:1.3;color:var(--muted);text-align:center}
+.pal-form{display:flex;align-items:center;gap:6px}
+.pal-form i{
+  width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto;
+  font-style:normal;font-weight:800;font-size:13px;background:var(--panel-2);color:var(--muted);
+}
+.pal-form i.v{background:color-mix(in oklab,var(--live) 22%,var(--panel));color:var(--live)}
+.pal-form span{margin-left:4px;font-size:12px;color:var(--muted)}
+.pal-kv{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.pal-kv:nth-child(2){border-top:0}
+.pal-kv .k{display:flex;align-items:center;gap:7px;min-width:0;font-size:14.5px;font-weight:600}
+.pal-kv .v{font-size:12.5px;color:var(--muted);text-align:right}
+.pal-kv b.v{font-size:14px;color:var(--ink)}
+.pal-kv .bar{grid-column:1 / 3;display:flex;height:5px;border-radius:3px;background:var(--panel-2);overflow:hidden}
+.pal-kv .bar i{display:block;height:100%}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
@@ -1666,10 +1742,10 @@ a.hall-link{text-decoration:none;color:inherit}
           <h1>ScoreToss<span>.</span></h1>
         </div>
         <div class="nav">
-          <button type="button" class="nav-btn" id="openJoueurs" aria-label="Joueurs">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <circle cx="9" cy="6.2" r="3.1" stroke="currentColor" stroke-width="1.7"/>
-              <path d="M3.4 15.2c.7-3 3-4.6 5.6-4.6s4.9 1.6 5.6 4.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <button type="button" class="nav-btn" id="openPalmares" data-i18n-aria="hall.title">
+            <svg width="19" height="19" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M6 3.5h8v3.8a4 4 0 0 1-8 0V3.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              <path d="M6 5H3.6a2.6 2.6 0 0 0 2.9 3.3M14 5h2.4a2.6 2.6 0 0 1-2.9 3.3M10 11.3v2.9M7 16.5h6M8 14.2h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
           <button type="button" class="nav-btn" id="openAboutHome" data-i18n-aria="about.title">
@@ -2002,26 +2078,65 @@ a.hall-link{text-decoration:none;color:inherit}
     </footer>
   </section>
 
-  <!-- ============ PALMARÈS ============ -->
+  <!-- ============ PALMARÈS : classement, historique, joueurs ============ -->
   <section class="screen" id="s-hall">
     <header class="brand">
-      <div class="brand-row">
-        <div>
-          <p class="eyebrow" id="hallCount">Parties enregistrées</p>
-          <h1><span data-i18n="hall.title">Palmarès</span><span>.</span></h1>
-        </div>
-        <button type="button" class="ghost-btn" id="hallBack" data-i18n="nav.home">Accueil</button>
-      </div>
+      <button type="button" class="crumb" id="hallBack">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span id="hallBackLab">Accueil</span>
+      </button>
+      <h1><span data-i18n="hall.title">Palmarès</span><span>.</span></h1>
+      <p class="eyebrow pal-count" id="hallCount"></p>
     </header>
-    <div class="hall-body" id="hallBody"></div>
-    <footer class="cta-bar">
-      <button type="button" class="cta ghost" id="hallClear" data-i18n="hall.clear">Effacer le palmarès</button>
+
+    <div class="seg seg3 pal-tabs" id="palTabs" role="tablist">
+      <button type="button" data-onglet="rang" role="tab" data-i18n="pal.tab.rank">Classement</button>
+      <button type="button" data-onglet="hist" role="tab" data-i18n="pal.tab.hist">Historique</button>
+      <button type="button" data-onglet="gens" role="tab" data-i18n="pal.tab.people">Joueurs</button>
+    </div>
+    <div class="pal-filtres" id="palFiltres" role="toolbar" data-i18n-aria="pal.filter"></div>
+
+    <div class="pal-pane" id="hallBody"></div>
+
+    <footer class="cta-bar jr-bar" id="palAjout" hidden>
+      <input type="text" class="field-input" id="jrNouveau" maxlength="22" data-i18n-ph="pl.new.ph" data-i18n-aria="pl.new" placeholder="Prénom ou surnom">
+      <button type="button" class="cta" id="jrAjouter" data-i18n="pl.add">Ajouter</button>
     </footer>
   </section>
 
+  <!-- ============ FICHE D'UN JOUEUR ============ -->
+  <section class="screen" id="s-fiche">
+    <header class="brand pal-fiche-head">
+      <button type="button" class="crumb" id="ficheBack">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M7.5 2L3.5 6l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-i18n="hall.title">Palmarès</span>
+      </button>
+    </header>
+    <div class="pal-pane" id="ficheBody"></div>
+  </section>
+
+  <!-- le détail d'une partie archivée -->
+  <div class="sheet-wrap" id="palDetail">
+    <div class="scrim" id="palDetailScrim"></div>
+    <div class="sheet" role="dialog" aria-modal="true">
+      <div class="sheet-head">
+        <h3 id="palDetailTitre"></h3>
+        <button type="button" class="icon-btn" id="palDetailClose" data-i18n-aria="nav.close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="sheet-body pal-detail" id="palDetailBody"></div>
+    </div>
+  </div>
+
   <input type="file" id="importFile" accept="application/json,.json" hidden>
   <p class="toast" id="toast" role="status" aria-live="polite"></p>
-
   <!-- ============ À PROPOS ============ -->
   <div class="sheet-wrap" id="aboutWrap">
     <div class="scrim" id="aboutScrim"></div>
@@ -2949,45 +3064,6 @@ a.hall-link{text-decoration:none;color:inherit}
       <ol class="ordre-liste" id="ordreListe"></ol>
       <p class="toss-out" id="ordreOut" aria-live="polite" data-i18n="toss.running">Tirage en cours</p>
       <button type="button" class="cta ordre-ok" id="ordreOk" hidden data-i18n="order.ok">C'est parti</button>
-    </div>
-  </div>
-
-  <!-- ============ JOUEURS ============ -->
-  <section class="screen" id="s-joueurs">
-    <header class="brand">
-      <div class="brand-row">
-        <div>
-          <p class="eyebrow" id="jrCount">Carnet</p>
-          <h1><span data-i18n="pl.title">Joueurs</span><span>.</span></h1>
-        </div>
-        <button type="button" class="ghost-btn" id="jrBack" data-i18n="nav.home">Accueil</button>
-      </div>
-    </header>
-
-    <div class="jr-body">
-      <div id="jrListe"></div>
-      <p class="hint" data-i18n="pl.hint">Ces noms vous sont proposés dans tous les jeux. Un invité peut toujours être tapé à la main.</p>
-    </div>
-
-    <footer class="cta-bar jr-bar">
-      <input type="text" class="field-input" id="jrNouveau" maxlength="22" data-i18n-ph="pl.new.ph" data-i18n-aria="pl.new" placeholder="Prénom ou surnom">
-      <button type="button" class="cta" id="jrAjouter" data-i18n="pl.add">Ajouter</button>
-    </footer>
-  </section>
-
-  <!-- la fiche d'un joueur : son nom, sa couleur, ce qu'il a joué -->
-  <div class="sheet-wrap" id="jrFiche">
-    <div class="scrim" id="jrFicheScrim"></div>
-    <div class="sheet" role="dialog" aria-modal="true">
-      <div class="sheet-head">
-        <h3 id="jrFicheTitre">Joueur</h3>
-        <button type="button" class="icon-btn" id="jrFicheClose" data-i18n-aria="nav.close">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </div>
-      <div class="sheet-body" id="jrFicheBody"></div>
     </div>
   </div>
 
@@ -4098,7 +4174,6 @@ $("mkQuit").addEventListener("click",function(){
   show("msetup");
   renderMSetup();
 });
-$("mkHall").addEventListener("click",function(){ HALL_BACK="msetup"; renderHall(); show("hall"); });
 
 /* --- état enregistré -------------------------------------------- */
 /* Normalisation de ce que le démarrage et l'import relisent. Elle vivait
@@ -4680,7 +4755,6 @@ function biNormB(b){
 
 /* --- commandes --------------------------------------------------- */
 $("biToGames").addEventListener("click",retourAuxJeux);
-$("biHall").addEventListener("click",function(){ HALL_BACK="bsetup"; renderHall(); show("hall"); });
 $("biPerMinus").addEventListener("click",function(){
   if(BS.per>BI_PER_MIN){ BS.per--; BS.open=-1; renderBSetup(); save(); }
 });
@@ -5575,7 +5649,6 @@ function flNormF(f){
 
 /* --- commandes --------------------------------------------------- */
 $("flToGames").addEventListener("click",retourAuxJeux);
-$("flHall").addEventListener("click",function(){ HALL_BACK="fsetup"; renderHall(); show("hall"); });
 $("flMode").addEventListener("click",function(e){
   var b=e.target.closest("button[data-mode]");
   if(!b || b.dataset.mode===FS.mode) return;
@@ -6320,7 +6393,6 @@ function tiNormI(ti){
 
 /* --- commandes --------------------------------------------------- */
 $("tiToGames").addEventListener("click",retourAuxJeux);
-$("tiHall").addEventListener("click",function(){ HALL_BACK="isetup"; renderHall(); show("hall"); });
 $("tiMode").addEventListener("click",function(e){
   var b=e.target.closest("button[data-mode]");
   if(!b || b.dataset.mode===TIS.mode) return;
@@ -7066,7 +7138,6 @@ function yaNormY(y){
 
 /* --- commandes --------------------------------------------------- */
 $("yaToGames").addEventListener("click",retourAuxJeux);
-$("yaHall").addEventListener("click",function(){ HALL_BACK="ysetup"; renderHall(); show("hall"); });
 $("yaMinus").addEventListener("click",function(){
   if(YS.count>YA_MIN){ YS.count--; YS.open=-1; renderYSetup(); save(); }
 });
@@ -7290,16 +7361,7 @@ fr:{
   "round.quarter":"Quarts de finale", "round.16":"Huitièmes", "round.n":"Tour {n}",
   "hall.title":"Palmarès", "hall.aria":"Palmarès",
   "hall.count":"{n} partie enregistrée", "hall.count_p":"{n} parties enregistrées",
-  "hall.empty":"Aucune partie enregistrée pour l'instant.",
-  "hall.duels":"Confrontations",
-  "hall.standings":"Classement",
-  "hall.recent":"Dernières parties",
-  "hall.team":"Nom", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
-  "hall.beat":"{w} bat {l}", "hall.tie":"Égalité",
-  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
-  "hall.clear":"Effacer le palmarès",
-  "hall.clear.confirm":"Confirmer l'effacement",
-  "pl.title":"Joueurs", "pl.carnet":"Le carnet",
+  "hall.tie":"Égalité",
   "pl.count":"{n} joueur","pl.count_p":"{n} joueurs",
   "pl.empty":"Personne dans le carnet. Ajoutez ceux avec qui vous jouez souvent : leur nom vous sera proposé dans tous les jeux.",
   "pl.empty.pick":"Le carnet est vide. Tapez un nom, puis ajoutez-le d'ici.",
@@ -7309,19 +7371,75 @@ fr:{
   "pl.pick":"Choisir un joueur", "pl.search":"Rechercher",
   "pl.addname":"Ajouter « {name} » au carnet", "pl.clear":"Vider le champ",
   "pl.name.aria":"Nom du joueur",
-  "pl.rank":"Classement, tous jeux", "pl.list":"Le carnet",
-  "pl.fiche.aria":"Fiche de {name}", "pl.played":"Parties", "pl.bygame":"Par jeu",
-  "pl.count.games":"{n} partie","pl.count.games_p":"{n} parties",
-  "pl.won":"gagnée", "pl.lost":"perdue",
   "pl.nogame":"Aucune partie enregistrée pour ce joueur. Choisissez son nom au départ d'une partie et elle comptera ici.",
-  "pl.del":"Supprimer ce joueur", "pl.del.ok":"Confirmer la suppression",
-  "hall.w2":"Victoires",
   "data.wipe.title":"Repartir de zéro", "data.wipe":"Effacer tous les palmarès",
   "data.wipe.confirm":"Confirmer l'effacement", "data.wipe.done":"Palmarès effacés",
   "data.wipe.hint":"Efface les parties enregistrées des huit jeux, d'un coup. Le carnet de joueurs, la partie en cours et les tournois ne sont pas touchés.",
   "about.what":"Huit jeux à compter, en trois catégories : dehors le cornhole, la pétanque, le palet breton, le mölkky et le bibock ; dedans les fléchettes et le tossit ; à table le yams.",
   "about.what2":"Chaque jeu a ses règles, sa saisie et son palmarès ; les jeux à deux camps ont aussi des tournois. Le carnet de joueurs, lui, les traverse tous. Rien ne sort du téléphone, et tout fonctionne hors ligne.",
   "pl.vs":"contre",
+  "pal.tab.rank":"Classement",
+  "pal.tab.hist":"Historique",
+  "pal.tab.people":"Joueurs",
+  "pal.filter":"Filtrer par jeu",
+  "pal.all":"Tous les jeux",
+  "pal.none":"Aucune partie enregistrée pour l'instant. Elles s'afficheront ici à la fin de chaque partie.",
+  "pal.none.game":"Aucune partie de ce jeu pour l'instant.",
+  "pal.rank":"Classement",
+  "pal.rank.rest":"La suite du classement",
+  "pal.rank.note":"Classés au nombre de victoires, tous jeux confondus. En équipe, la victoire compte pour chaque membre ; un nom tapé à la main apparaît comme invité. Une partie en solo ne compte pas.",
+  "pal.rank.note.game":"Classés au nombre de victoires dans ce jeu. En équipe, la victoire compte pour chaque membre ; un nom tapé à la main apparaît comme invité. Une partie en solo ne compte pas.",
+  "pal.wins":"{n} victoire",
+  "pal.wins_p":"{n} victoires",
+  "pal.games":"{n} partie",
+  "pal.games_p":"{n} parties",
+  "pal.wins.of":"{v} sur {n}",
+  "pal.won":"gagnées",
+  "pal.pct":"{n} %",
+  "pal.guest":"invité",
+  "pal.today":"Aujourd'hui",
+  "pal.yesterday":"Hier",
+  "pal.tour":"tournoi",
+  "pal.beat":"{w} bat {l}",
+  "pal.beat_p":"{w} battent {l}",
+  "pal.ahead":"{w} l'emporte devant {n} adversaires",
+  "pal.ahead_p":"{w} l'emportent devant {n} adversaires",
+  "pal.won1":"Gagnée",
+  "pal.lost1":"Perdue",
+  "pal.with":"avec",
+  "pal.clear":"Effacer les parties de ce jeu",
+  "pal.clear.ok":"Confirmer : effacer {n} partie",
+  "pal.clear.ok_p":"Confirmer : effacer {n} parties",
+  "pal.tourmatch":"Match de tournoi",
+  "pal.parts":"{n} participant",
+  "pal.parts_p":"{n} participants",
+  "pal.each":"victoire pour chacun",
+  "pal.card":"Fiche joueur",
+  "pal.card.rank":"{r} du classement général, sur {n} joueurs",
+  "pal.card.none":"Pas encore au classement : aucune partie jouée.",
+  "pal.fig.games":"partie jouée", "pal.fig.games_p":"parties jouées",
+  "pal.fig.wins":"victoire", "pal.fig.wins_p":"victoires",
+  "pal.fig.rate":"de victoires",
+  "pal.form":"Forme du moment",
+  "pal.form.v":"V",
+  "pal.form.d":"D",
+  "pal.form.hint":"Dernières parties, la plus récente à droite",
+  "pal.streak":"{n} victoires d'affilée",
+  "pal.hisgames":"Ses jeux",
+  "pal.h2h":"Face à face",
+  "pal.h2h.note":"Ses victoires à gauche, celles de l'adversaire à droite.",
+  "pal.recent":"Ses dernières parties",
+  "pal.edit":"Modifier",
+  "pal.del":"Supprimer du carnet",
+  "pal.del.ok":"Confirmer la suppression",
+  "pal.del.note":"Ses parties restent dans l'historique, sous le nom qu'elles portaient.",
+  "pal.nogames":"aucune partie",
+  "pal.ord.1":"1er",
+  "pal.ord.2":"2e",
+  "pal.ord.3":"3e",
+  "pal.ord.n":"{n}e",
+  "pal.solo":"En solo",
+  "pal.solo.h":"{w} en solo",
   "rules.title":"Règles du jeu",
   "about.title":"À propos",
   "about.version":"Version {v}",
@@ -7443,16 +7561,7 @@ en:{
   "round.quarter":"Quarter-finals", "round.16":"Round of 16", "round.n":"Round {n}",
   "hall.title":"Records", "hall.aria":"Records",
   "hall.count":"{n} game recorded", "hall.count_p":"{n} games recorded",
-  "hall.empty":"No games recorded yet.",
-  "hall.duels":"Head to head",
-  "hall.standings":"Standings",
-  "hall.recent":"Recent games",
-  "hall.team":"Name", "hall.w":"W", "hall.l":"L", "hall.rate":"Win rate",
-  "hall.beat":"{w} beat {l}", "hall.tie":"Draw",
-  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
-  "hall.clear":"Clear the records",
-  "hall.clear.confirm":"Confirm clearing",
-  "pl.title":"Players", "pl.carnet":"Your players",
+  "hall.tie":"Draw",
   "pl.count":"{n} player","pl.count_p":"{n} players",
   "pl.empty":"No one here yet. Add the people you play with often: their name will be offered in every game.",
   "pl.empty.pick":"No players yet. Type a name, then add it from here.",
@@ -7462,19 +7571,75 @@ en:{
   "pl.pick":"Pick a player", "pl.search":"Search",
   "pl.addname":"Add “{name}” to your players", "pl.clear":"Clear the field",
   "pl.name.aria":"Player name",
-  "pl.rank":"Standings, all games", "pl.list":"Your players",
-  "pl.fiche.aria":"{name}’s record", "pl.played":"Games", "pl.bygame":"By game",
-  "pl.count.games":"{n} game","pl.count.games_p":"{n} games",
-  "pl.won":"won", "pl.lost":"lost",
   "pl.nogame":"No games recorded for this player yet. Pick their name when starting a game and it will count here.",
-  "pl.del":"Delete this player", "pl.del.ok":"Confirm deletion",
-  "hall.w2":"Wins",
   "data.wipe.title":"Start over", "data.wipe":"Clear every standings table",
   "data.wipe.confirm":"Confirm clearing", "data.wipe.done":"Standings cleared",
   "data.wipe.hint":"Clears the recorded games of all eight games at once. Your players, the game in progress and tournaments are left alone.",
   "about.what":"Eight games to keep score of, in three categories: outdoors cornhole, pétanque, Breton palet, mölkky and bibock; indoors darts and Tossit; at the table Yams.",
   "about.what2":"Each game has its rules, its scoring and its standings; the two-sided ones also have tournaments. Your players carry across all of them. Nothing leaves the phone, and everything works offline.",
   "pl.vs":"vs",
+  "pal.tab.rank":"Standings",
+  "pal.tab.hist":"History",
+  "pal.tab.people":"Players",
+  "pal.filter":"Filter by game",
+  "pal.all":"All games",
+  "pal.none":"No games recorded yet. They'll show up here as soon as a game ends.",
+  "pal.none.game":"No games of this one yet.",
+  "pal.rank":"Standings",
+  "pal.rank.rest":"The rest of the standings",
+  "pal.rank.note":"Ranked by wins, all games together. In a team, the win counts for every member; a name typed by hand shows as a guest. Solo games don't count.",
+  "pal.rank.note.game":"Ranked by wins in this game. In a team, the win counts for every member; a name typed by hand shows as a guest. Solo games don't count.",
+  "pal.wins":"{n} win",
+  "pal.wins_p":"{n} wins",
+  "pal.games":"{n} game",
+  "pal.games_p":"{n} games",
+  "pal.wins.of":"{v} in {n}",
+  "pal.won":"won",
+  "pal.pct":"{n}%",
+  "pal.guest":"guest",
+  "pal.today":"Today",
+  "pal.yesterday":"Yesterday",
+  "pal.tour":"tournament",
+  "pal.beat":"{w} beats {l}",
+  "pal.beat_p":"{w} beat {l}",
+  "pal.ahead":"{w} wins ahead of {n} others",
+  "pal.ahead_p":"{w} win ahead of {n} others",
+  "pal.won1":"Won",
+  "pal.lost1":"Lost",
+  "pal.with":"with",
+  "pal.clear":"Clear this game's history",
+  "pal.clear.ok":"Confirm: clear {n} game",
+  "pal.clear.ok_p":"Confirm: clear {n} games",
+  "pal.tourmatch":"Tournament match",
+  "pal.parts":"{n} participant",
+  "pal.parts_p":"{n} participants",
+  "pal.each":"a win for each",
+  "pal.card":"Player card",
+  "pal.card.rank":"{r} in the overall standings, out of {n} players",
+  "pal.card.none":"Not ranked yet: no games played.",
+  "pal.fig.games":"game played", "pal.fig.games_p":"games played",
+  "pal.fig.wins":"win", "pal.fig.wins_p":"wins",
+  "pal.fig.rate":"win rate",
+  "pal.form":"Recent form",
+  "pal.form.v":"W",
+  "pal.form.d":"L",
+  "pal.form.hint":"Latest games, newest on the right",
+  "pal.streak":"{n} wins in a row",
+  "pal.hisgames":"Games",
+  "pal.h2h":"Head to head",
+  "pal.h2h.note":"Their wins on the left, the opponent's on the right.",
+  "pal.recent":"Recent games",
+  "pal.edit":"Edit",
+  "pal.del":"Remove from your players",
+  "pal.del.ok":"Confirm removal",
+  "pal.del.note":"Their games stay in the history, under the name they had.",
+  "pal.nogames":"no games",
+  "pal.ord.1":"1st",
+  "pal.ord.2":"2nd",
+  "pal.ord.3":"3rd",
+  "pal.ord.n":"{n}th",
+  "pal.solo":"Solo",
+  "pal.solo.h":"{w} played solo",
   "rules.title":"How to play",
   "about.title":"About",
   "about.version":"Version {v}",
@@ -7596,16 +7761,7 @@ es:{
   "round.quarter":"Cuartos de final", "round.16":"Octavos", "round.n":"Ronda {n}",
   "hall.title":"Historial", "hall.aria":"Historial",
   "hall.count":"{n} partida guardada", "hall.count_p":"{n} partidas guardadas",
-  "hall.empty":"Todavía no hay ninguna partida guardada.",
-  "hall.duels":"Cara a cara",
-  "hall.standings":"Clasificación",
-  "hall.recent":"Últimas partidas",
-  "hall.team":"Nombre", "hall.w":"V", "hall.l":"D", "hall.rate":"Ratio",
-  "hall.beat":"{w} gana a {l}", "hall.tie":"Empate",
-  "hall.tag.solo":"1v1", "hall.tag.duo":"2v2", "hall.tag.trio":"3v3",
-  "hall.clear":"Borrar el historial",
-  "hall.clear.confirm":"Confirmar el borrado",
-  "pl.title":"Jugadores", "pl.carnet":"Tus jugadores",
+  "hall.tie":"Empate",
   "pl.count":"{n} jugador","pl.count_p":"{n} jugadores",
   "pl.empty":"Aquí no hay nadie todavía. Añade a quienes juegan contigo: su nombre se propondrá en todos los juegos.",
   "pl.empty.pick":"No hay jugadores. Escribe un nombre y añádelo desde aquí.",
@@ -7615,19 +7771,75 @@ es:{
   "pl.pick":"Elegir un jugador", "pl.search":"Buscar",
   "pl.addname":"Añadir «{name}» a tus jugadores", "pl.clear":"Vaciar el campo",
   "pl.name.aria":"Nombre del jugador",
-  "pl.rank":"Clasificación, todos los juegos", "pl.list":"Tus jugadores",
-  "pl.fiche.aria":"Ficha de {name}", "pl.played":"Partidas", "pl.bygame":"Por juego",
-  "pl.count.games":"{n} partida","pl.count.games_p":"{n} partidas",
-  "pl.won":"ganada", "pl.lost":"perdida",
   "pl.nogame":"Ninguna partida registrada para este jugador. Elige su nombre al empezar una partida y contará aquí.",
-  "pl.del":"Eliminar este jugador", "pl.del.ok":"Confirmar la eliminación",
-  "hall.w2":"Victorias",
   "data.wipe.title":"Empezar de cero", "data.wipe":"Borrar todas las clasificaciones",
   "data.wipe.confirm":"Confirmar el borrado", "data.wipe.done":"Clasificaciones borradas",
   "data.wipe.hint":"Borra de una vez las partidas registradas de los ocho juegos. Tus jugadores, la partida en curso y los torneos no se tocan.",
   "about.what":"Ocho juegos para contar puntos, en tres categorías: fuera cornhole, petanca, palet bretón, mölkky y bibock; dentro dardos y tossit; en la mesa yams.",
   "about.what2":"Cada juego tiene sus reglas, su anotación y su clasificación; los de dos bandos además tienen torneos. Tus jugadores valen para todos. Nada sale del teléfono y todo funciona sin conexión.",
   "pl.vs":"contra",
+  "pal.tab.rank":"Clasificación",
+  "pal.tab.hist":"Historial",
+  "pal.tab.people":"Jugadores",
+  "pal.filter":"Filtrar por juego",
+  "pal.all":"Todos los juegos",
+  "pal.none":"Todavía no hay partidas. Aparecerán aquí al terminar cada partida.",
+  "pal.none.game":"Todavía no hay partidas de este juego.",
+  "pal.rank":"Clasificación",
+  "pal.rank.rest":"El resto de la clasificación",
+  "pal.rank.note":"Clasificados por victorias, todos los juegos juntos. En equipo, la victoria cuenta para cada miembro; un nombre escrito a mano aparece como invitado. Las partidas en solitario no cuentan.",
+  "pal.rank.note.game":"Clasificados por victorias en este juego. En equipo, la victoria cuenta para cada miembro; un nombre escrito a mano aparece como invitado. Las partidas en solitario no cuentan.",
+  "pal.wins":"{n} victoria",
+  "pal.wins_p":"{n} victorias",
+  "pal.games":"{n} partida",
+  "pal.games_p":"{n} partidas",
+  "pal.wins.of":"{v} en {n}",
+  "pal.won":"ganadas",
+  "pal.pct":"{n} %",
+  "pal.guest":"invitado",
+  "pal.today":"Hoy",
+  "pal.yesterday":"Ayer",
+  "pal.tour":"torneo",
+  "pal.beat":"{w} gana a {l}",
+  "pal.beat_p":"{w} ganan a {l}",
+  "pal.ahead":"{w} gana por delante de {n} rivales",
+  "pal.ahead_p":"{w} ganan por delante de {n} rivales",
+  "pal.won1":"Ganada",
+  "pal.lost1":"Perdida",
+  "pal.with":"con",
+  "pal.clear":"Borrar las partidas de este juego",
+  "pal.clear.ok":"Confirmar: borrar {n} partida",
+  "pal.clear.ok_p":"Confirmar: borrar {n} partidas",
+  "pal.tourmatch":"Partido de torneo",
+  "pal.parts":"{n} participante",
+  "pal.parts_p":"{n} participantes",
+  "pal.each":"victoria para cada uno",
+  "pal.card":"Ficha de jugador",
+  "pal.card.rank":"{r} de la clasificación general, entre {n} jugadores",
+  "pal.card.none":"Aún sin clasificar: ninguna partida jugada.",
+  "pal.fig.games":"partida jugada", "pal.fig.games_p":"partidas jugadas",
+  "pal.fig.wins":"victoria", "pal.fig.wins_p":"victorias",
+  "pal.fig.rate":"de victorias",
+  "pal.form":"Forma reciente",
+  "pal.form.v":"V",
+  "pal.form.d":"D",
+  "pal.form.hint":"Últimas partidas, la más reciente a la derecha",
+  "pal.streak":"{n} victorias seguidas",
+  "pal.hisgames":"Sus juegos",
+  "pal.h2h":"Cara a cara",
+  "pal.h2h.note":"Sus victorias a la izquierda, las del rival a la derecha.",
+  "pal.recent":"Sus últimas partidas",
+  "pal.edit":"Editar",
+  "pal.del":"Quitar de tus jugadores",
+  "pal.del.ok":"Confirmar",
+  "pal.del.note":"Sus partidas siguen en el historial, con el nombre que tenían.",
+  "pal.nogames":"ninguna partida",
+  "pal.ord.1":"1.º",
+  "pal.ord.2":"2.º",
+  "pal.ord.3":"3.º",
+  "pal.ord.n":"{n}.º",
+  "pal.solo":"En solitario",
+  "pal.solo.h":"{w} en solitario",
   "rules.title":"Cómo se juega",
   "about.title":"Acerca de",
   "about.version":"Versión {v}",
@@ -9154,6 +9366,15 @@ function t(k){
 /* Pluriel simple : suffixe _p au-delà de un, suffisant pour le français
    comme pour l'anglais sur les tournures employées ici. */
 function tn(k,n){ return t(n>1 ? k+"_p" : k).replace(/\{n\}/g,n); }
+/* Pour un jeu donné plutôt que pour le jeu courant : l'historique mêle
+   tous les jeux, et une partie de pétanque se compte toujours en mènes. */
+function tPour(id,k){
+  var d=TXT[LANG]||TXT.fr, p=k+"@"+id;
+  if(d[p]!==undefined) return d[p];
+  if(d[k]!==undefined) return d[k];
+  return TXT.fr[k]!==undefined ? TXT.fr[k] : k;
+}
+function tnPour(id,k,n){ return tPour(id, n>1 ? k+"_p" : k).replace(/\{n\}/g,n); }
 function tf(k,vals){
   var s=t(k);
   for(var p in vals) s=s.replace(new RegExp("\\{"+p+"\\}","g"), vals[p]);
@@ -9187,14 +9408,13 @@ function setLang(l){
   renderCategories();
   if($("s-cat").classList.contains("on")) peindreCategorie();
   renderCards(); renderRules(); renderTSetup();
-  refreshJoueursLink();
-  if($("s-joueurs").classList.contains("on")) renderJoueurs();
   pourChaqueJeu("changementDeLangue");
   fillRules("rulesBody");
   refreshTourBtn(); refreshHallLink();
   if(G) renderGame(true);
   if(T && $("s-bracket").classList.contains("on")) renderBracket();
-  if($("s-hall").classList.contains("on")) renderHall();
+  if($("s-hall").classList.contains("on")) renderPalmares();
+  if($("s-fiche").classList.contains("on")) renderFiche();
   if($("s-over").classList.contains("on") && G && G.over) renderOver();
   if($("aboutWrap").classList.contains("on")) fillAbout();
 }
@@ -10074,7 +10294,8 @@ $("ordreWrap").addEventListener("click",fermerOrdre);
 
    Rien n'est obligatoire : un champ de nom reste un champ de texte, et
    l'invité du dimanche se tape à la main comme avant. Le carnet n'est
-   qu'une liste de noms proposés, et le bouton qui l'ouvre.
+   qu'une liste de noms proposés, et le bouton qui l'ouvre ; il se gère,
+   avec les fiches des joueurs, depuis le palmarès (100-palmares.js).
 ------------------------------------------------------------------ */
 var J = [];                 /* {id, nom, couleur, vu} */
 var jrPose = false;         /* vrai le temps qu'un choix remplisse un champ */
@@ -10124,281 +10345,6 @@ function joueursTries(){
   return J.slice().sort(function(a,b){
     return (b.vu||0)-(a.vu||0) || a.nom.localeCompare(b.nom,LANG);
   });
-}
-
-/* --- l'écran du carnet -------------------------------------------- */
-var jrArme = null;          /* la suppression demande deux touchers */
-
-/* --- ce que l'historique sait d'un joueur -------------------------- */
-/* Une partie appartient à un joueur dès que son identifiant est dans l'un
-   des camps ; en équipe, la victoire compte pour chacun de ses membres. */
-function partiesDuJoueur(id){
-  var out=[];
-  H.forEach(function(g){
-    if(!g.p) return;
-    for(var i=0;i<g.p.length;i++){
-      if((g.p[i]||[]).indexOf(id)<0) continue;
-      out.push({g:g, i:i, gagne:g.w===i, nulle:g.w<0});
-      return;
-    }
-  });
-  return out;
-}
-function statsJoueur(id){
-  var parties=partiesDuJoueur(id), v=0, d=0, parJeu={}, ordre=[];
-  parties.forEach(function(x){
-    var cle=x.g.g||jeuHistorique();
-    if(!parJeu[cle]){ parJeu[cle]={id:cle, n:0, v:0}; ordre.push(cle); }
-    parJeu[cle].n++;
-    if(x.gagne){ v++; parJeu[cle].v++; }
-    else if(!x.nulle) d++;
-  });
-  ordre.sort(function(a,b){ return parJeu[b].n-parJeu[a].n; });
-  return {
-    parties:parties, n:parties.length, v:v, d:d,
-    jeux:ordre.map(function(k){ return parJeu[k]; })
-  };
-}
-/* Le classement croisé : tous les jeux confondus, ceux qui ont joué. */
-function classementGeneral(){
-  var l=[];
-  J.forEach(function(j){
-    var s=statsJoueur(j.id);
-    if(s.n) l.push({j:j, n:s.n, v:s.v, d:s.d});
-  });
-  l.sort(function(a,b){
-    return (b.v-a.v) || (b.n-a.n) || a.j.nom.localeCompare(b.j.nom,LANG);
-  });
-  return l;
-}
-
-/* --- l'écran : le classement, puis le carnet ---------------------- */
-function renderJoueurs(){
-  var host=$("jrListe");
-  host.innerHTML="";
-
-  $("jrCount").textContent = J.length ? tn("pl.count",J.length) : t("pl.carnet");
-
-  if(!J.length){
-    host.appendChild(el("p","empty",t("pl.empty")));
-    return;
-  }
-
-  var cl=classementGeneral();
-  if(cl.length>1){
-    var bloc=el("div","block");
-    bloc.appendChild(el("p","eyebrow",t("pl.rank")));
-    var table=el("table","rank");
-    var thead=el("thead"), htr=el("tr");
-    htr.appendChild(el("th",null,t("hall.team")));
-    htr.appendChild(el("th",null,t("hall.w")));
-    htr.appendChild(el("th",null,t("hall.l")));
-    htr.appendChild(el("th",null,t("hall.rate")));
-    thead.appendChild(htr);
-    table.appendChild(thead);
-    var tb=el("tbody");
-    cl.forEach(function(x){
-      var tr=el("tr");
-      var td=el("td");
-      var who=el("div","who");
-      var dot=el("span","dot");
-      dot.style.background=color(x.j.couleur).hex;
-      who.appendChild(dot);
-      who.appendChild(el("span",null,x.j.nom));
-      td.appendChild(who);
-      tr.appendChild(td);
-      tr.appendChild(el("td",null,String(x.v)));
-      tr.appendChild(el("td",null,String(x.d)));
-      tr.appendChild(el("td","pct", (x.v+x.d) ? Math.round(x.v/(x.v+x.d)*100)+" %" : "—"));
-      tb.appendChild(tr);
-    });
-    table.appendChild(tb);
-    bloc.appendChild(table);
-    host.appendChild(bloc);
-  }
-
-  var liste=el("div","block");
-  liste.appendChild(el("p","eyebrow",t("pl.list")));
-  J.forEach(function(j){
-    var s=statsJoueur(j.id);
-    var b=el("button","jr-ligne");
-    b.type="button";
-    b.setAttribute("aria-label",tf("pl.fiche.aria",{name:j.nom}));
-
-    var dot=el("span","jr-dot");
-    dot.style.background=color(j.couleur).hex;
-    b.appendChild(dot);
-    b.appendChild(el("span","jr-nom",j.nom));
-    b.appendChild(el("span","jr-bilan num", s.n ? s.v+"–"+s.d : "—"));
-    var chev=el("span","jr-chev");
-    chev.innerHTML='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">'+
-      '<path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    b.appendChild(chev);
-
-    b.addEventListener("click",function(){ ouvrirFiche(j.id); });
-    liste.appendChild(b);
-  });
-  host.appendChild(liste);
-}
-
-/* Contre qui s'est jouée cette partie : les autres camps, sous le nom
-   qu'ils portent aujourd'hui. Au-delà de deux, on compte le reste. */
-function adversairesDe(g, moi){
-  var noms=[];
-  for(var i=0;i<g.n.length;i++) if(i!==moi) noms.push(nomDeCamp(g,i));
-  if(!noms.length) return "";
-  if(noms.length<=2) return noms.join(", ");
-  return noms.slice(0,2).join(", ")+" +"+(noms.length-2);
-}
-
-/* --- la fiche d'un joueur ----------------------------------------- */
-var jrFicheId = null;
-
-function ouvrirFiche(id){
-  jrFicheId=id;
-  jrArme=null;
-  peindreFiche();
-  $("jrFiche").classList.add("on");
-}
-function fermerFiche(){
-  $("jrFiche").classList.remove("on");
-  jrFicheId=null;
-  renderJoueurs();
-  refreshJoueursLink();
-}
-function peindreFiche(){
-  var j=joueur(jrFicheId);
-  if(!j){ fermerFiche(); return; }
-  var body=$("jrFicheBody");
-  body.innerHTML="";
-  $("jrFicheTitre").textContent=j.nom;
-
-  /* nom et couleur : la fiche est aussi l'endroit où l'on corrige */
-  var ident=el("div","block");
-  var nom=el("input","field-input");
-  nom.type="text";
-  nom.value=j.nom;
-  nom.maxLength=22;
-  nom.setAttribute("aria-label",t("pl.name.aria"));
-  nom.addEventListener("input",function(){
-    j.nom=nom.value;
-    $("jrFicheTitre").textContent=j.nom;
-    save();
-  });
-  ident.appendChild(nom);
-
-  var sw=el("div","swatches");
-  COLORS.forEach(function(col){
-    var b=el("button","sw");
-    b.type="button";
-    b.style.setProperty("--c",col.hex);
-    b.setAttribute("aria-pressed", col.id===j.couleur ? "true":"false");
-    b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
-    b.addEventListener("click",function(){ j.couleur=col.id; save(); peindreFiche(); });
-    sw.appendChild(b);
-  });
-  ident.appendChild(sw);
-  body.appendChild(ident);
-
-  var s=statsJoueur(j.id);
-  if(!s.n){
-    body.appendChild(el("p","empty",t("pl.nogame")));
-  }else{
-    var chiffres=el("div","jr-chiffres");
-    [[String(s.n), t("pl.played")], [String(s.v), t("hall.w2")],
-     [(s.v+s.d) ? Math.round(s.v/(s.v+s.d)*100)+" %" : "—", t("hall.rate")]
-    ].forEach(function(c){
-      var cell=el("div","jr-chiffre");
-      cell.appendChild(el("b","num",c[0]));
-      cell.appendChild(el("span",null,c[1]));
-      chiffres.appendChild(cell);
-    });
-    body.appendChild(chiffres);
-
-    var bj=el("div","block");
-    bj.appendChild(el("p","eyebrow",t("pl.bygame")));
-    var tj=el("table","rank");
-    var tbj=el("tbody");
-    s.jeux.forEach(function(x){
-      var tr=el("tr");
-      tr.appendChild(el("td",null,JEUX[x.id] ? jeu(x.id).nom() : x.id));
-      tr.appendChild(el("td",null,tn("pl.count.games",x.n)));
-      tr.appendChild(el("td","pct", x.v+" "+t("hall.w")));
-      tbj.appendChild(tr);
-    });
-    tj.appendChild(tbj);
-    bj.appendChild(tj);
-    body.appendChild(bj);
-
-    var br=el("div","block");
-    br.appendChild(el("p","eyebrow",t("hall.recent")));
-    s.parties.slice(0,8).forEach(function(x){
-      var row=el("div","rec");
-      var dt=new Date(x.g.d);
-      row.appendChild(el("p","d", dt.toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric",month:"short"})));
-      var m=el("p","m");
-      m.appendChild(el("b",null, JEUX[x.g.g||jeuHistorique()] ? jeu(x.g.g||jeuHistorique()).nom() : (x.g.g||"")));
-      var issue=x.nulle ? t("hall.tie") : t(x.gagne ? "pl.won" : "pl.lost");
-      var contre=adversairesDe(x.g, x.i);
-      m.appendChild(document.createTextNode(" · "+issue));
-      if(contre){
-        m.appendChild(document.createTextNode(" "+t("pl.vs")+" "));
-        m.appendChild(el("b",null,contre));
-      }
-      row.appendChild(m);
-      row.appendChild(el("p","sc", String(x.g.s[x.i])));
-      br.appendChild(row);
-    });
-    body.appendChild(br);
-  }
-
-  var sup=el("button","cta ghost danger");
-  sup.type="button";
-  sup.textContent=t("pl.del");
-  sup.addEventListener("click",function(){
-    if(jrArme!==j.id){
-      jrArme=j.id;
-      sup.textContent=t("pl.del.ok");
-      sup.classList.add("arme");
-      setTimeout(function(){
-        if(jrArme!==j.id) return;
-        jrArme=null; sup.textContent=t("pl.del"); sup.classList.remove("arme");
-      },2600);
-      return;
-    }
-    jrArme=null;
-    supprimerJoueur(j.id);
-    fermerFiche();
-  });
-  body.appendChild(sup);
-}
-$("jrFicheScrim").addEventListener("click",fermerFiche);
-$("jrFicheClose").addEventListener("click",fermerFiche);
-
-function creerDepuisLeChamp(){
-  var champ=$("jrNouveau");
-  if(!ajouterJoueur(champ.value)) return;
-  champ.value="";
-  renderJoueurs();
-  refreshJoueursLink();
-  buzz(8);
-}
-$("jrAjouter").addEventListener("click",creerDepuisLeChamp);
-$("jrNouveau").addEventListener("keydown",function(e){ if(e.key==="Enter") creerDepuisLeChamp(); });
-$("jrBack").addEventListener("click",function(){ show("games"); });
-$("openJoueurs").addEventListener("click",function(){
-  jrArme=null;
-  renderJoueurs();
-  show("joueurs");
-});
-
-/* Le bouton de l'accueil : une icône, et ce que le carnet contient dit
-   au lecteur d'écran comme à l'appui long. */
-function refreshJoueursLink(){
-  var b=$("openJoueurs");
-  var s=J.length ? t("pl.title")+" · "+tn("pl.count",J.length) : t("pl.title");
-  b.setAttribute("aria-label",s);
-  b.title=s;
 }
 
 /* --- choisir un joueur pour un champ de nom ----------------------- */
@@ -11003,7 +10949,15 @@ function renderOver(){
 }
 
 /* ==================================================================
-   PALMARÈS — parties archivées et confrontations
+   PALMARÈS — le classement, l'historique, les joueurs et leurs fiches
+
+   Un seul endroit pour tout ce qui a été joué, et il se lit par
+   personnes : en équipe, la victoire compte pour chacun de ses membres ;
+   un nom tapé à la main compte sous ce nom, comme invité. Un filtre
+   restreint le tout à un jeu — c'est ainsi que l'ouvre le bouton palmarès
+   de chaque jeu. Les parties archivées gardent leur format : noms `n`,
+   couleurs `c`, scores `s`, vainqueur `w` (-1 pour une égalité), joueurs
+   du carnet `p`, jeu `g`, date `d`, manches `r`, tournoi `t`.
 ================================================================== */
 var H=[];
 
@@ -11024,11 +10978,10 @@ function archiveGame(){
   G.archived=true;
 }
 
-/* Une victoire au cornhole et une au palet ne se comparent pas : le
-   palmares ne montre que les parties du jeu choisi. */
-function HG(){
-  return H.filter(function(x){ return (x.g||jeuHistorique())===S.game; });
-}
+/* L'enregistrement le plus ancien ne nomme pas son jeu : c'est le cornhole. */
+function jeuDePartie(g){ return g.g||jeuHistorique(); }
+function partiesDuJeu(id){ return H.filter(function(g){ return jeuDePartie(g)===id; }); }
+function HG(){ return partiesDuJeu(S.game); }
 
 function nameKey(s){ return (s||"").trim().toLocaleLowerCase("fr"); }
 
@@ -11043,229 +10996,643 @@ function nomDeCamp(g,i){
   return g.n[i];
 }
 
-/* Un nom peut désigner un joueur seul ou une équipe : on relève le format
-   dans lequel il a joué pour pouvoir les distinguer d'un coup d'œil. Un nom
-   apparu dans plusieurs ne reçoit aucune marque, elle mentirait. */
-var TAG_MODE={simple:"hall.tag.solo", double:"hall.tag.duo", triple:"hall.tag.trio"};
-function noterMode(m, mode){
-  if(!mode) return;
-  m.modes[mode]=true;
+/* --- qui a joué ----------------------------------------------------- */
+/* Les membres d'un camp : ses joueurs du carnet — « j:identifiant » —,
+   sinon son nom, celui d'un invité — « n:nom ». Un joueur supprimé depuis
+   n'y compte plus ; le camp qui n'en garde aucun retombe sous son nom. */
+function membres(g,i){
+  var out=[];
+  ((g.p && g.p[i]) || []).forEach(function(id){ if(joueur(id)) out.push("j:"+id); });
+  if(!out.length) out.push("n:"+nameKey(g.n[i]));
+  return out;
 }
-function tagDeModes(m){
-  var k=Object.keys(m.modes);
-  return k.length===1 ? t(TAG_MODE[k[0]]||TAG_MODE.simple) : null;
-}
-function modeTags(){
-  var m={};
-  HG().forEach(function(g){
-    if(!g.mode) return;          /* le mölkky n'est ni simple ni double */
+function estInvite(k){ return k.charAt(0)==="n"; }
+/* un invité s'affiche sous le nom et la couleur de sa dernière partie */
+function invite(k){
+  for(var a=0;a<H.length;a++){
+    var g=H[a];
     for(var i=0;i<g.n.length;i++){
-      var k=nameKey(nomDeCamp(g,i));
-      if(!k) continue;
-      if(!m[k]) m[k]={modes:{}};
-      noterMode(m[k], g.mode==="double"||g.mode==="triple" ? g.mode : "simple");
+      if("n:"+nameKey(g.n[i])===k) return {nom:g.n[i], hex:g.c[i]||COLORS[8].hex};
+    }
+  }
+  return {nom:k.slice(2), hex:COLORS[8].hex};
+}
+function nomDe(k){
+  if(estInvite(k)) return invite(k).nom;
+  var j=joueur(k.slice(2));
+  return j ? j.nom : "";
+}
+function teinteDe(k){
+  if(estInvite(k)) return invite(k).hex;
+  var j=joueur(k.slice(2));
+  return color(j ? j.couleur : "ardoise").hex;
+}
+
+/* Le classement : au nombre de victoires, puis à la part de parties
+   gagnées. Une égalité se joue, mais ne se gagne ni ne se perd ; une
+   partie jouée seul n'y compte pas — on n'y gagne contre personne. */
+function compte(g){ return g.n.length>1; }
+function classement(filtre){
+  var m={}, liste=[];
+  H.forEach(function(g){
+    if(!compte(g) || (filtre && jeuDePartie(g)!==filtre)) return;
+    for(var i=0;i<g.n.length;i++){
+      membres(g,i).forEach(function(k){
+        if(!m[k]){ m[k]={k:k, n:0, v:0, d:0}; liste.push(m[k]); }
+        m[k].n++;
+        if(g.w===i) m[k].v++; else if(g.w>=0) m[k].d++;
+      });
     }
   });
-  return m;
+  return liste.sort(function(a,b){
+    return (b.v-a.v) || (b.v/b.n - a.v/a.n) || nomDe(a.k).localeCompare(nomDe(b.k),LANG);
+  });
 }
-function tagFor(tags,name){
-  var i=tags[nameKey(name)];
-  return i ? tagDeModes(i) : null;
-}
-function tagEl(tags,name){
-  var s=tagFor(tags,name);
-  return s ? el("span","mtag",s) : null;
-}
-
-function standings(){
-  var map={}, order=[];
-  HG().forEach(function(g){
-    if(g.n.length<2) return;      /* seul, on ne gagne contre personne */
+function taux(v,n){ return n ? Math.round(v/n*100) : 0; }
+/* les parties d'un membre, de la plus récente à la plus ancienne */
+function partiesDe(k){
+  var out=[];
+  H.forEach(function(g){
     for(var i=0;i<g.n.length;i++){
-      var nom=nomDeCamp(g,i), k=nameKey(nom);
-      if(!k) continue;
-      if(!map[k]){ map[k]={label:nom, hex:g.c[i], v:0, d:0}; order.push(k); }
-      var m=map[k];
-      m.label=nom; m.hex=g.c[i];
-      if(g.w===i) m.v++; else if(g.w>=0) m.d++;   /* une égalité ne compte ni pour ni contre */
+      if(membres(g,i).indexOf(k)>=0){ out.push({g:g, i:i}); return; }
     }
   });
-  var list=order.map(function(k){ return map[k]; });
-  list.sort(function(a,b){
-    return (b.v-a.v) || ((b.v+b.d)-(a.v+a.d)) || a.label.localeCompare(b.label,LANG);
-  });
-  return list;
+  return out;
+}
+/* une équipe se conjugue au pluriel : « battent », « l'emportent » */
+function campPluriel(g,i){
+  return g.mode==="double" || g.mode==="triple" ||
+         ((g.p && g.p[i]) || []).length>1 || /&/.test(g.n[i]);
 }
 
-function duels(){
-  var map={}, order=[];
-  HG().forEach(function(g){
-    if(g.n.length!==2) return;   /* une confrontation se joue à deux */
-    if(g.w<0) return;            /* une égalité ne départage personne */
-    var ka=nameKey(nomDeCamp(g,0)), kb=nameKey(nomDeCamp(g,1));
-    if(!ka || !kb || ka===kb) return;
-    var flip = kb<ka;
-    var id = flip ? kb+"|"+ka : ka+"|"+kb;
-    var f = flip ? 1 : 0;
-    if(!map[id]){ map[id]={n:["",""], c:["",""], w:[0,0], modes:{}}; order.push(id); }
-    var m=map[id];
-    m.n=[nomDeCamp(g,f),nomDeCamp(g,1-f)];
-    m.c=[g.c[f],g.c[1-f]];
-    /* le mölkky et les fléchettes ne se jouent ni en simple ni en double :
-       leurs confrontations ne reçoivent aucune marque */
-    if(g.mode) noterMode(m, g.mode==="double"||g.mode==="triple" ? g.mode : "simple");
-    if(g.w===f) m.w[0]++; else m.w[1]++;
-  });
-  var list=order.map(function(k){ return map[k]; });
-  list.sort(function(x,y){ return (y.w[0]+y.w[1])-(x.w[0]+x.w[1]); });
-  return list;
+/* --- les mots ------------------------------------------------------- */
+function ordinal(n){
+  var k="pal.ord."+n;
+  return (TXT[LANG]||TXT.fr)[k]!==undefined ? t(k) : tf("pal.ord.n",{n:n});
+}
+function pourcent(n){ return tf("pal.pct",{n:n}); }
+function nomJeu(id){ return JEUX[id] ? jeu(id).nom() : id; }
+function jourDe(ts){
+  var d=new Date(ts), a=new Date(), j=new Date(ts);
+  a.setHours(0,0,0,0); j.setHours(0,0,0,0);
+  var ecart=Math.round((a-j)/864e5);
+  if(ecart===0) return t("pal.today");
+  if(ecart===1) return t("pal.yesterday");
+  var o = d.getFullYear()===a.getFullYear()
+    ? {weekday:"long", day:"numeric", month:"long"}
+    : {day:"numeric", month:"long", year:"numeric"};
+  var s=d.toLocaleDateString(DATE_LOCALE[LANG]||"en-GB", o);
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+function heureDe(ts){
+  return new Date(ts).toLocaleTimeString(DATE_LOCALE[LANG]||"en-GB",{hour:"2-digit", minute:"2-digit"});
+}
+function dateCourte(ts){
+  return new Date(ts).toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric", month:"short"});
+}
+function pastille(hex){
+  var d=el("span","dot");
+  d.style.background=hex;
+  return d;
+}
+function avatar(k,cls){
+  var a=el("span",cls||"pal-av",(nomDe(k).trim().charAt(0)||"?").toUpperCase());
+  a.style.background=teinteDe(k);
+  return a;
+}
+var CHEVRON='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">'+
+  '<path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* --- l'écran --------------------------------------------------------- */
+var PAL = {onglet:"rang", jeu:null, retour:"games"};
+
+/* `jeuId` filtre d'emblée — le bouton palmarès d'un jeu —, et `retour` est
+   l'écran que le fil d'Ariane ramène. */
+function ouvrirPalmares(jeuId, retour){
+  PAL.jeu=jeuId||null;
+  PAL.onglet="rang";
+  PAL.retour=retour||"games";
+  renderPalmares();
+  show("hall");
+  $("hallBody").scrollTop=0;
+}
+/* renderHall garde son nom pour les appels venus d'ailleurs */
+function renderHall(){ renderPalmares(); }
+
+function renderPalmares(){
+  $("hallBackLab").textContent = PAL.retour==="games" ? t("nav.home") : nomJeu(S.game);
+  $("hallCount").textContent = tn("hall.count",H.length)+" · "+tn("pl.count",J.length);
+  var tabs=$("palTabs").children;
+  for(var i=0;i<tabs.length;i++){
+    var on = tabs[i].dataset.onglet===PAL.onglet;
+    tabs[i].classList.toggle("on", on);
+    tabs[i].setAttribute("aria-selected", on ? "true" : "false");
+  }
+  peindreFiltres();
+  $("palAjout").hidden = PAL.onglet!=="gens";
+  var body=$("hallBody");
+  body.innerHTML="";
+  if(PAL.onglet==="rang") peindreClassement(body);
+  else if(PAL.onglet==="hist") peindreHistorique(body);
+  else peindreCarnet(body);
 }
 
-function blockOf(titre){
+/* Les jeux réellement joués, du plus pratiqué au moins pratiqué ; celui
+   qu'on vient de quitter reste proposé même sans partie. */
+function peindreFiltres(){
+  var f=$("palFiltres");
+  f.innerHTML="";
+  f.hidden = PAL.onglet==="gens";
+  if(f.hidden) return;
+  var comptes={};
+  H.forEach(function(g){ var j=jeuDePartie(g); comptes[j]=(comptes[j]||0)+1; });
+  var jeux=ORDRE_JEUX.filter(function(id){ return comptes[id] || id===PAL.jeu; });
+  jeux.sort(function(a,b){ return (comptes[b]||0)-(comptes[a]||0); });
+  [[null, t("pal.all"), H.length]].concat(jeux.map(function(id){
+    return [id, nomJeu(id), comptes[id]||0];
+  })).forEach(function(x){
+    var p=el("button","pal-pill"+(PAL.jeu===x[0] ? " on" : ""));
+    p.type="button";
+    p.setAttribute("aria-pressed", PAL.jeu===x[0] ? "true" : "false");
+    p.appendChild(document.createTextNode(x[1]));
+    p.appendChild(el("small",null,String(x[2])));
+    p.addEventListener("click",function(){
+      PAL.jeu=x[0];
+      renderPalmares();
+      $("hallBody").scrollTop=0;
+    });
+    f.appendChild(p);
+  });
+  var choisi=f.querySelector(".on");
+  if(choisi && PAL.jeu) f.scrollLeft = choisi.offsetLeft - 16;
+}
+
+/* --- Classement ------------------------------------------------------ */
+function peindreClassement(host){
+  var cl=classement(PAL.jeu);
+  if(!cl.length){
+    host.appendChild(el("p","empty",t(PAL.jeu ? "pal.none.game" : "pal.none")));
+    return;
+  }
+
+  /* les meilleurs scores : un jeu qui se joue aussi seul les déclare */
+  var titreRecords = PAL.jeu && jeu(PAL.jeu).records;
+  if(titreRecords){
+    var scores=[];
+    partiesDuJeu(PAL.jeu).forEach(function(g){
+      for(var i=0;i<g.n.length;i++) scores.push({g:g, i:i, s:g.s[i]});
+    });
+    scores.sort(function(a,b){ return (b.s-a.s) || (a.g.d-b.g.d); });
+    var br=blocTitre(t(titreRecords));
+    scores.slice(0,3).forEach(function(x,rang){
+      var r=el("div","pal-best");
+      r.appendChild(el("span","o",ordinal(rang+1)));
+      var nm=el("span","n");
+      nm.appendChild(pastille(x.g.c[x.i]||COLORS[8].hex));
+      nm.appendChild(el("b",null,nomDeCamp(x.g,x.i)));
+      nm.appendChild(el("span","d",dateCourte(x.g.d)));
+      r.appendChild(nm);
+      r.appendChild(el("span","s num",String(x.s)));
+      br.appendChild(r);
+    });
+    host.appendChild(br);
+  }
+
+  /* le podium : les trois premiers, d'un coup d'œil */
+  var depart=0;
+  if(cl.length>=3){
+    depart=3;
+    var pod=el("div","pal-podium");
+    [[1,"second"],[0,"first"],[2,"third"]].forEach(function(o){
+      var x=cl[o[0]];
+      var st=el("button","pal-step "+o[1]);
+      st.type="button";
+      var who=el("span","who");
+      if(o[0]===0){
+        var cr=el("span","crown");
+        cr.innerHTML='<svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1.5 10.5L3 3l4 3.5L9 1l2 5.5L15 3l1.5 7.5z" fill="currentColor"/></svg>';
+        who.appendChild(cr);
+      }
+      who.appendChild(avatar(x.k));
+      who.appendChild(el("span","nm",nomDe(x.k)));
+      who.appendChild(el("span","v",tn("pal.wins",x.v)));
+      st.appendChild(who);
+      st.appendChild(el("span","plinth",String(o[0]+1)));
+      st.setAttribute("aria-label",ordinal(o[0]+1)+" · "+nomDe(x.k)+" · "+tn("pal.wins",x.v));
+      if(estInvite(x.k)) st.disabled=true;
+      else st.addEventListener("click",function(){ ouvrirFiche(x.k.slice(2)); });
+      pod.appendChild(st);
+    });
+    host.appendChild(pod);
+  }
+
+  /* la suite, à partir du quatrième */
+  if(depart<cl.length){
+    var bl=blocTitre(t(depart ? "pal.rank.rest" : "pal.rank"));
+    var list=el("div","pal-list");
+    cl.slice(depart).forEach(function(x,i){
+      list.appendChild(ligneClassement(x, depart+i+1));
+    });
+    bl.appendChild(list);
+    host.appendChild(bl);
+  }
+  host.appendChild(el("p","hint",tf(PAL.jeu ? "pal.rank.note.game" : "pal.rank.note",{jeu:PAL.jeu ? nomJeu(PAL.jeu) : ""})));
+}
+function blocTitre(titre){
   var b=el("div","block");
   b.appendChild(el("p","eyebrow",titre));
   return b;
 }
-
-function renderHall(){
-  var body=$("hallBody");
-  body.innerHTML="";
-
-  $("hallCount").textContent = tn("hall.count",HG().length);
-
-  if(!HG().length){
-    body.appendChild(el("p","empty",t("hall.empty")));
-    return;
-  }
-
-  var tags=modeTags();
-
-  /* confrontations */
-  var d=duels();
-  if(d.length){
-    var bd=blockOf(t("hall.duels"));
-    d.slice(0,10).forEach(function(x){
-      var card=el("div","duel");
-      var top=el("div","duel-top");
-
-      var left=el("div","duel-n");
-      var dl=el("span","dot"); dl.style.background=x.c[0];
-      left.appendChild(dl);
-      left.appendChild(el("span",null,x.n[0]));
-      top.appendChild(left);
-
-      /* le format sous le score : la colonne du milieu a de la place,
-         les noms n'en avaient pas à céder */
-      var mid=el("div","duel-mid");
-      mid.appendChild(el("p","duel-s",x.w[0]+" – "+x.w[1]));
-      var tag=tagDeModes(x);
-      if(tag) mid.appendChild(el("span","mtag",tag));
-      top.appendChild(mid);
-
-      var right=el("div","duel-n r");
-      right.appendChild(el("span",null,x.n[1]));
-      var dr=el("span","dot"); dr.style.background=x.c[1];
-      right.appendChild(dr);
-      top.appendChild(right);
-      card.appendChild(top);
-
-      var tot=x.w[0]+x.w[1];
-      var bar=el("div","duel-bar");
-      var ia=el("i"); ia.style.background=x.c[0]; ia.style.width=(x.w[0]/tot*100)+"%";
-      var ib=el("i"); ib.style.background=x.c[1]; ib.style.width=(x.w[1]/tot*100)+"%";
-      bar.appendChild(ia); bar.appendChild(ib);
-      card.appendChild(bar);
-
-      bd.appendChild(card);
-    });
-    body.appendChild(bd);
-  }
-
-  /* meilleurs scores : un jeu qui se joue aussi seul les déclare */
-  var titreRecords=jeu(S.game).records;
-  if(titreRecords){
-    var scores=[];
-    HG().forEach(function(g){
-      g.n.forEach(function(nom,i){ scores.push({n:nomDeCamp(g,i), s:g.s[i], d:g.d}); });
-    });
-    scores.sort(function(a,b){ return (b.s-a.s) || (a.d-b.d); });
-    var bs=blockOf(t(titreRecords));
-    scores.slice(0,5).forEach(function(x){
-      var row=el("div","rec");
-      row.appendChild(el("p","d", new Date(x.d).toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric",month:"short"})));
-      var mr=el("p","m");
-      mr.appendChild(el("b",null,x.n));
-      row.appendChild(mr);
-      row.appendChild(el("p","sc",String(x.s)));
-      bs.appendChild(row);
-    });
-    body.appendChild(bs);
-  }
-
-  /* classement */
-  var st=standings();
-  var br=blockOf(t("hall.standings"));
-  var table=el("table","rank");
-  var thead=el("thead"), htr=el("tr");
-  htr.appendChild(el("th",null,t("hall.team")));
-  htr.appendChild(el("th",null,t("hall.w")));
-  htr.appendChild(el("th",null,t("hall.l")));
-  htr.appendChild(el("th",null,t("hall.rate")));
-  thead.appendChild(htr);
-  table.appendChild(thead);
-  var tb=el("tbody");
-  st.forEach(function(m){
-    var tr=el("tr");
-    var td=el("td");
-    var who=el("div","who");
-    var dot=el("span","dot"); dot.style.background=m.hex;
-    who.appendChild(dot);
-    who.appendChild(el("span",null,m.label));
-    var mt=tagEl(tags,m.label);
-    if(mt) who.appendChild(mt);
-    td.appendChild(who);
-    tr.appendChild(td);
-    tr.appendChild(el("td",null,String(m.v)));
-    tr.appendChild(el("td",null,String(m.d)));
-    tr.appendChild(el("td","pct", (m.v+m.d) ? Math.round(m.v/(m.v+m.d)*100)+" %" : "—"));
-    tb.appendChild(tr);
-  });
-  table.appendChild(tb);
-  br.appendChild(table);
-  if(st.length) body.appendChild(br);
-
-  /* dernières parties */
-  var bl=blockOf(t("hall.recent"));
-  HG().slice(0,8).forEach(function(g){
-    var row=el("div","rec");
-    var dt=new Date(g.d);
-    row.appendChild(el("p","d", dt.toLocaleDateString(DATE_LOCALE[LANG]||"en-GB",{day:"numeric",month:"short"})));
-    var m=el("p","m");
-    if(g.w<0){
-      /* une égalité : personne n'est nommé vainqueur */
-      m.appendChild(el("b",null,t("hall.tie")));
-      row.appendChild(m);
-      row.appendChild(el("p","sc", String(Math.max.apply(null,g.s))));
-    }else if(g.n.length===2){
-      var mp=tf("hall.beat",{w:"\u0000",l:"\u0001"}).split(/[\u0000\u0001]/);
-      m.appendChild(document.createTextNode(mp[0]||""));
-      m.appendChild(el("b",null,nomDeCamp(g,g.w)));
-      m.appendChild(document.createTextNode(mp[1]||""));
-      m.appendChild(document.createTextNode(nomDeCamp(g,1-g.w)));
-      m.appendChild(document.createTextNode(mp[2]||""));
-      row.appendChild(m);
-      row.appendChild(el("p","sc", g.s[g.w]+"–"+g.s[1-g.w]));
-    }else{
-      /* à plus de deux, on ne nomme que le vainqueur */
-      m.appendChild(el("b",null,nomDeCamp(g,g.w)));
-      row.appendChild(m);
-      row.appendChild(el("p","sc", String(g.s[g.w])));
-    }
-    bl.appendChild(row);
-  });
-  body.appendChild(bl);
+function ligneClassement(x, rang){
+  var r=el("button","pal-row");
+  r.type="button";
+  r.appendChild(el("span","rk",String(rang)));
+  var main=el("span","main");
+  var nm=el("span","nm");
+  nm.appendChild(pastille(teinteDe(x.k)));
+  nm.appendChild(el("span",null,nomDe(x.k)));
+  if(estInvite(x.k)) nm.appendChild(el("span","pal-tag",t("pal.guest")));
+  main.appendChild(nm);
+  main.appendChild(el("span","sub",tf("pal.wins.of",{v:tn("pal.wins",x.v), n:tn("pal.games",x.n)})));
+  r.appendChild(main);
+  var pc=el("span","pc num",pourcent(taux(x.v,x.n)));
+  pc.appendChild(el("small",null,t("pal.won")));
+  r.appendChild(pc);
+  var bar=el("span","bar"), fill=el("i");
+  fill.style.width=taux(x.v,x.n)+"%";
+  fill.style.background=teinteDe(x.k);
+  bar.appendChild(fill);
+  r.appendChild(bar);
+  if(estInvite(x.k)) r.disabled=true;
+  else r.addEventListener("click",function(){ ouvrirFiche(x.k.slice(2)); });
+  return r;
 }
 
+/* --- Historique ------------------------------------------------------ */
+/* Une partie en une phrase, le vainqueur en gras. `pov` raconte la partie
+   du point de vue d'un camp, dans la fiche d'un joueur. */
+function cartePartie(g, pov, moi){
+  var c=el("button","pal-game");
+  c.type="button";
+  var top=el("span","top");
+  top.appendChild(el("span","eyebrow",nomJeu(jeuDePartie(g))+(g.t ? " · "+t("pal.tour") : "")));
+  top.appendChild(el("span","t", pov==null ? heureDe(g.d) : dateCourte(g.d)));
+  c.appendChild(top);
+
+  var say=el("span","say"), sc, n=g.n.length;
+  if(pov==null){
+    if(n===1){
+      phraseAvecNom(say, tf("pal.solo.h",{w:"\u0000"}), nomDeCamp(g,0));
+    }else if(g.w<0){
+      say.appendChild(el("b",null,t("hall.tie")));
+      say.appendChild(document.createTextNode(" · "+g.n.map(function(x,i){ return nomDeCamp(g,i); }).join(", ")));
+    }else if(n===2){
+      phraseAvecNom(say, tf(campPluriel(g,g.w) ? "pal.beat_p" : "pal.beat",{w:"\u0000", l:nomDeCamp(g,1-g.w)}), nomDeCamp(g,g.w));
+    }else{
+      phraseAvecNom(say, tf(campPluriel(g,g.w) ? "pal.ahead_p" : "pal.ahead",{w:"\u0000", n:n-1}), nomDeCamp(g,g.w));
+    }
+    var gagnant = g.w<0 ? 0 : g.w;
+    sc=el("span","sc num", n===2 ? g.s[gagnant]+" – "+g.s[1-gagnant] : String(Math.max.apply(null,g.s)));
+  }else if(n===1){
+    say.appendChild(el("b",null,t("pal.solo")));
+    sc=el("span","sc num",String(g.s[0]));
+  }else{
+    var autres=[];
+    for(var i=0;i<n;i++) if(i!==pov) autres.push(nomDeCamp(g,i));
+    say.appendChild(el("b",null,t(g.w<0 ? "hall.tie" : (g.w===pov ? "pal.won1" : "pal.lost1"))));
+    say.appendChild(document.createTextNode(" "+t("pl.vs")+" "+
+      (autres.length<=2 ? autres.join(", ") : autres.slice(0,2).join(", ")+" +"+(autres.length-2))));
+    var avec=((g.p && g.p[pov]) || []).filter(function(id){ return id!==moi && joueur(id); })
+      .map(function(id){ return joueur(id).nom; });
+    if(avec.length) say.appendChild(document.createTextNode(", "+t("pal.with")+" "+avec.join(", ")));
+    if(n===2) sc=el("span","sc num", g.s[pov]+" – "+g.s[1-pov]);
+    else{
+      var rang=1;
+      for(var k=0;k<n;k++) if(k!==pov && (k===g.w || g.s[k]>g.s[pov])) rang++;
+      if(g.w===pov) rang=1;
+      sc=el("span","sc num", ordinal(rang)+" · "+g.s[pov]);
+    }
+    sc.classList.add(g.w===pov ? "win" : "loss");
+  }
+  c.appendChild(say);
+  c.appendChild(sc);
+  c.addEventListener("click",function(){ ouvrirDetail(g); });
+  return c;
+}
+
+function peindreHistorique(host){
+  var liste = PAL.jeu ? partiesDuJeu(PAL.jeu) : H;
+  if(!liste.length){
+    host.appendChild(el("p","empty",t(PAL.jeu ? "pal.none.game" : "pal.none")));
+    return;
+  }
+  var jour=null, bloc=null;
+  liste.forEach(function(g){
+    var j=jourDe(g.d);
+    if(j!==jour){
+      jour=j;
+      bloc=el("div","block");
+      bloc.appendChild(el("p","eyebrow",j));
+      host.appendChild(bloc);
+    }
+    bloc.appendChild(cartePartie(g));
+  });
+  if(PAL.jeu){
+    var jeuFiltre=PAL.jeu;
+    var del=el("button","pal-danger",t("pal.clear"));
+    del.type="button";
+    del.id="hallClear";
+    del.addEventListener("click",function(){
+      if(del.dataset.armed!=="1"){
+        del.dataset.armed="1";
+        del.classList.add("armed");
+        del.textContent=tn("pal.clear.ok",liste.length);
+        setTimeout(function(){
+          if(del.dataset.armed!=="1") return;
+          del.dataset.armed="0"; del.classList.remove("armed"); del.textContent=t("pal.clear");
+        },4000);
+        return;
+      }
+      H=H.filter(function(g){ return jeuDePartie(g)!==jeuFiltre; });
+      save();
+      refreshHallLink();
+      renderPalmares();
+    });
+    host.appendChild(del);
+  }
+}
+
+/* --- le détail d'une partie ----------------------------------------- */
+function ouvrirDetail(g){
+  var id=jeuDePartie(g);
+  $("palDetailTitre").textContent=nomJeu(id)+" · "+jourDe(g.d)+", "+heureDe(g.d);
+  var body=$("palDetailBody");
+  body.innerHTML="";
+
+  var meta=el("div","pal-meta"), duel=JEUX[id] && jeu(id).famille==="duel";
+  if(duel && g.r) meta.appendChild(el("span",null,tnPour(id,"over.nframes",g.r)));
+  if(duel && g.mode) meta.appendChild(el("span",null,tPour(id,{simple:"mode.single",double:"mode.double",triple:"mode.triple"}[g.mode]||"mode.single")));
+  if(!duel) meta.appendChild(el("span",null,tn("pal.parts",g.n.length)));
+  if(g.t) meta.appendChild(el("span",null,t("pal.tourmatch")));
+  body.appendChild(meta);
+
+  /* le vainqueur d'abord, puis au score */
+  var ordre=g.n.map(function(x,i){ return i; }).sort(function(a,b){
+    return (b===g.w)-(a===g.w) || (g.s[b]-g.s[a]);
+  });
+  var box=el("div");
+  ordre.forEach(function(i,rang){
+    var r=el("div","pal-place");
+    r.appendChild(el("span","p"+(i===g.w ? " gold" : ""), g.w<0 ? "=" : ordinal(rang+1)));
+    var nm=el("span","n");
+    nm.appendChild(pastille(g.c[i]||COLORS[8].hex));
+    nm.appendChild(el("span",null,nomDeCamp(g,i)));
+    r.appendChild(nm);
+    r.appendChild(el("span","s num",String(g.s[i])));
+    var ids=((g.p && g.p[i]) || []).filter(function(x){ return joueur(x); });
+    if(ids.length>1) r.appendChild(el("span","m",tn("pl.count",ids.length)+(i===g.w ? " · "+t("pal.each") : "")));
+    if(ids.length===1){
+      r.classList.add("lien");
+      r.setAttribute("role","button");
+      r.tabIndex=0;
+      r.addEventListener("click",function(){ fermerDetail(); ouvrirFiche(ids[0]); });
+    }
+    box.appendChild(r);
+  });
+  body.appendChild(box);
+  $("palDetail").classList.add("on");
+}
+function fermerDetail(){ $("palDetail").classList.remove("on"); }
+$("palDetailClose").addEventListener("click",fermerDetail);
+$("palDetailScrim").addEventListener("click",fermerDetail);
+
+/* --- Joueurs : le carnet --------------------------------------------- */
+function peindreCarnet(host){
+  if(!J.length){
+    host.appendChild(el("p","empty",t("pl.empty")));
+    return;
+  }
+  var list=el("div","pal-list");
+  J.forEach(function(j){
+    var n=partiesDe("j:"+j.id).length;
+    var r=el("button","pal-joueur");
+    r.type="button";
+    r.appendChild(pastille(color(j.couleur).hex));
+    r.appendChild(el("span","nm",j.nom));
+    r.appendChild(el("span","sub", n ? tn("pal.games",n) : t("pal.nogames")));
+    var ch=el("span","chev");
+    ch.innerHTML=CHEVRON;
+    r.appendChild(ch);
+    r.addEventListener("click",function(){ ouvrirFiche(j.id); });
+    list.appendChild(r);
+  });
+  host.appendChild(list);
+  host.appendChild(el("p","hint",t("pl.hint")));
+}
+function creerDepuisLeChamp(){
+  var champ=$("jrNouveau");
+  if(!ajouterJoueur(champ.value)) return;
+  champ.value="";
+  renderPalmares();
+  buzz(8);
+}
+$("jrAjouter").addEventListener("click",creerDepuisLeChamp);
+$("jrNouveau").addEventListener("keydown",function(e){ if(e.key==="Enter") creerDepuisLeChamp(); });
+
+/* --- la fiche d'un joueur ------------------------------------------- */
+var FICHE=null;
+
+function ouvrirFiche(id){
+  FICHE=id;
+  renderFiche();
+  show("fiche");
+  $("ficheBody").scrollTop=0;
+}
+function renderFiche(){
+  var j=joueur(FICHE);
+  if(!j){ renderPalmares(); show("hall"); return; }
+  var k="j:"+j.id, toutes=partiesDe(k), body=$("ficheBody");
+  var mes=toutes.filter(function(x){ return compte(x.g); });
+  body.innerHTML="";
+  var v=0, d=0;
+  mes.forEach(function(x){ if(x.g.w===x.i) v++; else if(x.g.w>=0) d++; });
+
+  /* qui : son nom, et sa place au classement général */
+  var hero=el("div","pal-hero");
+  hero.appendChild(avatar(k,"pal-av grand"));
+  var id=el("div","id");
+  id.appendChild(el("p","eyebrow",t("pal.card")));
+  var titre=el("h2",null,j.nom);
+  id.appendChild(titre);
+  var rang=el("p","rang");
+  var general=classement(null).filter(function(x){ return !estInvite(x.k); });
+  var place=general.findIndex(function(x){ return x.k===k; });
+  if(place<0) rang.textContent=t("pal.card.none");
+  else phraseAvecNom(rang, tf("pal.card.rank",{r:"\u0000", n:general.length}), ordinal(place+1));
+  id.appendChild(rang);
+  hero.appendChild(id);
+  body.appendChild(hero);
+
+  if(mes.length){
+    var figs=el("div","pal-figs");
+    [[String(mes.length),t(mes.length>1 ? "pal.fig.games_p" : "pal.fig.games")],[String(v),t(v>1 ? "pal.fig.wins_p" : "pal.fig.wins")],[pourcent(taux(v,mes.length)),t("pal.fig.rate")]].forEach(function(f){
+      var x=el("div","fig");
+      x.appendChild(el("b","num",f[0]));
+      x.appendChild(el("span",null,f[1]));
+      figs.appendChild(x);
+    });
+    body.appendChild(figs);
+
+    /* la forme : les cinq dernières, la plus récente à droite */
+    var fb=blocTitre(t("pal.form"));
+    var form=el("div","pal-form");
+    mes.slice(0,5).reverse().forEach(function(x){
+      var r = x.g.w<0 ? "n" : (x.g.w===x.i ? "v" : "d");
+      var i=el("i",r,{v:t("pal.form.v"), d:t("pal.form.d"), n:"="}[r]);
+      i.title=nomJeu(jeuDePartie(x.g))+" · "+dateCourte(x.g.d);
+      form.appendChild(i);
+    });
+    var serie=0;
+    while(serie<mes.length && mes[serie].g.w===mes[serie].i) serie++;
+    form.appendChild(el("span",null, serie>=2 ? tf("pal.streak",{n:serie}) : t("pal.form.hint")));
+    fb.appendChild(form);
+    body.appendChild(fb);
+
+    /* ses jeux, du plus joué au moins joué */
+    var par={}, ordre=[];
+    mes.forEach(function(x){
+      var g=jeuDePartie(x.g);
+      if(!par[g]){ par[g]={n:0, v:0}; ordre.push(g); }
+      par[g].n++;
+      if(x.g.w===x.i) par[g].v++;
+    });
+    ordre.sort(function(a,b){ return par[b].n-par[a].n; });
+    var jb=blocTitre(t("pal.hisgames"));
+    ordre.forEach(function(g){
+      var r=el("div","pal-kv");
+      r.appendChild(el("span","k",nomJeu(g)));
+      r.appendChild(el("span","v",tf("pal.wins.of",{v:tn("pal.wins",par[g].v), n:tn("pal.games",par[g].n)})));
+      var bar=el("span","bar"), f=el("i");
+      f.style.width=taux(par[g].v,par[g].n)+"%";
+      f.style.background=color(j.couleur).hex;
+      bar.appendChild(f);
+      r.appendChild(bar);
+      jb.appendChild(r);
+    });
+    body.appendChild(jb);
+
+    /* face à face : chaque adversaire, du plus rencontré au moins */
+    var vs={}, vus=[];
+    mes.forEach(function(x){
+      if(x.g.w<0) return;
+      for(var i=0;i<x.g.n.length;i++){
+        if(i===x.i) continue;
+        membres(x.g,i).forEach(function(o){
+          if(!vs[o]){ vs[o]={g:0, p:0}; vus.push(o); }
+          if(x.g.w===x.i) vs[o].g++;
+          else if(x.g.w===i) vs[o].p++;
+        });
+      }
+    });
+    vus=vus.filter(function(o){ return vs[o].g+vs[o].p; });
+    if(vus.length){
+      vus.sort(function(a,b){ return (vs[b].g+vs[b].p)-(vs[a].g+vs[a].p); });
+      var hb=blocTitre(t("pal.h2h"));
+      vus.slice(0,5).forEach(function(o){
+        var x=vs[o], tot=x.g+x.p;
+        var r=el("div","pal-kv vs");
+        var kk=el("span","k");
+        kk.appendChild(pastille(teinteDe(o)));
+        kk.appendChild(el("span",null,nomDe(o)));
+        if(estInvite(o)) kk.appendChild(el("span","pal-tag",t("pal.guest")));
+        r.appendChild(kk);
+        r.appendChild(el("b","v num",x.g+" – "+x.p));
+        var bar=el("span","bar"), a=el("i"), c=el("i");
+        a.style.width=(x.g/tot*100)+"%";
+        a.style.background=color(j.couleur).hex;
+        c.style.width=(x.p/tot*100)+"%";
+        c.style.background=teinteDe(o);
+        c.style.opacity=".55";
+        bar.appendChild(a); bar.appendChild(c);
+        r.appendChild(bar);
+        hb.appendChild(r);
+      });
+      hb.appendChild(el("p","hint",t("pal.h2h.note")));
+      body.appendChild(hb);
+    }
+
+  }
+  if(toutes.length){
+    var db=blocTitre(t("pal.recent"));
+    toutes.slice(0,5).forEach(function(x){ db.appendChild(cartePartie(x.g, x.i, j.id)); });
+    body.appendChild(db);
+  }else{
+    body.appendChild(el("p","empty",t("pl.nogame")));
+  }
+
+  /* modifier : son nom, sa couleur, ou le retirer du carnet */
+  var eb=blocTitre(t("pal.edit"));
+  var nom=el("input","field-input");
+  nom.type="text";
+  nom.value=j.nom;
+  nom.maxLength=22;
+  nom.setAttribute("aria-label",t("pl.name.aria"));
+  nom.addEventListener("input",function(){ j.nom=nom.value; titre.textContent=j.nom; save(); });
+  eb.appendChild(nom);
+  var sw=el("div","swatches");
+  COLORS.forEach(function(col){
+    var b=el("button","sw");
+    b.type="button";
+    b.style.setProperty("--c",col.hex);
+    b.setAttribute("aria-pressed", col.id===j.couleur ? "true":"false");
+    b.setAttribute("aria-label",t("color.aria")+" "+t("color."+col.id));
+    b.addEventListener("click",function(){ j.couleur=col.id; save(); renderFiche(); });
+    sw.appendChild(b);
+  });
+  eb.appendChild(sw);
+  var del=el("button","pal-danger",t("pal.del"));
+  del.type="button";
+  del.addEventListener("click",function(){
+    if(del.dataset.armed!=="1"){
+      del.dataset.armed="1";
+      del.classList.add("armed");
+      del.textContent=t("pal.del.ok");
+      setTimeout(function(){
+        if(del.dataset.armed!=="1") return;
+        del.dataset.armed="0"; del.classList.remove("armed"); del.textContent=t("pal.del");
+      },4000);
+      return;
+    }
+    supprimerJoueur(j.id);
+    PAL.onglet="gens";
+    renderPalmares();
+    show("hall");
+  });
+  eb.appendChild(del);
+  eb.appendChild(el("p","hint",t("pal.del.note")));
+  body.appendChild(eb);
+}
+
+/* --- navigation ----------------------------------------------------- */
+$("palTabs").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-onglet]");
+  if(!b || b.dataset.onglet===PAL.onglet) return;
+  PAL.onglet=b.dataset.onglet;
+  renderPalmares();
+  $("hallBody").scrollTop=0;
+});
+$("hallBack").addEventListener("click",function(){ show(PAL.retour); });
+$("ficheBack").addEventListener("click",function(){ renderPalmares(); show("hall"); });
+$("openPalmares").addEventListener("click",function(){ ouvrirPalmares(null,"games"); });
+$("openHall").addEventListener("click",function(){ ouvrirPalmares(S.game,"setup"); });
+/* le bouton palmarès de chaque jeu à tour de rôle ramène à sa préparation */
+ORDRE_JEUX.forEach(function(id){
+  var d=JEUX[id];
+  if(!d.lienPalmares) return;
+  $(d.lienPalmares).addEventListener("click",function(){ ouvrirPalmares(id, (d.ecrans||["games"])[0]); });
+});
+
+/* Le bouton palmarès d'un jeu n'apparaît que s'il a des parties. */
 function refreshHallLink(){
   var n=HG().length, titre=t("hall.aria")+" · "+tn("hall.count",n);
   ["openHall"].concat(liensPalmares()).forEach(function(id){
@@ -11276,7 +11643,6 @@ function refreshHallLink(){
     btn.setAttribute("aria-label", titre);
   });
 }
-
 /* ------------------------------------------------------------------
    À propos
 ------------------------------------------------------------------ */
@@ -11375,7 +11741,6 @@ function fillAbout(){
     H=[];
     save();
     refreshHallLink();
-    if($("s-joueurs").classList.contains("on")) renderJoueurs();
     toast(t("data.wipe.done"));
   });
   net.appendChild(tout);
@@ -11452,7 +11817,7 @@ function applyImport(text){
   save();
   closeAbout();
   renderCards(); renderRules(); renderTSetup();
-  refreshTourBtn(); refreshHallLink(); refreshJoueursLink();
+  refreshTourBtn(); refreshHallLink();
   if(G && !G.over){ show("game"); renderGame(true); }
   else show("setup");
   toast(t("data.imported"));
@@ -11530,25 +11895,6 @@ $("openRulesT").addEventListener("click",openRules);
 $("rulesClose").addEventListener("click",closeRules);
 $("rulesScrim").addEventListener("click",closeRules);
 
-var HALL_BACK="setup";
-$("openHall").addEventListener("click",function(){ HALL_BACK="setup"; renderHall(); show("hall"); });
-$("hallBack").addEventListener("click",function(){ show(HALL_BACK); });
-$("hallClear").addEventListener("click",function(){
-  var b=$("hallClear");
-  if(b.dataset.armed!=="1"){
-    b.dataset.armed="1";
-    b.textContent=t("hall.clear.confirm");
-    setTimeout(function(){
-      if(b.dataset.armed==="1"){ b.dataset.armed="0"; b.textContent=t("hall.clear"); }
-    },4000);
-    return;
-  }
-  b.dataset.armed="0";
-  b.textContent=t("hall.clear");
-  H=H.filter(function(x){ return (x.g||jeuHistorique())!==S.game; }); save();
-  renderHall(); refreshHallLink();
-  show("setup");
-});
 
 /* ==================================================================
    TOURNOI — élimination directe
@@ -11908,8 +12254,8 @@ function retourAndroid(){
   var tirage=$("tossWrap");
   if(tirage && !tirage.hidden) return true;   /* le tirage au sort se termine seul */
 
-  var fiches=[["jrWrap","jrClose"], ["jrFiche","jrFicheClose"], ["ordreWrap","ordreOk"], ["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
-  var ecrans=[["s-hall","hallBack"], ["s-joueurs","jrBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"], ["s-cat","catBack"]];
+  var fiches=[["jrWrap","jrClose"], ["palDetail","palDetailClose"], ["ordreWrap","ordreOk"], ["sheetWrap","closeSheet"], ["bkSheetWrap","bkSheetClose"]];
+  var ecrans=[["s-fiche","ficheBack"], ["s-hall","hallBack"], ["s-tsetup","tsBack"], ["s-bracket","bkHome"], ["s-cat","catBack"]];
   ORDRE_JEUX.forEach(function(id){
     var r=JEUX[id].retour;
     if(!r) return;
@@ -12058,7 +12404,7 @@ function refreshTourBtn(){
 
 function show(name){
   applyStaticText();      /* les mots du jeu courant : « mène » à la pétanque seulement */
-  ["games","cat","joueurs","setup","tsetup","bracket","hall","game","over"].concat(ecransDesJeux()).forEach(function(n){
+  ["games","cat","setup","tsetup","bracket","hall","fiche","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
   if(name!=="game") closeSheet();
@@ -12193,7 +12539,6 @@ function restaurer(d){
   chargerLesJeux(d, "charger");
   H=normH(d.h);
   J=normJ(d.j);
-  refreshJoueursLink();
   refreshTourBtn();
   refreshHallLink();
 
@@ -12250,7 +12595,6 @@ fillRules("rulesBody");
 renderTSetup();
 refreshTourBtn();
 refreshHallLink();
-refreshJoueursLink();
 
 /* installation sur l'écran d'accueil et fonctionnement hors ligne */
 if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){

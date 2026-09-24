@@ -9,6 +9,9 @@
   letter-spacing:-.045em;line-height:.95;margin-top:8px;
 }
 .brand h1 span{color:var(--muted)}
+/* le point final seul est estompé : un titre traduit, posé dans sa propre
+   balise, garde la couleur du texte comme les autres */
+.brand h1 span[data-i18n]{color:inherit}
 
 /* =============================================================
    0. CHOIX DU JEU

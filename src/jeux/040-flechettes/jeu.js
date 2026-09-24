@@ -681,7 +681,6 @@ function flNormF(f){
 
 /* --- commandes --------------------------------------------------- */
 $("flToGames").addEventListener("click",retourAuxJeux);
-$("flHall").addEventListener("click",function(){ HALL_BACK="fsetup"; renderHall(); show("hall"); });
 $("flMode").addEventListener("click",function(e){
   var b=e.target.closest("button[data-mode]");
   if(!b || b.dataset.mode===FS.mode) return;
