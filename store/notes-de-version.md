@@ -360,6 +360,31 @@ Mise à jour de fond : les écrans de fin et de préparation des jeux partagent 
 
 ---
 
+## Version 7.5 — Les joueurs à part
+
+Nom de release, jamais montré aux utilisateurs : `7.5 — Joueurs`
+
+Depuis la 7.4 : le carnet quitte l'onglet du palmarès pour son propre écran, ouvert par une icône
+de l'accueil ; le palmarès garde le classement et l'historique.
+
+### en-US *(216 / 500)*
+
+```
+Your players now have their own screen: tap the new Players icon at the top of the home screen to add them, rename them or open their card.
+
+The standings, behind the trophy, now focus on the ranking and the history.
+```
+
+### fr-FR *(237 / 500)*
+
+```
+Vos joueurs ont maintenant leur propre écran : touchez la nouvelle icône Joueurs en haut de l'accueil pour les ajouter, les renommer ou ouvrir leur fiche.
+
+Le palmarès, derrière le trophée, se concentre sur le classement et l'historique.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
