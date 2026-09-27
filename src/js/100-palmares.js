@@ -548,7 +548,7 @@ function renderFiche(){
     fb.appendChild(form);
     body.appendChild(fb);
 
-    peindreHautsFaits(body, j, k, toutes);
+    peindreHautsFaits(body, j, toutes);
 
     /* ses jeux, du plus joué au moins joué */
     var par={}, ordre=[];
@@ -615,7 +615,7 @@ function renderFiche(){
 
   }
   /* sans partie à plusieurs, les hauts faits restent à décrocher : ils montrent où aller */
-  if(!mes.length) peindreHautsFaits(body, j, k, toutes);
+  if(!mes.length) peindreHautsFaits(body, j, toutes);
   if(toutes.length){
     var db=blocTitre(t("pal.recent"));
     toutes.slice(0,5).forEach(function(x){ db.appendChild(cartePartie(x.g, x.i, j.id)); });

@@ -22,7 +22,7 @@ var HF_ICONES = {
 
 /* Les parties d'un joueur, de la plus ancienne à la plus récente : les
    séries se lisent dans l'ordre où elles ont été jouées. */
-function hautsFaits(k, toutes){
+function hautsFaits(toutes){
   var chrono=toutes.slice().reverse();
   var aPlusieurs=chrono.filter(function(x){ return compte(x.g); });
   var gagnees=aPlusieurs.filter(function(x){ return x.g.w===x.i; });
@@ -39,7 +39,7 @@ function hautsFaits(k, toutes){
   var fanny=gagnees.filter(function(x){ return duel(x) && jeuX(x)==="petanque" && adv(x)===0; });
   var blanc=gagnees.filter(function(x){ return duel(x) && jeuX(x)!=="petanque" && adv(x)===0; });
   var fil=gagnees.filter(function(x){ return duel(x) && ecart(x)===1; });
-  var equipe=gagnees.filter(function(x){ return membres(x.g,x.i).length>1 || campPluriel(x.g,x.i); });
+  var equipe=gagnees.filter(function(x){ return campPluriel(x.g,x.i); });
   var yams=chrono.filter(function(x){ return jeuX(x)==="yams" && x.g.s[x.i]>=300; });
 
   /* la plus longue série de victoires, et quand elle a atteint 3 puis 5 */
@@ -59,20 +59,20 @@ function hautsFaits(k, toutes){
   });
 
   /* la bête noire : un adversaire battu au moins trois fois, jamais perdu */
-  var face={}, ordre=[];
+  var face={};
   aPlusieurs.forEach(function(x){
     if(x.g.w<0) return;
     for(var i=0;i<x.g.n.length;i++){
       if(i===x.i) continue;
       membres(x.g,i).forEach(function(o){
-        if(!face[o]){ face[o]={g:0, p:0, d:null}; ordre.push(o); }
+        if(!face[o]) face[o]={g:0, p:0, d:null};
         if(x.g.w===x.i){ face[o].g++; if(face[o].g===3) face[o].d=x.g.d; }
         else if(x.g.w===i) face[o].p++;
       });
     }
   });
   var proie=null;
-  ordre.forEach(function(o){
+  Object.keys(face).forEach(function(o){
     var f=face[o];
     if(f.g>=3 && !f.p && (!proie || f.g>face[proie].g)) proie=o;
   });
@@ -100,8 +100,8 @@ function titreHautFait(h){
 
 /* Une grille de médailles, et sous elle la légende de celle qu'on touche :
    par défaut la dernière obtenue. */
-function peindreHautsFaits(host, j, k, toutes){
-  var liste=hautsFaits(k, toutes);
+function peindreHautsFaits(host, j, toutes){
+  var liste=hautsFaits(toutes);
   var obtenus=liste.filter(function(h){ return h.obtenu; });
   var bloc=el("div","block pal-hf");
   var tete=el("div","pal-hf-tete");
@@ -111,10 +111,10 @@ function peindreHautsFaits(host, j, k, toutes){
 
   var grille=el("div","pal-hf-grille"), legende=el("div","pal-hf-legende");
   legende.setAttribute("aria-live","polite");
-  var teinte=color(j.couleur).hex, boutons=[];
+  var teinte=color(j.couleur).hex;
 
   function montrer(h){
-    boutons.forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.hf===h.id ? "true" : "false"); });
+    grille.querySelectorAll(".pal-medaille").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.hf===h.id ? "true" : "false"); });
     legende.innerHTML="";
     legende.appendChild(el("b",null,titreHautFait(h)));
     legende.appendChild(el("span",null,t("hf."+h.id+".d")));
@@ -142,15 +142,13 @@ function peindreHautsFaits(host, j, k, toutes){
     b.appendChild(m);
     b.appendChild(el("span","t",titreHautFait(h)));
     b.addEventListener("click",function(){ montrer(h); });
-    boutons.push(b);
     grille.appendChild(b);
   });
   bloc.appendChild(grille);
   bloc.appendChild(legende);
 
   /* la dernière obtenue, sinon la première à décrocher */
-  var derniere=null;
-  obtenus.forEach(function(h){ if(!derniere || (h.date||0)>(derniere.date||0)) derniere=h; });
+  var derniere=obtenus.reduce(function(a,h){ return !a || h.date>a.date ? h : a; },null);
   montrer(derniere || liste[0]);
   host.appendChild(bloc);
 }

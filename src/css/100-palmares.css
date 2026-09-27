@@ -228,7 +228,7 @@ a.hall-link{text-decoration:none;color:inherit}
 }
 .pal-medaille:not(.on) .m{opacity:.6}
 .pal-medaille.on .m{
-  border:2px solid var(--c);border-style:solid;
+  border:2px solid var(--c);
   background:color-mix(in oklab,var(--c) 20%,var(--panel));
   color:color-mix(in oklab,var(--c) 62%,var(--tone));
 }
