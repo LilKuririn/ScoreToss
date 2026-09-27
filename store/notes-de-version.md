@@ -338,6 +338,28 @@ Elles se calculent sur vos parties passées : ouvrez vos fiches, certaines sont 
 
 ---
 
+## Version 7.4 — Le grand ménage
+
+Nom de release, jamais montré aux utilisateurs : `7.4 — Ménage`
+
+Depuis la 7.3 : aucun changement visible. Le code des hauts faits allégé, puis les écrans de fin, le
+partage des classements, les réglages et l'en-tête des préparations réunis en briques communes — le
+banc de comparaison n'y voit aucune différence.
+
+### en-US *(160 / 500)*
+
+```
+Under-the-hood update: the end and setup screens of every game now share the same code. Nothing changes on screen, but the app is lighter and easier to improve.
+```
+
+### fr-FR *(193 / 500)*
+
+```
+Mise à jour de fond : les écrans de fin et de préparation des jeux partagent désormais le même code. Rien ne change à l'écran, mais l'application est plus légère et plus simple à faire évoluer.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
