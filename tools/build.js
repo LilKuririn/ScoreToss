@@ -24,6 +24,10 @@
    dossiers. Un fichier de jeu qu'aucun repère n'insère fait échouer
    l'assemblage — il serait sinon oublié sans bruit.
 
+   `@@entete:mk|molkky.name|Mölkky@@`, seul sur sa ligne, pose l'en-tête
+   commun des écrans de préparation, src/gabarits/entete-preparation.html :
+   {id} préfixe ses boutons (mkToGames, mkHall), {cle} et {nom} font le titre.
+
      node tools/build.js           écrit index.html
      node tools/build.js --check   échoue si index.html ne correspond pas à src/
 
@@ -40,6 +44,7 @@ const PARTIES = { css: ".css", html: ".html", js: ".js" };
 const NOM = /^\d{3}-[a-z0-9-]+\.[a-z]+$/;
 const NOM_JEU = /^\d{3}-[a-z0-9-]+$/;
 const REPERE_JEUX = /^[ \t]*@@jeux:([\w.-]+)@@\n/gm;
+const REPERE_ENTETE = /^[ \t]*@@entete:(\w+)\|([\w.]+)\|([^@\n]+)@@\n/gm;
 
 /* Les fins de ligne Windows ne doivent pas faire diverger la sortie. */
 function lire(fichier) {
@@ -112,7 +117,9 @@ function assembler() {
     const contenu = morceaux(dossier, extension);
     page = page.replace(repere, () => contenu);
   }
-  return insererJeux(page);
+  const gabarit = lire(path.join(SRC, "gabarits", "entete-preparation.html"));
+  return insererJeux(page).replace(REPERE_ENTETE, (ligne, id, cle, nom) =>
+    gabarit.replace(/\{id\}/g, () => id).replace(/\{cle\}/g, () => cle).replace(/\{nom\}/g, () => nom));
 }
 
 let page;

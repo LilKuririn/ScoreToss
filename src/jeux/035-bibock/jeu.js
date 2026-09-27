@@ -473,12 +473,7 @@ function renderBOver(){
   if(e.elimination) head.appendChild(el("p","note",tf("bi.elim.note",{name:B.teams[l].label})));
   box.appendChild(head);
 
-  var card=el("div","tale reveal");
-  card.style.animationDelay="80ms";
-  var top=el("div","tale-top");
-  top.appendChild(el("p","eyebrow",t("over.stats")));
-  top.appendChild(el("p","eyebrow",tf("over.goal",{n:B.cible})));
-  card.appendChild(top);
+  var card=carteDeFin(box, t("over.stats"), tf("over.goal",{n:B.cible}));
   var tete=el("div","tale-row head");
   tete.appendChild(biQui(w,false));
   tete.appendChild(el("span","tale-lab",""));
@@ -498,26 +493,7 @@ function renderBOver(){
     row.appendChild(el("span","tale-v b"+(r[1][l] ? "" : " off"),r[2](r[1][l])));
     card.appendChild(row);
   });
-  box.appendChild(card);
-
-  var acts=el("div","over-acts reveal");
-  acts.style.animationDelay="160ms";
-  var share=el("button","share-btn",t("share.result"));
-  share.type="button";
-  share.addEventListener("click",biPartager);
-  acts.appendChild(share);
-  var again=el("button","cta",t("over.rematch"));
-  again.type="button";
-  again.addEventListener("click",biNouvellePartie);
-  acts.appendChild(again);
-  var back=el("button","cta ghost",t("over.newsetup"));
-  back.type="button";
-  back.addEventListener("click",function(){ B=null; BE=null; save(); show("bsetup"); renderBSetup(); });
-  acts.appendChild(back);
-  box.appendChild(acts);
-
-  show("over");
-  buzz([14,60,26]);
+  boutonsDeFin(box, biPartager, suitesDeFin(biNouvellePartie, function(){ B=null; BE=null; save(); show("bsetup"); renderBSetup(); }));
 }
 
 function biPartager(){

@@ -559,63 +559,23 @@ function renderIOver(){
   if(e.jackover) head.appendChild(el("p","note",t("ti.note.jackover")));
   box.appendChild(head);
 
-  var card=el("div","tale reveal");
-  card.style.animationDelay="80ms";
-  var top=el("div","tale-top");
-  top.appendChild(el("p","eyebrow",t("ti.rank")));
-  top.appendChild(el("p","eyebrow",tf("over.goal",{n:TI_CIBLE})));
-  card.appendChild(top);
-  var table=el("table","ti-rang"), thead=el("thead"), htr=el("tr");
-  ["", t("ti.col.won"), t("ti.col.bonus"), t("over.points")].forEach(function(x){ htr.appendChild(el("th",null,x)); });
-  thead.appendChild(htr);
-  table.appendChild(thead);
-  var tbody=el("tbody");
-  tiClassement().forEach(function(i,rang){
+  var card=carteDeFin(box, t("ti.rank"), tf("over.goal",{n:TI_CIBLE}));
+  tableauDeFin(card, "ti-rang", [t("ti.col.won"), t("ti.col.bonus"), t("over.points")], tiClassement().map(function(i,rang){
     var p=TI.players[i];
-    var tr=el("tr", i===w ? "win" : null);
-    var td=el("td"), who=el("div","who"), dot=el("i");
-    dot.style.background=p.hex;
-    who.appendChild(dot);
-    who.appendChild(el("span",null,(rang+1)+". "+p.label));
-    td.appendChild(who);
-    tr.appendChild(td);
-    tr.appendChild(el("td",null,String(e.gagnees[i])));
-    tr.appendChild(el("td",null, e.bonus[i] ? "+"+e.bonus[i] : "—"));
-    tr.appendChild(el("td","total",String(e.scores[i])));
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  card.appendChild(table);
-  box.appendChild(card);
-
-  var acts=el("div","over-acts reveal");
-  acts.style.animationDelay="160ms";
-  var share=el("button","share-btn",t("share.result"));
-  share.type="button";
-  share.addEventListener("click",tiPartager);
-  acts.appendChild(share);
-  var again=el("button","cta",t("over.rematch"));
-  again.type="button";
-  again.addEventListener("click",tiNouvellePartie);
-  acts.appendChild(again);
-  var back=el("button","cta ghost",t("over.newsetup"));
-  back.type="button";
-  back.addEventListener("click",function(){ TI=null; TIE=null; save(); show("isetup"); renderISetup(); });
-  acts.appendChild(back);
-  box.appendChild(acts);
-
-  show("over");
-  buzz([14,60,26]);
+    return {hex:p.hex, nom:(rang+1)+". "+p.label, win:i===w, cases:[
+      [String(e.gagnees[i])],
+      [e.bonus[i] ? "+"+e.bonus[i] : "—"],
+      [String(e.scores[i]),"total"]
+    ]};
+  }));
+  boutonsDeFin(box, tiPartager, suitesDeFin(tiNouvellePartie, function(){ TI=null; TIE=null; save(); show("isetup"); renderISetup(); }));
 }
 
 function tiPartager(){
   if(!TI || !TIE || TIE.gagnant<0) return;
-  var lignes=[t("ti.name")+" · "+tf("over.goal",{n:TI_CIBLE})];
-  tiClassement().forEach(function(i,rang){
-    lignes.push((rang+1)+". "+TI.players[i].label+" — "+TIE.scores[i]);
-  });
-  lignes.push("ScoreToss");
-  shareText(lignes.join("\n"));
+  partagerClassement(t("ti.name")+" · "+tf("over.goal",{n:TI_CIBLE}), tiClassement().map(function(i,rang){
+    return (rang+1)+". "+TI.players[i].label+" — "+TIE.scores[i];
+  }));
 }
 
 /* --- état enregistré --------------------------------------------- */

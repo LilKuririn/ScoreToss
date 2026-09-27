@@ -47,7 +47,10 @@ Un jeu à tour de rôle s'appuie sur les briques communes plutôt que de les rec
 `devenirJeuCourant(id)` dans son `ouvrir` ; `peindreRangees({...})` pour les rangées de joueurs de
 sa préparation (numéro, couleur, nom relié au carnet, coéquipiers) ; `apresUnCoup(finie, {...})`
 après chaque coup ; `blocBareme` et `blocDeroule` pour sa fiche de règles ; `phraseAvecNom` pour
-une phrase traduite dont un nom se détache en gras. **Une partie terminée est archivée avant d'être
+une phrase traduite dont un nom se détache en gras ; pour son écran de fin, `carteDeFin`,
+`tableauDeFin`, `boutonsDeFin(box, partager, suitesDeFin(rejouer, reprendre))` et
+`partagerClassement`. Son écran de préparation ouvre sur `@@entete:id|cle.du.nom|Nom@@`, l'en-tête
+commun de `src/gabarits/entete-preparation.html`. **Une partie terminée est archivée avant d'être
 sauvegardée** — dans l'autre ordre, fermer l'application sur l'écran de fin la faisait perdre au
 palmarès : `apresUnCoup` et `afterHistoryChange` le garantissent.
 

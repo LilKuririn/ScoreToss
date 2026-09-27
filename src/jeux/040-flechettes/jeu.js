@@ -598,67 +598,26 @@ function renderFOver(){
   head.appendChild(fin);
   box.appendChild(head);
 
-  var card=el("div","tale reveal");
-  card.style.animationDelay="80ms";
-  var top=el("div","tale-top");
-  top.appendChild(el("p","eyebrow",t("fl.rank")));
-  top.appendChild(el("p","eyebrow",tf("fl.start",{n:F.depart})));
-  card.appendChild(top);
-
+  var card=carteDeFin(box, t("fl.rank"), tf("fl.start",{n:F.depart}));
   var st=flStats();
   var dec=(LANG==="en") ? "." : ",";
-  var table=el("table","fl-rang"), thead=el("thead"), htr=el("tr");
-  ["", t("fl.left"), t("fl.avg"), t("fl.best"), t("fl.busts")].forEach(function(x){ htr.appendChild(el("th",null,x)); });
-  thead.appendChild(htr);
-  table.appendChild(thead);
-  var tbody=el("tbody");
-  flClassement().forEach(function(i,rang){
+  tableauDeFin(card, "fl-rang", [t("fl.left"), t("fl.avg"), t("fl.best"), t("fl.busts")], flClassement().map(function(i,rang){
     var p=F.players[i], s=st[i];
-    var tr=el("tr", i===w ? "win" : null);
-    var td=el("td"), who=el("div","who"), dot=el("i");
-    dot.style.background=p.hex;
-    who.appendChild(dot);
-    who.appendChild(el("span",null,(rang+1)+". "+p.label));
-    td.appendChild(who);
-    tr.appendChild(td);
-    tr.appendChild(el("td","reste",String(e.score[i])));
-    tr.appendChild(el("td",null, s.darts ? (s.points/s.darts*3).toFixed(1).replace(".",dec) : "—"));
-    tr.appendChild(el("td",null, s.meilleure ? String(s.meilleure) : "—"));
-    tr.appendChild(el("td",null, String(s.busts)));
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  card.appendChild(table);
-  box.appendChild(card);
-
-  var acts=el("div","over-acts reveal");
-  acts.style.animationDelay="160ms";
-  var share=el("button","share-btn",t("share.result"));
-  share.type="button";
-  share.addEventListener("click",flPartager);
-  acts.appendChild(share);
-  var again=el("button","cta",t("over.rematch"));
-  again.type="button";
-  again.addEventListener("click",flNouvellePartie);
-  acts.appendChild(again);
-  var back=el("button","cta ghost",t("over.newsetup"));
-  back.type="button";
-  back.addEventListener("click",function(){ F=null; FE=null; save(); show("fsetup"); renderFSetup(); });
-  acts.appendChild(back);
-  box.appendChild(acts);
-
-  show("over");
-  buzz([14,60,26]);
+    return {hex:p.hex, nom:(rang+1)+". "+p.label, win:i===w, cases:[
+      [String(e.score[i]),"reste"],
+      [s.darts ? (s.points/s.darts*3).toFixed(1).replace(".",dec) : "—"],
+      [s.meilleure ? String(s.meilleure) : "—"],
+      [String(s.busts)]
+    ]};
+  }));
+  boutonsDeFin(box, flPartager, suitesDeFin(flNouvellePartie, function(){ F=null; FE=null; save(); show("fsetup"); renderFSetup(); }));
 }
 
 function flPartager(){
   if(!F || !FE || FE.gagnant<0) return;
-  var lignes=[t("fl.name")+" · "+tf("fl.start",{n:F.depart})];
-  flClassement().forEach(function(i,rang){
-    lignes.push((rang+1)+". "+F.players[i].label+" — "+FE.score[i]);
-  });
-  lignes.push("ScoreToss");
-  shareText(lignes.join("\n"));
+  partagerClassement(t("fl.name")+" · "+tf("fl.start",{n:F.depart}), flClassement().map(function(i,rang){
+    return (rang+1)+". "+F.players[i].label+" — "+FE.score[i];
+  }));
 }
 
 /* --- état enregistré --------------------------------------------- */

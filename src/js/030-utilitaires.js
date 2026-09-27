@@ -45,43 +45,32 @@ function phraseAvecNom(host, phrase, nom, hex){
   host.appendChild(document.createTextNode(parts[1]||""));
 }
 
-function themePicker(){
-  var box=el("div","block");
+/* un réglage en boutons segmentés : [valeur, libellé]… */
+function blocChoix(titre, options, courant, choisir){
+  var box=el("div","block"), seg=el("div","seg seg"+options.length);
   box.style.paddingTop="18px";
-  box.appendChild(el("p","eyebrow",t("about.theme")));
-  var seg=el("div","seg seg3");
-  [[null,t("about.theme.auto")],["light",t("about.theme.light")],["dark",t("about.theme.dark")]]
-    .forEach(function(o){
-      var b=el("button",null,o[1]);
-      b.type="button";
-      if(THEME===o[0]) b.classList.add("on");
-      b.addEventListener("click",function(){ setTheme(o[0]); });
-      seg.appendChild(b);
-    });
+  box.appendChild(el("p","eyebrow",titre));
+  options.forEach(function(o){
+    var b=el("button",courant===o[0] ? "on" : null,o[1]);
+    b.type="button";
+    b.addEventListener("click",function(){ choisir(o[0]); });
+    seg.appendChild(b);
+  });
   box.appendChild(seg);
   return box;
 }
-
+function themePicker(){
+  return blocChoix(t("about.theme"),
+    [[null,t("about.theme.auto")],["light",t("about.theme.light")],["dark",t("about.theme.dark")]], THEME, setTheme);
+}
 function langPicker(){
-  var box=el("div","block");
-  box.style.paddingTop="18px";
-  box.appendChild(el("p","eyebrow",t("about.lang")));
   /* Quatre choix, dont le retour au suivi du téléphone : sans lui, une
      langue choisie une fois ne se déchoisissait plus. */
   var choisi=null;
   try{ choisi=localStorage.getItem(LANG_KEY); }catch(e){}
   if(choisi!=="fr" && choisi!=="en" && choisi!=="es") choisi=null;
-
-  var seg=el("div","seg seg4");
-  [[null,t("about.lang.auto")],["fr","Français"],["en","English"],["es","Español"]].forEach(function(l){
-    var b=el("button",null,l[1]);
-    b.type="button";
-    if(choisi===l[0]) b.classList.add("on");
-    b.addEventListener("click",function(){ setLang(l[0]); });
-    seg.appendChild(b);
-  });
-  box.appendChild(seg);
-  return box;
+  return blocChoix(t("about.lang"),
+    [[null,t("about.lang.auto")],["fr","Français"],["en","English"],["es","Español"]], choisi, setLang);
 }
 
 function defaultName(i){

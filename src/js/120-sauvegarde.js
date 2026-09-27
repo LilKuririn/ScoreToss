@@ -88,6 +88,8 @@ function shareText(text){
   }
   toast(text);
 }
+/* un classement à partager : le titre, une ligne par joueur, la signature */
+function partagerClassement(titre, lignes){ shareText([titre].concat(lignes, "ScoreToss").join("\n")); }
 
 function shareGame(){
   if(!G) return;

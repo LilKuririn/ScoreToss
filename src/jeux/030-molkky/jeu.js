@@ -627,12 +627,7 @@ function renderMOver(){
   }
   box.appendChild(head);
 
-  var card=el("div","tale reveal");
-  card.style.animationDelay="80ms";
-  var top=el("div","tale-top");
-  top.appendChild(el("p","eyebrow",t("mk.rank")));
-  top.appendChild(el("p","eyebrow",tf("over.goal",{n:M.target})));
-  card.appendChild(top);
+  var card=carteDeFin(box, t("mk.rank"), tf("over.goal",{n:M.target}));
 
   mRank().forEach(function(i,rang){
     var row=el("div","mk-row"+(M.out[i]?" out":""));
@@ -644,39 +639,14 @@ function renderMOver(){
     row.appendChild(el("div","sc num",String(M.score[i])));
     card.appendChild(row);
   });
-  box.appendChild(card);
-
-  var acts=el("div","over-acts reveal");
-  acts.style.animationDelay="160ms";
-
-  var share=el("button","share-btn",t("share.result"));
-  share.type="button";
-  share.addEventListener("click",mShare);
-  acts.appendChild(share);
-
-  var again=el("button","cta",t("over.rematch"));
-  again.type="button";
-  again.addEventListener("click",function(){ mNewGame(); });
-  acts.appendChild(again);
-
-  var back=el("button","cta ghost",t("over.newsetup"));
-  back.type="button";
-  back.addEventListener("click",function(){ M=null; save(); show("msetup"); renderMSetup(); });
-  acts.appendChild(back);
-
-  box.appendChild(acts);
-  show("over");
-  buzz([14,60,26]);
+  boutonsDeFin(box, mShare, suitesDeFin(mNewGame, function(){ M=null; save(); show("msetup"); renderMSetup(); }));
 }
 
 function mShare(){
   if(!M || M.winner<0) return;
-  var lignes=[t("molkky.name")+" · "+tf("over.goal",{n:M.target})];
-  mRank().forEach(function(i,rang){
-    lignes.push((rang+1)+". "+M.players[i].label+" — "+M.score[i]+(M.out[i] ? " ("+t("mk.out")+")" : ""));
-  });
-  lignes.push("ScoreToss");
-  shareText(lignes.join("\n"));
+  partagerClassement(t("molkky.name")+" · "+tf("over.goal",{n:M.target}), mRank().map(function(i,rang){
+    return (rang+1)+". "+M.players[i].label+" — "+M.score[i]+(M.out[i] ? " ("+t("mk.out")+")" : "");
+  }));
 }
 
 /* --- commandes -------------------------------------------------- */

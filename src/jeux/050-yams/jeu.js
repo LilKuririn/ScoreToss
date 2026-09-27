@@ -571,65 +571,25 @@ function renderYOver(){
   if(Y.record) head.appendChild(el("span","ya-record",t("ya.record")));
   box.appendChild(head);
 
-  var card=el("div","tale reveal");
-  card.style.animationDelay="80ms";
-  var top=el("div","tale-top");
-  top.appendChild(el("p","eyebrow",t(solo ? "ya.sheet" : "ya.rank")));
-  top.appendChild(el("p","eyebrow",t("ya.name")));
-  card.appendChild(top);
-
-  var table=el("table","ya-rang"), thead=el("thead"), htr=el("tr");
-  ["", t("ya.upper"), t("ya.bonus"), t("ya.lower"), t("ya.total")].forEach(function(x){ htr.appendChild(el("th",null,x)); });
-  thead.appendChild(htr);
-  table.appendChild(thead);
-  var tbody=el("tbody");
-  yaClassement().forEach(function(i){
+  var card=carteDeFin(box, t(solo ? "ya.sheet" : "ya.rank"), t("ya.name"));
+  tableauDeFin(card, "ya-rang", [t("ya.upper"), t("ya.bonus"), t("ya.lower"), t("ya.total")], yaClassement().map(function(i){
     var p=Y.players[i], f=e.fiches[i];
-    var tr=el("tr", e.premiers.indexOf(i)>=0 ? "win" : null);
-    var td=el("td"), who=el("div","who"), dot=el("i");
-    dot.style.background=p.hex;
-    who.appendChild(dot);
-    who.appendChild(el("span",null,(solo ? "" : yaRang(i)+". ")+p.label));
-    td.appendChild(who);
-    tr.appendChild(td);
-    tr.appendChild(el("td",null,String(f.haut)));
-    tr.appendChild(el("td",null, f.bonus ? "+"+YA_BONUS : "—"));
-    tr.appendChild(el("td",null,String(f.bas)));
-    tr.appendChild(el("td","total",String(f.total)));
-    tbody.appendChild(tr);
-  });
-  table.appendChild(tbody);
-  card.appendChild(table);
-  box.appendChild(card);
-
-  var acts=el("div","over-acts reveal");
-  acts.style.animationDelay="160ms";
-  var share=el("button","share-btn",t("share.result"));
-  share.type="button";
-  share.addEventListener("click",yaPartager);
-  acts.appendChild(share);
-  var again=el("button","cta",t(solo ? "ya.again" : "over.rematch"));
-  again.type="button";
-  again.addEventListener("click",yaNouvellePartie);
-  acts.appendChild(again);
-  var back=el("button","cta ghost",t("over.newsetup"));
-  back.type="button";
-  back.addEventListener("click",function(){ Y=null; YE=null; save(); show("ysetup"); renderYSetup(); });
-  acts.appendChild(back);
-  box.appendChild(acts);
-
-  show("over");
-  buzz([14,60,26]);
+    return {hex:p.hex, nom:(solo ? "" : yaRang(i)+". ")+p.label, win:e.premiers.indexOf(i)>=0, cases:[
+      [String(f.haut)],
+      [f.bonus ? "+"+YA_BONUS : "—"],
+      [String(f.bas)],
+      [String(f.total),"total"]
+    ]};
+  }));
+  boutonsDeFin(box, yaPartager, suitesDeFin(yaNouvellePartie, function(){ Y=null; YE=null; save(); show("ysetup"); renderYSetup(); },
+    t(solo ? "ya.again" : "over.rematch")));
 }
 
 function yaPartager(){
   if(!Y || !YE || !YE.fini) return;
-  var lignes=[t("ya.name")];
-  yaClassement().forEach(function(i){
-    lignes.push((Y.players.length>1 ? yaRang(i)+". " : "")+Y.players[i].label+" — "+YE.fiches[i].total);
-  });
-  lignes.push("ScoreToss");
-  shareText(lignes.join("\n"));
+  partagerClassement(t("ya.name"), yaClassement().map(function(i){
+    return (Y.players.length>1 ? yaRang(i)+". " : "")+Y.players[i].label+" — "+YE.fiches[i].total;
+  }));
 }
 
 /* --- état enregistré --------------------------------------------- */

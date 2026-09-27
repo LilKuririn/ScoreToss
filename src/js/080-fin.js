@@ -187,6 +187,55 @@ function overTale(w,l){
   return card;
 }
 
+/* Briques de l'écran de fin, communes à tous les jeux. */
+/* la carte du récit, sous son en-tête à deux étiquettes */
+function carteDeFin(box, gauche, droite){
+  var card=el("div","tale reveal"), top=el("div","tale-top");
+  card.style.animationDelay="80ms";
+  top.appendChild(el("p","eyebrow",gauche));
+  top.appendChild(el("p","eyebrow",droite));
+  card.appendChild(top);
+  box.appendChild(card);
+  return card;
+}
+/* le classement final en tableau : les noms à pastille, puis les colonnes
+   du jeu ; chaque ligne est {hex, nom, win, cases:[[texte, classe?]…]} */
+function tableauDeFin(card, cls, colonnes, lignes){
+  var table=el("table",cls), htr=el("tr"), tbody=el("tbody");
+  [""].concat(colonnes).forEach(function(x){ htr.appendChild(el("th",null,x)); });
+  table.appendChild(el("thead")).appendChild(htr);
+  lignes.forEach(function(l){
+    var tr=el("tr", l.win ? "win" : null), td=el("td"), who=el("div","who"), dot=el("i");
+    dot.style.background=l.hex;
+    who.appendChild(dot);
+    who.appendChild(el("span",null,l.nom));
+    td.appendChild(who);
+    tr.appendChild(td);
+    l.cases.forEach(function(c){ tr.appendChild(el("td",c[1]||null,c[0])); });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  card.appendChild(table);
+}
+/* le pied : partager, puis les suites [classe, libellé, action] ; et l'écran s'affiche */
+function boutonsDeFin(box, partager, suites){
+  var acts=el("div","over-acts reveal");
+  acts.style.animationDelay="160ms";
+  [["share-btn",t("share.result"),partager]].concat(suites).forEach(function(x){
+    var b=el("button",x[0],x[1]);
+    b.type="button";
+    b.addEventListener("click",function(){ x[2](); });
+    acts.appendChild(b);
+  });
+  box.appendChild(acts);
+  show("over");
+  buzz([14,60,26]);
+}
+/* les suites d'une partie hors tournoi : la revanche, ou une nouvelle préparation */
+function suitesDeFin(rejouer, reprendre, libelle){
+  return [["cta",libelle||t("over.rematch"),rejouer], ["cta ghost",t("over.newsetup"),reprendre]];
+}
+
 function renderOver(){
   var w=G.winner, l=1-w;
   var box=$("over");
@@ -211,45 +260,18 @@ function renderOver(){
   tale.style.animationDelay="80ms";
   box.appendChild(tale);
 
-  var acts=el("div","over-acts reveal");
-  acts.style.animationDelay="160ms";
-
-  var share=el("button","share-btn",t("share.result"));
-  share.type="button";
-  share.addEventListener("click",shareGame);
-  acts.appendChild(share);
-
+  var suites;
   if(tour){
     var nx=nextMatch();
-    if(T.champion>=0){
-      var crown=el("button","cta",t("over.champion"));
-      crown.type="button";
-      crown.addEventListener("click",function(){ G=null; save(); openBracket(); });
-      acts.appendChild(crown);
-    }else if(nx>=0){
+    suites=[];
+    if(T.champion>=0) suites.push(["cta",t("over.champion"),function(){ G=null; save(); openBracket(); }]);
+    else if(nx>=0){
       var nm=T.matches[nx];
-      var go=el("button","cta",t("over.next"));
-      go.type="button";
       head.appendChild(el("p","note",tf("over.nextline",{a:tName(nm.a),b:tName(nm.b)})));
-      go.addEventListener("click",function(){ playMatch(nx); });
-      acts.appendChild(go);
+      suites.push(["cta",t("over.next"),function(){ playMatch(nx); }]);
     }
-    var toBk=el("button","cta ghost",t("over.bracket"));
-    toBk.type="button";
-    toBk.addEventListener("click",function(){ G=null; save(); openBracket(); });
-    acts.appendChild(toBk);
-  }else{
-    var again=el("button","cta",t("over.rematch"));
-    again.type="button";
-    again.addEventListener("click",function(){ newGame(); });
-    var back=el("button","cta ghost",t("over.newsetup"));
-    back.type="button";
-    back.addEventListener("click",function(){ G=null; save(); show("setup"); });
-    acts.appendChild(again); acts.appendChild(back);
-  }
-  box.appendChild(acts);
-
-  show("over");
-  buzz([14,60,26]);
+    suites.push(["cta ghost",t("over.bracket"),function(){ G=null; save(); openBracket(); }]);
+  }else suites=suitesDeFin(newGame, function(){ G=null; save(); show("setup"); });
+  boutonsDeFin(box, shareGame, suites);
 }
 
