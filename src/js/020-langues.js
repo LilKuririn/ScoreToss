@@ -830,6 +830,7 @@ function setLang(l){
   if(G) renderGame(true);
   if(T && $("s-bracket").classList.contains("on")) renderBracket();
   if($("s-hall").classList.contains("on")) renderPalmares();
+  if($("s-joueurs").classList.contains("on")) renderJoueurs();
   if($("s-fiche").classList.contains("on")) renderFiche();
   if($("s-over").classList.contains("on") && G && G.over) renderOver();
   if($("aboutWrap").classList.contains("on")) fillAbout();

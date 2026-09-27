@@ -126,7 +126,7 @@ function refreshTourBtn(){
 
 function show(name){
   applyStaticText();      /* les mots du jeu courant : « mène » à la pétanque seulement */
-  ["games","cat","setup","tsetup","bracket","hall","fiche","game","over"].concat(ecransDesJeux()).forEach(function(n){
+  ["games","cat","setup","tsetup","bracket","hall","joueurs","fiche","game","over"].concat(ecransDesJeux()).forEach(function(n){
     $("s-"+n).classList.toggle("on", n===name);
   });
   if(name!=="game") closeSheet();

@@ -583,9 +583,10 @@ async function carnetChoisir(a, sel, index, nom){
 
 scenario("joueurs-carnet", async function(a){
   await a.clic("#openPalmares");                               a.point("palmarès vide");
-  await a.clic('#palTabs [data-onglet="gens"]');               a.point("carnet vide");
-  await carnetAjouter(a, ["Marius","Fanny","César"]);          a.point("trois joueurs");
   await a.clic("#hallBack");
+  await a.clic("#openJoueurs");                                a.point("carnet vide");
+  await carnetAjouter(a, ["Marius","Fanny","César"]);          a.point("trois joueurs");
+  await a.clic("#joueursBack");
   await a.clic('#categories [data-categorie="exterieur"]');
   await a.clic("#playPetanque");
   await a.clic('#mode button[data-mode="double"]');
@@ -604,10 +605,14 @@ scenario("joueurs-carnet", async function(a){
   await a.clic('#palTabs [data-onglet="hist"]');               a.point("historique");
   await a.clicN("#hallBody .pal-game", 0);                     a.point("détail d'une partie");
   await a.clic("#palDetailClose");
-  await a.clic('#palTabs [data-onglet="gens"]');
-  await a.clicN("#hallBody .pal-joueur", 0);                   a.point("fiche du joueur");
+  await a.clic('#palTabs [data-onglet="rang"]');
+  await a.clicN("#hallBody button:not(:disabled)", 0);         a.point("fiche ouverte du classement");
+  await a.clic("#ficheBack");                                  a.point("retour au palmarès");
+  await a.clic("#hallBack");
+  await a.clic("#openJoueurs");
+  await a.clicN("#joueursBody .pal-joueur", 0);                a.point("fiche du joueur");
   await a.clic("#ficheBack");
-  await a.clicN("#hallBody .pal-joueur", 2);
+  await a.clicN("#joueursBody .pal-joueur", 2);
   await a.clic("#ficheBody .pal-danger");                      a.point("suppression armée");
   await a.clic("#ficheBody .pal-danger");                      a.point("joueur supprimé, retour au carnet");
 }, [360,640]);

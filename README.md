@@ -40,7 +40,7 @@ rang. En équipes, ce sont les équipes qui sont tirées.
 **Simple (1v1) ou double (2v2).** Nom d'équipe, noms des joueurs, couleur au choix parmi neuf.
 Passer d'un mode à l'autre repart de noms vides, un joueur n'étant pas une équipe.
 
-**Le carnet de joueurs.** L'onglet *Joueurs* du palmarès tient la liste de ceux avec qui on joue souvent : un nom, une
+**Le carnet de joueurs.** Son propre écran, ouvert par l'icône *Joueurs* de l'accueil, tient la liste de ceux avec qui on joue souvent : un nom, une
 couleur, rien d'autre. Chaque champ de nom, dans les huit jeux, porte un bouton qui ouvre ce carnet
 — on choisit au lieu de retaper, et un nom tapé à la main entre au carnet d'un toucher. Le camp
 prend alors **la couleur du joueur** ; si le voisin la portait déjà, les deux l'échangent, comme
@@ -90,7 +90,7 @@ réapparaissent pas de l'autre. Les deux peuvent tourner en même temps sans se 
 
 Les parties terminées sont archivées, tournoi compris, pour répondre à la seule question qui fâche
 entre deux barbecues : **qui mène**. Un seul écran, ouvert par le **trophée** de l'accueil — ou,
-déjà filtré, par le bouton palmarès de chaque jeu —, en trois onglets. Au-dessus, un filtre par jeu
+déjà filtré, par le bouton palmarès de chaque jeu —, en deux onglets. Au-dessus, un filtre par jeu
 ne propose que les jeux réellement joués, chacun avec son nombre de parties.
 
 - **Classement** — un podium des trois premiers, puis la suite à partir du quatrième. Chaque ligne
@@ -101,10 +101,9 @@ ne propose que les jeux réellement joués, chacun avec son nombre de parties.
   « **Marius & Fanny** battent César & Panisse — 13 – 9 ». Un toucher en ouvre le détail : chaque
   participant avec sa place et son score, les manches, le format, le tournoi. Filtré sur un jeu,
   l'onglet propose d'en effacer les parties.
-- **Joueurs** — le carnet, et la barre pour y ajouter quelqu'un.
 
 On lit par **personnes** : en équipe, la victoire compte pour chacun de ses membres ; un nom tapé à
-la main compte sous ce nom, marqué *invité*. Toucher un joueur du carnet ouvre sa **fiche** : son
+la main compte sous ce nom, marqué *invité*. Toucher un joueur du carnet, au classement ou sur l'écran *Joueurs*, ouvre sa **fiche** : son
 rang général, ses parties, victoires et part de victoires, sa forme sur les cinq dernières, ses
 jeux, ses face-à-face contre chaque adversaire, ses dernières parties racontées de son point de vue
 (« Perdue contre César & Panisse, avec Fanny · 11 – 13 »), et de quoi le renommer, le recolorier
@@ -301,7 +300,7 @@ Aucune donnée ne quitte le téléphone. Pas de compte, pas de serveur, pas de t
 publicité. Les parties, les tournois et le palmarès sont enregistrés localement et disparaissent
 avec l'application.
 
-La fiche *À propos* s'ouvre de l'accueil, par l'icône **?** à côté du carnet, comme depuis la
+La fiche *À propos* s'ouvre de l'accueil, par l'icône **?** à côté du trophée, comme depuis la
 préparation : elle dit ce que l'application contient, et tient la sauvegarde, le thème et la langue.
 
 Une **sauvegarde** exportable en JSON permet de tout emporter avant de changer de téléphone, et de

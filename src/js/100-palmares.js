@@ -171,7 +171,7 @@ function renderHall(){ renderPalmares(); }
 
 function renderPalmares(){
   $("hallBackLab").textContent = PAL.retour==="games" ? t("nav.home") : nomJeu(S.game);
-  $("hallCount").textContent = tn("hall.count",H.length)+" · "+tn("pl.count",J.length);
+  $("hallCount").textContent = tn("hall.count",H.length);
   var tabs=$("palTabs").children;
   for(var i=0;i<tabs.length;i++){
     var on = tabs[i].dataset.onglet===PAL.onglet;
@@ -179,12 +179,10 @@ function renderPalmares(){
     tabs[i].setAttribute("aria-selected", on ? "true" : "false");
   }
   peindreFiltres();
-  $("palAjout").hidden = PAL.onglet!=="gens";
   var body=$("hallBody");
   body.innerHTML="";
-  if(PAL.onglet==="rang") peindreClassement(body);
-  else if(PAL.onglet==="hist") peindreHistorique(body);
-  else peindreCarnet(body);
+  if(PAL.onglet==="hist") peindreHistorique(body);
+  else peindreClassement(body);
 }
 
 /* Les jeux réellement joués, du plus pratiqué au moins pratiqué ; celui
@@ -192,8 +190,6 @@ function renderPalmares(){
 function peindreFiltres(){
   var f=$("palFiltres");
   f.innerHTML="";
-  f.hidden = PAL.onglet==="gens";
-  if(f.hidden) return;
   var comptes={};
   H.forEach(function(g){ var j=jeuDePartie(g); comptes[j]=(comptes[j]||0)+1; });
   var jeux=ORDRE_JEUX.filter(function(id){ return comptes[id] || id===PAL.jeu; });
@@ -456,7 +452,18 @@ function fermerDetail(){ $("palDetail").classList.remove("on"); }
 $("palDetailClose").addEventListener("click",fermerDetail);
 $("palDetailScrim").addEventListener("click",fermerDetail);
 
-/* --- Joueurs : le carnet --------------------------------------------- */
+/* --- Joueurs : le carnet, son propre écran --------------------------- */
+function ouvrirJoueurs(){
+  renderJoueurs();
+  show("joueurs");
+  $("joueursBody").scrollTop=0;
+}
+function renderJoueurs(){
+  $("joueursCount").textContent=tn("pl.count",J.length);
+  var body=$("joueursBody");
+  body.innerHTML="";
+  peindreCarnet(body);
+}
 function peindreCarnet(host){
   if(!J.length){
     host.appendChild(el("p","empty",t("pl.empty")));
@@ -483,24 +490,27 @@ function creerDepuisLeChamp(){
   var champ=$("jrNouveau");
   if(!ajouterJoueur(champ.value)) return;
   champ.value="";
-  renderPalmares();
+  renderJoueurs();
   buzz(8);
 }
 $("jrAjouter").addEventListener("click",creerDepuisLeChamp);
 $("jrNouveau").addEventListener("keydown",function(e){ if(e.key==="Enter") creerDepuisLeChamp(); });
 
 /* --- la fiche d'un joueur ------------------------------------------- */
-var FICHE=null;
+/* la fiche s'ouvre du carnet ou du palmarès, et y ramène */
+var FICHE=null, FICHE_RETOUR="hall";
 
 function ouvrirFiche(id){
   FICHE=id;
+  FICHE_RETOUR = $("s-joueurs").classList.contains("on") ? "joueurs" : "hall";
   renderFiche();
   show("fiche");
   $("ficheBody").scrollTop=0;
 }
 function renderFiche(){
   var j=joueur(FICHE);
-  if(!j){ renderPalmares(); show("hall"); return; }
+  if(!j){ quitterFiche(); return; }
+  $("ficheBackLab").textContent=t(FICHE_RETOUR==="joueurs" ? "pal.tab.people" : "hall.title");
   var k="j:"+j.id, toutes=partiesDe(k), body=$("ficheBody");
   var mes=toutes.filter(function(x){ return compte(x.g); });
   body.innerHTML="";
@@ -658,9 +668,7 @@ function renderFiche(){
       return;
     }
     supprimerJoueur(j.id);
-    PAL.onglet="gens";
-    renderPalmares();
-    show("hall");
+    quitterFiche();
   });
   eb.appendChild(del);
   eb.appendChild(el("p","hint",t("pal.del.note")));
@@ -676,7 +684,13 @@ $("palTabs").addEventListener("click",function(e){
   $("hallBody").scrollTop=0;
 });
 $("hallBack").addEventListener("click",function(){ show(PAL.retour); });
-$("ficheBack").addEventListener("click",function(){ renderPalmares(); show("hall"); });
+function quitterFiche(){
+  if(FICHE_RETOUR==="joueurs") renderJoueurs(); else renderPalmares();
+  show(FICHE_RETOUR);
+}
+$("ficheBack").addEventListener("click",quitterFiche);
+$("openJoueurs").addEventListener("click",ouvrirJoueurs);
+$("joueursBack").addEventListener("click",function(){ show("games"); });
 $("openPalmares").addEventListener("click",function(){ ouvrirPalmares(null,"games"); });
 $("openHall").addEventListener("click",function(){ ouvrirPalmares(S.game,"setup"); });
 /* le bouton palmarès de chaque jeu à tour de rôle ramène à sa préparation */
