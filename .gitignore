@@ -13,3 +13,4 @@ android/local.properties
 
 # Banc de comparaison : versions de référence extraites de l'historique
 .banc/
+graphify-out/
