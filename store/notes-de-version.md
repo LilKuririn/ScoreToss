@@ -385,6 +385,32 @@ Le palmarès, derrière le trophée, se concentre sur le classement et l'histori
 
 ---
 
+## Version 7.6 — Sauvegarde et confort
+
+Nom de release, jamais montré aux utilisateurs : `7.6 — Confort`
+
+Depuis la 7.5 : l'export Android passe par le sélecteur du système (CreateDocument), sans permission
+de stockage — avant Android 10 il échouait ; liens de retour à 44 px de cible ; touch-action:
+manipulation sur les boutons. Banc : zéro différence.
+
+### en-US *(224 / 500)*
+
+```
+Backups: on Android, you now choose where to save the file. Export also works on older Android versions, where it used to fail.
+
+Comfort: back buttons are easier to tap, and tapping a button quickly no longer zooms the page.
+```
+
+### fr-FR *(271 / 500)*
+
+```
+Sauvegarde : sur Android, vous choisissez désormais où enregistrer le fichier. L'export fonctionne aussi sur les anciennes versions d'Android, où il échouait.
+
+Confort : les boutons de retour se touchent plus facilement, et taper vite sur un bouton ne zoome plus la page.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
