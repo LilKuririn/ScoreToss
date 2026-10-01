@@ -21,11 +21,11 @@
 }
 .mk-row.on .mate{color:color-mix(in oklab,var(--c) 62%,var(--tone))}
 .mk-row{
-  --c:#E14434;
+  --c:var(--rouge);
   display:flex;align-items:center;gap:10px;
   padding:11px 13px;border-radius:12px;
   background:var(--panel);border:1px solid var(--line);
-  transition:border-color .16s ease, background .16s ease, opacity .16s ease;
+  transition:border-color var(--t-moyen) ease, background var(--t-moyen) ease, opacity var(--t-moyen) ease;
 }
 .mk-row i.dot{width:9px;height:9px;border-radius:50%;background:var(--c);flex:0 0 auto}
 .mk-row .who{
@@ -50,7 +50,7 @@
 .mk-row.out{opacity:.45}
 .mk-row.out .sc{text-decoration:line-through}
 .mk-row .tag{
-  flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.08em;
+  flex:0 0 auto;font-size:11px;font-weight:700;letter-spacing:.08em;
   text-transform:uppercase;color:var(--danger);
 }
 
@@ -61,7 +61,7 @@
   height:52px;border-radius:11px;
   background:var(--panel-2);border:1px solid transparent;
   font-family:var(--fm);font-size:18px;font-weight:700;color:var(--ink);
-  transition:background .12s ease, transform .1s ease;
+  transition:background var(--t-court) ease, transform .1s ease;
 }
 .mk-key:active{background:color-mix(in oklab,var(--ink) 16%,var(--panel-2));transform:scale(.96)}
 .mk-key.on{
@@ -73,7 +73,7 @@
   width:100%;margin-top:7px;height:46px;border-radius:11px;
   background:transparent;border:1px solid var(--line-2);
   font-size:14px;font-weight:600;color:var(--muted);
-  transition:background .12s ease,color .12s ease;
+  transition:background var(--t-court) ease,color var(--t-court) ease;
 }
 .mk-miss:active{background:color-mix(in oklab,var(--danger) 14%,transparent);color:var(--danger)}
 .mk-miss.on{border-color:var(--danger);color:var(--danger)}
@@ -102,7 +102,7 @@
 .mk-zone{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
 .mk-zone .mk-list{flex:0 1 auto;padding-top:12px}
 .mk-hero{
-  --c:#E14434;
+  --c:var(--rouge);
   display:flex;flex-direction:column;gap:10px;
   padding:13px 15px 15px;border-radius:16px;
   background:
@@ -124,7 +124,7 @@
 .hero-mil{display:flex;align-items:flex-end;gap:14px}
 .hero-sc{font-size:clamp(56px,17vw,76px);line-height:.8;color:color-mix(in oklab,var(--c) 62%,var(--tone))}
 .hero-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;padding-bottom:1px}
-.hero-info .reste{font-family:var(--fm);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.hero-info .reste{font-family:var(--fm);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
 .hero-info .idee{font-size:14px;font-weight:600;line-height:1.3;color:var(--ink);text-wrap:balance}
 
 /* la piste vers 50 ; le trait marque 25, où ramène un dépassement */
@@ -145,7 +145,7 @@
 .mk-hero .mk-quilles i{width:9px;height:17px;border-radius:4.5px 4.5px 2px 2px}
 
 .mk-ligne{
-  --c:#E14434;
+  --c:var(--rouge);
   display:flex;align-items:center;gap:10px;
   padding:10px 13px 11px;border-radius:12px;
   background:var(--panel);border:1px solid var(--line);
@@ -157,7 +157,7 @@
   min-width:0;font-size:14.5px;font-weight:600;color:var(--ink);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.mk-ligne .suite{flex:0 0 auto;font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.mk-ligne .suite{flex:0 0 auto;font-family:var(--fm);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .mk-ligne .last{
   flex:0 0 auto;padding:3px 7px;border-radius:7px;
   font-family:var(--fm);font-size:12px;font-weight:700;
@@ -170,7 +170,7 @@
   flex:0 0 auto;min-width:32px;text-align:right;
   font-family:var(--fm);font-size:19px;font-weight:800;letter-spacing:-.03em;color:var(--ink);
 }
-.mk-ligne .tag{flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--danger)}
+.mk-ligne .tag{flex:0 0 auto;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--danger)}
 .mk-ligne.out{opacity:.45}
 .mk-ligne.out .sc{text-decoration:line-through}
 .mk-ligne.retour .sc{color:var(--danger)}

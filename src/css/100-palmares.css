@@ -4,7 +4,7 @@
 .hall-link{
   display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
-  padding:14px;text-align:left;transition:border-color .16s ease;
+  padding:14px;text-align:left;transition:border-color var(--t-moyen) ease;
 }
 .hall-link[hidden]{display:none}
 .hall-link b{display:block;font-size:15px;font-weight:700;letter-spacing:-.01em;margin-top:5px}
@@ -28,7 +28,7 @@ a.hall-link{text-decoration:none;color:inherit}
 .about-id h4{margin:0;font-size:26px;font-weight:800;letter-spacing:-.035em}
 .about-tag{display:block;margin-top:2px;font-size:15px;font-weight:600;letter-spacing:0;color:var(--muted)}
 .about-id p{font-size:13.5px;line-height:1.55;color:var(--muted)}
-.about-ver{font-family:var(--fm);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.about-ver{font-size:12px;font-weight:600;color:var(--muted)}
 .about-links{display:flex;flex-direction:column;gap:9px;padding-top:18px}
 .toast{
   position:absolute;left:50%;bottom:26px;transform:translate(-50%,14px);
@@ -36,13 +36,13 @@ a.hall-link{text-decoration:none;color:inherit}
   padding:12px 18px;border-radius:12px;
   background:var(--ink);color:var(--bg);
   font-size:13.5px;font-weight:600;text-align:center;
-  opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;
+  opacity:0;pointer-events:none;transition:opacity var(--t-long) ease,transform var(--t-long) ease;
 }
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
 .share-btn{
   display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;padding:13px;border-radius:12px;
+  width:100%;padding:13px;border-radius:var(--r-btn);
   background:var(--panel);border:1px solid var(--line-2);
   font-size:14.5px;font-weight:600;color:var(--ink);
 }
@@ -69,9 +69,9 @@ a.hall-link{text-decoration:none;color:inherit}
   flex:0 0 auto;display:flex;align-items:center;gap:6px;
   padding:7px 12px;border-radius:20px;border:1px solid var(--line);
   font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;
-  transition:color .16s ease,border-color .16s ease,background .16s ease;
+  transition:color var(--t-moyen) ease,border-color var(--t-moyen) ease,background var(--t-moyen) ease;
 }
-.pal-pill small{font-family:var(--fm);font-size:10px;font-weight:500;opacity:.8}
+.pal-pill small{font-family:var(--fm);font-size:11px;font-weight:500;opacity:.8}
 .pal-pill.on{
   background:color-mix(in oklab,var(--ink) 13%,var(--panel-2));color:var(--ink);
   border-color:color-mix(in oklab,var(--ink) 42%,transparent);
@@ -127,7 +127,7 @@ a.hall-link{text-decoration:none;color:inherit}
 .pal-row .sub{font-size:12px;color:var(--muted)}
 .pal-row .pc{font-size:17px;text-align:right}
 .pal-row .pc small{
-  display:block;margin-top:2px;font-family:var(--fm);font-size:9px;font-weight:500;
+  display:block;margin-top:2px;font-family:var(--fm);font-size:11px;font-weight:500;
   letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
 }
 .pal-row .bar{grid-column:2 / 4;height:4px;margin-top:4px;border-radius:2px;background:var(--panel-2);overflow:hidden}
@@ -139,7 +139,7 @@ a.hall-link{text-decoration:none;color:inherit}
 .pal-best .o{font-family:var(--fm);font-size:11px;color:var(--muted)}
 .pal-best .n{display:flex;align-items:center;gap:8px;min-width:0;font-size:14px}
 .pal-best .n b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pal-best .d{font-family:var(--fm);font-size:10px;color:var(--muted);flex:0 0 auto}
+.pal-best .d{font-family:var(--fm);font-size:11px;color:var(--muted);flex:0 0 auto}
 .pal-best .s{font-size:17px}
 
 /* --- une partie de l'historique ------------------------------------- */
@@ -150,8 +150,8 @@ a.hall-link{text-decoration:none;color:inherit}
 }
 .pal-game:active{background:var(--panel-2)}
 .pal-game .top{grid-column:1 / 3;display:flex;align-items:center;gap:8px}
-.pal-game .top .eyebrow{font-size:9.5px}
-.pal-game .top .t{margin-left:auto;font-family:var(--fm);font-size:10px;color:var(--muted)}
+.pal-game .top .eyebrow{font-size:11px}
+.pal-game .top .t{margin-left:auto;font-family:var(--fm);font-size:11px;color:var(--muted)}
 .pal-game .say{min-width:0;font-size:14px;line-height:1.35;color:var(--muted)}
 .pal-game .say b{color:var(--ink);font-weight:700}
 .pal-game .sc{font-size:18px;text-align:right;white-space:nowrap}
@@ -218,7 +218,7 @@ a.hall-link{text-decoration:none;color:inherit}
 .pal-medaille .m{
   width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
   background:var(--panel-2);border:1.5px dashed var(--line-2);color:var(--muted);
-  transition:transform .16s ease,box-shadow .16s ease;
+  transition:transform var(--t-moyen) ease,box-shadow var(--t-moyen) ease;
 }
 .pal-medaille .txt{font-family:var(--fm);font-weight:700;font-size:14px;letter-spacing:-.02em}
 .pal-medaille .txt.long{font-size:11.5px;letter-spacing:-.04em}
@@ -226,7 +226,6 @@ a.hall-link{text-decoration:none;color:inherit}
   font-size:11px;line-height:1.25;text-align:center;color:var(--muted);
   max-width:100%;overflow-wrap:anywhere;
 }
-.pal-medaille:not(.on) .m{opacity:.6}
 .pal-medaille.on .m{
   border:2px solid var(--c);
   background:color-mix(in oklab,var(--c) 20%,var(--panel));
@@ -240,5 +239,5 @@ a.hall-link{text-decoration:none;color:inherit}
 }
 .pal-hf-legende b{font-size:14.5px}
 .pal-hf-legende span{font-size:13px;line-height:1.45;color:var(--muted)}
-.pal-hf-legende em{font-style:normal;font-family:var(--fm);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.pal-hf-legende em{font-style:normal;font-size:11px;font-weight:600;color:var(--muted);margin-top:3px}
 .pal-hf-legende em.oui{color:var(--live)}

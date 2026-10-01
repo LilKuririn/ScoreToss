@@ -4,10 +4,10 @@
 .brand-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
 .ghost-btn{
   display:flex;align-items:center;gap:7px;flex:0 0 auto;
-  padding:9px 13px;border-radius:11px;
+  padding:9px 13px;border-radius:var(--r-btn);
   background:var(--panel);border:1px solid var(--line);
   font-size:13.5px;font-weight:600;color:var(--ink);
-  transition:border-color .16s ease;
+  transition:border-color var(--t-moyen) ease;
 }
 .ghost-btn svg{color:var(--muted)}
 .ghost-btn:active{border-color:var(--line-2)}
@@ -16,7 +16,7 @@
   position:relative;width:42px;height:42px;border-radius:12px;
   display:grid;place-items:center;
   background:var(--panel);border:1px solid var(--line);color:var(--ink);
-  transition:border-color .16s ease,color .16s ease,transform .12s ease;
+  transition:border-color var(--t-moyen) ease,color var(--t-moyen) ease,transform var(--t-court) ease;
 }
 .nav-btn[hidden]{display:none}
 .nav-btn:active{transform:scale(.94)}
@@ -43,14 +43,14 @@
 .trow{display:flex;align-items:center;gap:9px}
 .trow + .trow,.trow-sw + .trow{margin-top:8px}
 .trow .seed{
-  font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--muted);
+  font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--muted);
   width:19px;flex:0 0 auto;
 }
 .pick{
   width:34px;height:34px;flex:0 0 auto;border-radius:10px;
   background:color-mix(in oklab,var(--c) 16%,var(--panel));
   border:1px solid color-mix(in oklab,var(--c) 34%,transparent);
-  display:grid;place-items:center;transition:transform .14s ease;
+  display:grid;place-items:center;transition:transform var(--t-moyen) ease;
 }
 .pick i{width:13px;height:13px;border-radius:50%;background:var(--c);display:block}
 .pick:active{transform:scale(.92)}
@@ -71,14 +71,14 @@
 
 .bk-col{
   position:absolute;top:0;
-  font-family:var(--fm);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  font-family:var(--fm);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--muted);
 }
 .bk-match{
   position:absolute;display:flex;flex-direction:column;justify-content:center;gap:2px;
   padding:8px 10px;border-radius:11px;text-align:left;
   background:var(--panel);border:1px solid var(--line);
-  transition:border-color .18s ease,background .18s ease;
+  transition:border-color var(--t-moyen) ease,background var(--t-moyen) ease;
 }
 .bk-match.playable{
   background:color-mix(in oklab,var(--ink) 5%,var(--panel));
@@ -99,7 +99,7 @@
 .bk-side.named span{color:var(--ink);font-weight:600}
 .bk-side.won span,.bk-side.won b{color:color-mix(in oklab,var(--c) 62%,var(--tone));font-weight:700}
 .bk-side.lost span,.bk-side.lost b{color:var(--muted);font-weight:500}
-.bk-side.tbd span{font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.bk-side.tbd span{font-family:var(--fm);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
 .bk-rule{height:1px;background:var(--line);margin:2px 0}
 
 .bk-bar{
@@ -113,10 +113,10 @@
 .bk-play{
   flex:0 0 auto;padding:14px 22px;border-radius:12px;
   background:var(--ink);color:var(--bg);font-size:15px;font-weight:700;
-  transition:transform .12s ease;
+  transition:transform var(--t-court) ease;
 }
 .bk-play:active{transform:scale(.97)}
 .sheet-note{font-size:15px;font-weight:600;letter-spacing:-.01em;padding-top:6px}
-.bk-champ{--team:#E14434}
+.bk-champ{--team:var(--rouge)}
 .bk-champ .bk-vs{font-size:19px;font-weight:800;letter-spacing:-.03em;color:color-mix(in oklab,var(--team) 62%,var(--tone))}
 

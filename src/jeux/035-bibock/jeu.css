@@ -13,7 +13,7 @@
   background:color-mix(in oklab,var(--team) 72%,var(--tone));
   transform:rotate(45deg);
 }
-.bi-stock span{margin-left:5px;font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--muted)}
+.bi-stock span{margin-left:5px;font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--muted)}
 
 .bi-rows{display:flex;flex-direction:column;gap:8px}
 .bi-rec-titre{margin-top:2px}

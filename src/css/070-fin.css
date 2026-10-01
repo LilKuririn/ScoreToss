@@ -2,7 +2,7 @@
    4. ÉCRAN DE FIN
    ============================================================= */
 .over{
-  --team:#E14434;
+  --team:var(--rouge);
   /* le contenu prime sur le centrage : avec le graphe et le face-à-face,
      l'écran dépasse la hauteur d'un téléphone et doit défiler. Centrer
      un contenu plus haut que sa boîte en rendrait le haut inatteignable. */
@@ -38,7 +38,6 @@
 }
 @keyframes draw{to{stroke-dashoffset:0}}
 .prog-dots{animation:fade .35s ease .85s backwards;opacity:1}
-@keyframes fade{from{opacity:0}to{opacity:1}}
 .prog-grid{stroke:var(--line-2);stroke-width:1}
 .prog-tick{stroke:var(--line);stroke-width:1}
 .prog-goal{stroke:var(--line-2);stroke-width:1;stroke-dasharray:2 4}
@@ -50,8 +49,7 @@
 }
 .tale-row.head{border-top:0;padding-top:0}
 .tale-lab{
-  font-family:var(--fm);font-size:9px;font-weight:500;
-  letter-spacing:.11em;text-transform:uppercase;color:var(--muted);text-align:center;
+  font-size:11px;font-weight:500;color:var(--muted);text-align:center;
 }
 .tale-v{font-size:16px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .tale-v.b{text-align:right}

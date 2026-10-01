@@ -17,23 +17,21 @@
   --ff:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   --fm:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
   --r:14px;
+  --r-btn:12px;           /* tous les boutons d'action, principaux comme secondaires */
+  --rouge:#E14434;         /* teinte d'équipe par défaut, avant qu'une couleur soit posée */
+  /* durées : un retour au doigt, un changement d'état, une transition de fond */
+  --t-court:.12s; --t-moyen:.16s; --t-long:.25s;
   color-scheme:dark;
 }
+/* le sombre est la base : le clair la remplace, sauf choix explicite du sombre */
 @media (prefers-color-scheme:light){
-  :root{
+  :root:not([data-theme="dark"]){
     --bg:#EFF2F2; --panel:#FFFFFF; --panel-2:#E7EBEC;
     --line:rgba(13,20,22,.10); --line-2:rgba(13,20,22,.20);
     --ink:#0E1618; --muted:#5D6A6E; --tone:#070C0D; --danger:#C2372C; --live:#2C8A56;
     --shadow:0 24px 60px rgba(13,20,22,.14);
     color-scheme:light;
   }
-}
-:root[data-theme="dark"]{
-  --bg:#0D1012; --panel:#14181B; --panel-2:#1B2124;
-  --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.16);
-  --ink:#EAEEF0; --muted:#8D999E; --tone:#FFFFFF; --danger:#E5645A; --live:#4FB07A;
-  --shadow:0 24px 60px rgba(0,0,0,.55);
-  color-scheme:dark;
 }
 :root[data-theme="light"]{
   --bg:#EFF2F2; --panel:#FFFFFF; --panel-2:#E7EBEC;
@@ -91,9 +89,10 @@ h1,h2,h3,p{margin:0}
 .screen.on{display:flex}
 
 /* --- éléments typographiques partagés ------------------------ */
+/* un libellé se lit, il ne se déchiffre pas : police du texte, casse de la phrase */
 .eyebrow{
-  font-family:var(--fm);font-size:10px;font-weight:500;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  font-family:var(--ff);font-size:12px;font-weight:600;
+  letter-spacing:.01em;color:var(--muted);
 }
 .num{font-variant-numeric:tabular-nums;letter-spacing:-.04em;font-weight:800}
 

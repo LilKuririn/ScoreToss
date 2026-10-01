@@ -7,12 +7,12 @@
 .fl-scores{display:flex;gap:7px;overflow-x:auto;padding:0 14px 12px;scrollbar-width:none}
 .fl-scores::-webkit-scrollbar{display:none}
 .fl-score{
-  --c:#E14434;
+  --c:var(--rouge);
   flex:1 0 116px;min-width:0;
   display:grid;grid-template-columns:auto 1fr;column-gap:7px;row-gap:2px;align-items:center;
   padding:9px 12px 8px;border-radius:12px;
   background:var(--panel);border:1px solid var(--line);
-  transition:border-color .16s ease,background .16s ease;
+  transition:border-color var(--t-moyen) ease,background var(--t-moyen) ease;
 }
 .fl-score i.dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
 .fl-score .who{font-size:13px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -59,8 +59,8 @@
 
 .fl-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .fl-btn{
-  height:46px;border-radius:11px;background:transparent;border:1px solid var(--line-2);
-  font-size:14px;font-weight:600;color:var(--ink);transition:background .12s ease,color .12s ease;
+  height:46px;border-radius:var(--r-btn);background:transparent;border:1px solid var(--line-2);
+  font-size:14px;font-weight:600;color:var(--ink);transition:background var(--t-court) ease,color var(--t-court) ease;
 }
 .fl-btn:active{background:color-mix(in oklab,var(--ink) 8%,transparent)}
 .fl-btn:disabled{opacity:.32}
@@ -100,7 +100,7 @@
 /* feuille de match : une ligne par volée, chaque fléchette se corrige */
 .fl-log{width:100%;border-collapse:collapse}
 .fl-log th{
-  font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.14em;
+  font-family:var(--fm);font-size:10.5px;font-weight:500;letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);text-align:left;padding:0 0 8px;
 }
 .fl-log th:last-child,.fl-log td:last-child{text-align:right}
@@ -127,7 +127,7 @@
 /* le classement de fin de partie */
 .fl-rang{width:100%;border-collapse:collapse;margin-top:4px}
 .fl-rang th{
-  font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.1em;
+  font-family:var(--fm);font-size:10.5px;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;color:var(--muted);text-align:right;padding:0 0 6px 8px;
 }
 .fl-rang th:first-child{text-align:left;padding-left:0}

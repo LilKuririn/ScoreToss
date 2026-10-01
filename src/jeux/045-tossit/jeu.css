@@ -9,12 +9,12 @@
 .ti-scores{display:flex;gap:7px;overflow-x:auto;padding:12px 14px 4px;scrollbar-width:none}
 .ti-scores::-webkit-scrollbar{display:none}
 .ti-score{
-  --c:#E14434;
+  --c:var(--rouge);
   flex:1 0 104px;min-width:0;
   display:flex;flex-direction:column;gap:6px;
   padding:9px 11px 10px;border-radius:12px;text-align:left;
   background:var(--panel);border:1px solid var(--line);
-  transition:border-color .16s ease,background .16s ease;
+  transition:border-color var(--t-moyen) ease,background var(--t-moyen) ease;
 }
 .ti-score:disabled{cursor:default}
 .ti-score .haut{display:flex;align-items:center;gap:6px;min-width:0}
@@ -80,7 +80,7 @@
   height:42px;padding:0 6px;border-radius:10px;border:1px solid var(--line-2);
   display:flex;align-items:center;justify-content:center;gap:6px;
   font-size:12.5px;font-weight:600;color:var(--muted);
-  transition:background .12s ease,border-color .12s ease,color .12s ease;
+  transition:background var(--t-court) ease,border-color var(--t-court) ease,color var(--t-court) ease;
 }
 .ti-bascule span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ti-bascule b{flex:0 0 auto;font-family:var(--fm);font-size:11px}
@@ -98,7 +98,7 @@
 .sheet-body .ti-corps{margin-top:4px}
 .ti-choix{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .ti-chip{
-  --c:#E14434;
+  --c:var(--rouge);
   display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:10px;
   background:var(--panel-2);border:1px solid transparent;font-size:13px;font-weight:600;
 }
@@ -111,7 +111,7 @@
 /* le classement de fin de partie */
 .ti-rang{width:100%;border-collapse:collapse;margin-top:4px}
 .ti-rang th{
-  font-family:var(--fm);font-size:9.5px;font-weight:500;letter-spacing:.1em;
+  font-family:var(--fm);font-size:10.5px;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;color:var(--muted);text-align:right;padding:0 0 6px 8px;
 }
 .ti-rang th:first-child{text-align:left;padding-left:0}

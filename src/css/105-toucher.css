@@ -1,0 +1,40 @@
+/* =============================================================
+   TOUCHER — le surlignage natif est coupé (010-base.css) : chaque
+   élément tactile doit donc répondre lui-même au doigt, et offrir
+   une cible d'au moins 44 px même quand il se dessine plus petit.
+   ============================================================= */
+
+/* ceux qui ne réagissaient pas : le même geste que « Valider » */
+.seg button:not(:disabled):active,.act:not(:disabled):active,.toss:not(:disabled):active,
+.pal-pill:active,.pal-row:not(:disabled):active,.pal-step:not(:disabled):active,
+.pal-medaille:active,.pal-danger:active,.ti-chip:active,.ya-chip:active{
+  transform:scale(.97);
+}
+.seg button,.act,.toss,.pal-pill,.pal-row,.pal-step,.pal-medaille,.pal-danger,.ti-chip,.ya-chip{
+  transition-property:transform,color,background,border-color,opacity;
+  transition-duration:var(--t-court);transition-timing-function:ease;
+}
+
+/* cibles agrandies sans rien changer au dessin */
+.toss,.icon-btn,.pal-pill{position:relative}    /* .jr-btn et .nav-btn sont déjà positionnés */
+.toss::after{content:"";position:absolute;inset:-11px -4px}
+.jr-btn::after{content:"";position:absolute;inset:-6px}
+.icon-btn::after{content:"";position:absolute;inset:-3px}
+.nav-btn::after{content:"";position:absolute;inset:-1px}
+.pal-pill::after{content:"";position:absolute;inset:-6px 0}
+
+/* l'accueil nomme ses trois icônes : on ne devine pas « Joueurs » à deux
+   silhouettes. Le libellé reprend le nom accessible, déjà traduit.
+   Trois tiers sous le titre : à côté de lui, « Jugadores » ne tiendrait pas à 360 px. */
+#s-games .brand-row{flex-direction:column;align-items:stretch;gap:14px}
+#s-games .nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#s-games .nav-btn{width:auto;display:flex;align-items:center;justify-content:center;gap:7px;min-width:0}
+#s-games .nav-btn::before{
+  content:attr(aria-label);order:2;min-width:0;
+  font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* à la souris : un survol discret, absent des écrans tactiles */
+@media (hover:hover){
+  button:not(:disabled):hover{opacity:.82}
+}

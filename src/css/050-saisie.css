@@ -6,21 +6,21 @@
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .step{
-  --team:#E14434;
+  --team:var(--rouge);
   display:grid;grid-template-columns:40px 1fr 40px;align-items:center;
   background:var(--panel-2);border-radius:10px;height:44px;
 }
 .step button{
   height:100%;display:grid;place-items:center;color:var(--muted);
   font-family:var(--fm);font-size:17px;line-height:1;border-radius:10px;
-  transition:color .14s ease;
+  transition:color var(--t-moyen) ease;
 }
 .step button:last-child{color:var(--ink)}      /* « + », le geste de toute la partie */
 .step button:disabled{opacity:.28;cursor:default}
 .step button:not(:disabled):active{color:var(--ink)}
 .step .v{
   text-align:center;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;
-  color:var(--muted);transition:color .18s ease;
+  color:var(--muted);transition:color var(--t-moyen) ease;
 }
 .step .v.hot{color:color-mix(in oklab,var(--team) 62%,var(--tone))}
 
@@ -30,9 +30,4 @@
   color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .outcome b{color:var(--ink);font-weight:600}
-.validate{
-  padding:14px 22px;border-radius:12px;background:var(--ink);color:var(--bg);
-  font-size:15px;font-weight:700;transition:transform .12s ease;
-}
-.validate:active{transform:scale(.97)}
 

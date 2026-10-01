@@ -10,14 +10,14 @@
 .top .sep{flex:1;height:1px;background:var(--line)}
 .icon-btn{
   width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
-  color:var(--muted);transition:background .16s ease,color .16s ease;
+  color:var(--muted);transition:background var(--t-moyen) ease,color var(--t-moyen) ease;
 }
 .icon-btn:active{background:var(--panel);color:var(--ink)}
 
 .fields{flex:1;min-height:0;display:flex;flex-direction:column}
 
 .tfield{
-  --team:#E14434;
+  --team:var(--rouge);
   --t-bg:color-mix(in oklab,var(--team) 9%,var(--panel));
   --t-ink:color-mix(in oklab,var(--team) 60%,var(--tone));
   --t-name:color-mix(in oklab,var(--team) 72%,var(--tone));
@@ -25,7 +25,7 @@
   padding:14px 16px 12px;
   display:flex;flex-direction:column;
   background:var(--t-bg);
-  transition:background .3s ease;
+  transition:background var(--t-long) ease;
 }
 .tfield + .tfield{border-top:1px solid var(--line)}
 .tfield.lead{background:color-mix(in oklab,var(--team) 14%,var(--panel))}
@@ -38,12 +38,12 @@
 .t-name span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .honor{
   display:inline-block;
-  font-family:var(--fm);font-size:9px;letter-spacing:.13em;text-transform:uppercase;
+  font-size:11px;font-weight:600;
   color:color-mix(in oklab,var(--team) 55%,var(--tone));
   border:1px solid color-mix(in oklab,var(--team) 40%,transparent);
   padding:3px 7px;border-radius:20px;
 }
-.t-mates{font-family:var(--fm);font-size:10.5px;letter-spacing:.06em;color:var(--muted);margin-top:7px}
+.t-mates{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:7px}
 .t-mates:empty{display:none}
 .t-honor{margin-top:11px}
 .t-honor[hidden]{display:none}
@@ -55,7 +55,14 @@
 .t-id{flex:1;min-width:0}
 .t-num{
   flex:0 0 auto;
-  font-size:clamp(64px,23vw,116px);line-height:.78;color:var(--t-ink);
+  /* la hauteur borne aussi le chiffre : en paysage, 23vw déborderait du panneau */
+  font-size:clamp(40px,min(23vw,22vh),116px);line-height:.78;color:var(--t-ink);
+}
+/* téléphone couché (iOS ne verrouille pas l'orientation d'une app installée
+   depuis Safari) : les deux équipes côte à côte plutôt qu'écrasées l'une sur l'autre */
+@media (orientation:landscape) and (max-height:520px){
+  .fields{flex-direction:row}
+  .tfield + .tfield{border-top:0;border-left:1px solid var(--line)}
 }
 .t-gain{
   position:absolute;right:2px;top:2px;
@@ -79,7 +86,7 @@
 
 /* réglette de progression vers l'objectif */
 .ticks{display:flex;gap:3px;align-items:flex-end;height:12px;margin-top:10px}
-.ticks i{flex:1;height:4px;border-radius:2px;background:var(--line-2);transition:background .25s ease,height .25s ease}
+.ticks i{flex:1;height:4px;border-radius:2px;background:var(--line-2);transition:background var(--t-long) ease,height var(--t-long) ease}
 .ticks i.f{background:color-mix(in oklab,var(--team) 78%,var(--tone));height:9px}
 .ticks i.last{height:12px}
 

@@ -18,7 +18,7 @@
   flex:0 0 auto;height:32px;padding:0 11px;border-radius:8px;
   background:var(--panel);border:1px solid var(--line);
   font-size:12.5px;font-weight:600;color:var(--muted);
-  transition:color .14s ease, background .14s ease;
+  transition:color var(--t-moyen) ease, background var(--t-moyen) ease;
 }
 .mtr button:active{background:var(--line-2);color:var(--ink)}
 
