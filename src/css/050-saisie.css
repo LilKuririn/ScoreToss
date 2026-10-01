@@ -7,7 +7,7 @@
 }
 .step{
   --team:#E14434;
-  display:grid;grid-template-columns:30px 1fr 30px;align-items:center;
+  display:grid;grid-template-columns:40px 1fr 40px;align-items:center;
   background:var(--panel-2);border-radius:10px;height:44px;
 }
 .step button{
@@ -15,6 +15,7 @@
   font-family:var(--fm);font-size:17px;line-height:1;border-radius:10px;
   transition:color .14s ease;
 }
+.step button:last-child{color:var(--ink)}      /* « + », le geste de toute la partie */
 .step button:disabled{opacity:.28;cursor:default}
 .step button:not(:disabled):active{color:var(--ink)}
 .step .v{

@@ -89,9 +89,11 @@
   padding:12px 14px calc(12px + env(safe-area-inset-bottom));
   display:flex;flex-direction:column;gap:9px;
 }
-.console-head{display:grid;grid-template-columns:1fr 92px 92px;align-items:center;gap:8px}
+.console-head{display:grid;grid-template-columns:1fr 104px 104px;align-items:center;gap:8px}
 .console-head .eyebrow{text-align:center}
 .console-head .eyebrow:first-child{text-align:left}
+/* une seule réglette (palet, pétanque) : son en-tête se pose au-dessus d'elle */
+.console-head .ch-palet{grid-column:2 / -1;justify-self:end;width:120px}
 .console-head b{color:color-mix(in oklab,var(--ink) 70%,var(--muted));font-weight:500}
 
-.crow{display:grid;grid-template-columns:1fr 92px 92px;align-items:center;gap:8px}
+.crow{display:grid;grid-template-columns:1fr 104px 104px;align-items:center;gap:8px}

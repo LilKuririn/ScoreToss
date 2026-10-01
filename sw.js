@@ -3,7 +3,7 @@
    dès le prochain lancement connecté, tout en restant jouable hors ligne.
    Les fichiers annexes sont servis depuis le cache, plus rapides et stables. */
 
-var CACHE = "cornscore-v2";   /* à changer avec les icônes : elles sont servies depuis le cache */
+var CACHE = "cornscore-v3";   /* à changer avec les icônes : elles sont servies depuis le cache */
 var ASSETS = [
   "./",
   "./index.html",
