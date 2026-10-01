@@ -484,6 +484,32 @@ Plus agréable au doigt : chaque bouton réagit quand on le touche, et les plus 
 
 ---
 
+## Version 7.10 — Paysage
+
+Nom de release, jamais montré aux utilisateurs : `7.10 — Paysage`
+
+Depuis la 7.9 : paysage en deux colonnes pour les six écrans de partie (classe partie, data-saisie) ;
+renderBracket et overChart découpées ; espacements sur une grille de 2 px ; banc : relevé des
+débordements (BANC.resultat.debordements).
+
+### en-US *(200 / 500)*
+
+```
+With the phone on its side, every game now uses two columns: scores on the left, input on the right. In Mölkky, Tossit and Bibock, the score stays visible while you play.
+
+A few spacing touch-ups too.
+```
+
+### fr-FR *(234 / 500)*
+
+```
+Téléphone couché, tous les jeux s'affichent désormais sur deux colonnes : les scores à gauche, la saisie à droite. Au mölkky, au tossit et au bibock, le score reste visible pendant qu'on joue.
+
+Quelques finitions d'espacement en plus.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
