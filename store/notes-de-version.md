@@ -437,6 +437,27 @@ Au palet et à la pétanque, l'indication de points se place juste au-dessus de 
 
 ---
 
+## Version 7.8 — Rangement
+
+Nom de release, jamais montré aux utilisateurs : `7.8 — Rangement`
+
+Depuis la 7.7 : aucun changement visible. S et G quittent 020-langues.js pour 040-preparation.js et
+050-cycle-partie.js ; renderFiche découpée en six fonctions. Banc : zéro différence.
+
+### en-US *(149 / 500)*
+
+```
+Under-the-hood update: the code behind player cards and game state has been reorganised. Nothing changes on screen, but the app is easier to improve.
+```
+
+### fr-FR *(169 / 500)*
+
+```
+Mise à jour de fond : le code de la fiche joueur et de l'état des parties a été réorganisé. Rien ne change à l'écran, mais l'application est plus simple à faire évoluer.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
