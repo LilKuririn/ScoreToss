@@ -1,6 +1,9 @@
 /* ------------------------------------------------------------------
    Cycle de vie de la partie
 ------------------------------------------------------------------ */
+/* état de partie */
+var G = null;
+
 function newGame(){
   G={
     game:S.game, mode:S.mode, target:S.target,

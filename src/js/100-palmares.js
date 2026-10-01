@@ -514,10 +514,26 @@ function renderFiche(){
   var k="j:"+j.id, toutes=partiesDe(k), body=$("ficheBody");
   var mes=toutes.filter(function(x){ return compte(x.g); });
   body.innerHTML="";
-  var v=0, d=0;
-  mes.forEach(function(x){ if(x.g.w===x.i) v++; else if(x.g.w>=0) d++; });
 
-  /* qui : son nom, et sa place au classement général */
+  var titre=ficheQui(body, j, k);
+  if(mes.length){ ficheChiffres(body, mes); ficheForme(body, mes); }
+  /* sans partie à plusieurs, les hauts faits restent à décrocher : ils montrent où aller */
+  peindreHautsFaits(body, j, toutes);
+  if(mes.length){ ficheJeux(body, mes, j); ficheFaceAFace(body, mes, j); }
+
+  if(toutes.length){
+    var db=blocTitre(t("pal.recent"));
+    toutes.slice(0,5).forEach(function(x){ db.appendChild(cartePartie(x.g, x.i, j.id)); });
+    body.appendChild(db);
+  }else{
+    body.appendChild(el("p","empty",t("pl.nogame")));
+  }
+  ficheEdition(body, j, titre);
+}
+
+/* qui : son nom, et sa place au classement général ; rend le titre, que
+   l'édition du nom met à jour en direct */
+function ficheQui(body, j, k){
   var hero=el("div","pal-hero");
   hero.appendChild(avatar(k,"pal-av grand"));
   var id=el("div","id");
@@ -532,109 +548,107 @@ function renderFiche(){
   id.appendChild(rang);
   hero.appendChild(id);
   body.appendChild(hero);
+  return titre;
+}
 
-  if(mes.length){
-    var figs=el("div","pal-figs");
-    [[String(mes.length),t(mes.length>1 ? "pal.fig.games_p" : "pal.fig.games")],[String(v),t(v>1 ? "pal.fig.wins_p" : "pal.fig.wins")],[pourcent(taux(v,mes.length)),t("pal.fig.rate")]].forEach(function(f){
-      var x=el("div","fig");
-      x.appendChild(el("b","num",f[0]));
-      x.appendChild(el("span",null,f[1]));
-      figs.appendChild(x);
-    });
-    body.appendChild(figs);
+/* parties, victoires, part de victoires */
+function ficheChiffres(body, mes){
+  var v=mes.filter(function(x){ return x.g.w===x.i; }).length;
+  var figs=el("div","pal-figs");
+  [[String(mes.length),t(mes.length>1 ? "pal.fig.games_p" : "pal.fig.games")],[String(v),t(v>1 ? "pal.fig.wins_p" : "pal.fig.wins")],[pourcent(taux(v,mes.length)),t("pal.fig.rate")]].forEach(function(f){
+    var x=el("div","fig");
+    x.appendChild(el("b","num",f[0]));
+    x.appendChild(el("span",null,f[1]));
+    figs.appendChild(x);
+  });
+  body.appendChild(figs);
+}
 
-    /* la forme : les cinq dernières, la plus récente à droite */
-    var fb=blocTitre(t("pal.form"));
-    var form=el("div","pal-form");
-    mes.slice(0,5).reverse().forEach(function(x){
-      var r = x.g.w<0 ? "n" : (x.g.w===x.i ? "v" : "d");
-      var i=el("i",r,{v:t("pal.form.v"), d:t("pal.form.d"), n:"="}[r]);
-      i.title=nomJeu(jeuDePartie(x.g))+" · "+dateCourte(x.g.d);
-      form.appendChild(i);
-    });
-    var serie=0;
-    while(serie<mes.length && mes[serie].g.w===mes[serie].i) serie++;
-    form.appendChild(el("span",null, serie>=2 ? tf("pal.streak",{n:serie}) : t("pal.form.hint")));
-    fb.appendChild(form);
-    body.appendChild(fb);
+/* la forme : les cinq dernières, la plus récente à droite */
+function ficheForme(body, mes){
+  var fb=blocTitre(t("pal.form"));
+  var form=el("div","pal-form");
+  mes.slice(0,5).reverse().forEach(function(x){
+    var r = x.g.w<0 ? "n" : (x.g.w===x.i ? "v" : "d");
+    var i=el("i",r,{v:t("pal.form.v"), d:t("pal.form.d"), n:"="}[r]);
+    i.title=nomJeu(jeuDePartie(x.g))+" · "+dateCourte(x.g.d);
+    form.appendChild(i);
+  });
+  var serie=0;
+  while(serie<mes.length && mes[serie].g.w===mes[serie].i) serie++;
+  form.appendChild(el("span",null, serie>=2 ? tf("pal.streak",{n:serie}) : t("pal.form.hint")));
+  fb.appendChild(form);
+  body.appendChild(fb);
+}
 
-    peindreHautsFaits(body, j, toutes);
+/* ses jeux, du plus joué au moins joué */
+function ficheJeux(body, mes, j){
+  var par={}, ordre=[];
+  mes.forEach(function(x){
+    var g=jeuDePartie(x.g);
+    if(!par[g]){ par[g]={n:0, v:0}; ordre.push(g); }
+    par[g].n++;
+    if(x.g.w===x.i) par[g].v++;
+  });
+  ordre.sort(function(a,b){ return par[b].n-par[a].n; });
+  var jb=blocTitre(t("pal.hisgames"));
+  ordre.forEach(function(g){
+    var r=el("div","pal-kv");
+    r.appendChild(el("span","k",nomJeu(g)));
+    r.appendChild(el("span","v",tf("pal.wins.of",{v:tn("pal.wins",par[g].v), n:tn("pal.games",par[g].n)})));
+    var bar=el("span","bar"), f=el("i");
+    f.style.width=taux(par[g].v,par[g].n)+"%";
+    f.style.background=color(j.couleur).hex;
+    bar.appendChild(f);
+    r.appendChild(bar);
+    jb.appendChild(r);
+  });
+  body.appendChild(jb);
+}
 
-    /* ses jeux, du plus joué au moins joué */
-    var par={}, ordre=[];
-    mes.forEach(function(x){
-      var g=jeuDePartie(x.g);
-      if(!par[g]){ par[g]={n:0, v:0}; ordre.push(g); }
-      par[g].n++;
-      if(x.g.w===x.i) par[g].v++;
-    });
-    ordre.sort(function(a,b){ return par[b].n-par[a].n; });
-    var jb=blocTitre(t("pal.hisgames"));
-    ordre.forEach(function(g){
-      var r=el("div","pal-kv");
-      r.appendChild(el("span","k",nomJeu(g)));
-      r.appendChild(el("span","v",tf("pal.wins.of",{v:tn("pal.wins",par[g].v), n:tn("pal.games",par[g].n)})));
-      var bar=el("span","bar"), f=el("i");
-      f.style.width=taux(par[g].v,par[g].n)+"%";
-      f.style.background=color(j.couleur).hex;
-      bar.appendChild(f);
-      r.appendChild(bar);
-      jb.appendChild(r);
-    });
-    body.appendChild(jb);
-
-    /* face à face : chaque adversaire, du plus rencontré au moins */
-    var vs={}, vus=[];
-    mes.forEach(function(x){
-      if(x.g.w<0) return;
-      for(var i=0;i<x.g.n.length;i++){
-        if(i===x.i) continue;
-        membres(x.g,i).forEach(function(o){
-          if(!vs[o]){ vs[o]={g:0, p:0}; vus.push(o); }
-          if(x.g.w===x.i) vs[o].g++;
-          else if(x.g.w===i) vs[o].p++;
-        });
-      }
-    });
-    vus=vus.filter(function(o){ return vs[o].g+vs[o].p; });
-    if(vus.length){
-      vus.sort(function(a,b){ return (vs[b].g+vs[b].p)-(vs[a].g+vs[a].p); });
-      var hb=blocTitre(t("pal.h2h"));
-      vus.slice(0,5).forEach(function(o){
-        var x=vs[o], tot=x.g+x.p;
-        var r=el("div","pal-kv vs");
-        var kk=el("span","k");
-        kk.appendChild(pastille(teinteDe(o)));
-        kk.appendChild(el("span",null,nomDe(o)));
-        if(estInvite(o)) kk.appendChild(el("span","pal-tag",t("pal.guest")));
-        r.appendChild(kk);
-        r.appendChild(el("b","v num",x.g+" – "+x.p));
-        var bar=el("span","bar"), a=el("i"), c=el("i");
-        a.style.width=(x.g/tot*100)+"%";
-        a.style.background=color(j.couleur).hex;
-        c.style.width=(x.p/tot*100)+"%";
-        c.style.background=teinteDe(o);
-        c.style.opacity=".55";
-        bar.appendChild(a); bar.appendChild(c);
-        r.appendChild(bar);
-        hb.appendChild(r);
+/* face à face : chaque adversaire, du plus rencontré au moins */
+function ficheFaceAFace(body, mes, j){
+  var vs={}, vus=[];
+  mes.forEach(function(x){
+    if(x.g.w<0) return;
+    for(var i=0;i<x.g.n.length;i++){
+      if(i===x.i) continue;
+      membres(x.g,i).forEach(function(o){
+        if(!vs[o]){ vs[o]={g:0, p:0}; vus.push(o); }
+        if(x.g.w===x.i) vs[o].g++;
+        else if(x.g.w===i) vs[o].p++;
       });
-      hb.appendChild(el("p","hint",t("pal.h2h.note")));
-      body.appendChild(hb);
     }
+  });
+  vus=vus.filter(function(o){ return vs[o].g+vs[o].p; });
+  if(!vus.length) return;
+  vus.sort(function(a,b){ return (vs[b].g+vs[b].p)-(vs[a].g+vs[a].p); });
+  var hb=blocTitre(t("pal.h2h"));
+  vus.slice(0,5).forEach(function(o){
+    var x=vs[o], tot=x.g+x.p;
+    var r=el("div","pal-kv vs");
+    var kk=el("span","k");
+    kk.appendChild(pastille(teinteDe(o)));
+    kk.appendChild(el("span",null,nomDe(o)));
+    if(estInvite(o)) kk.appendChild(el("span","pal-tag",t("pal.guest")));
+    r.appendChild(kk);
+    r.appendChild(el("b","v num",x.g+" – "+x.p));
+    var bar=el("span","bar"), a=el("i"), c=el("i");
+    a.style.width=(x.g/tot*100)+"%";
+    a.style.background=color(j.couleur).hex;
+    c.style.width=(x.p/tot*100)+"%";
+    c.style.background=teinteDe(o);
+    c.style.opacity=".55";
+    bar.appendChild(a); bar.appendChild(c);
+    r.appendChild(bar);
+    hb.appendChild(r);
+  });
+  hb.appendChild(el("p","hint",t("pal.h2h.note")));
+  body.appendChild(hb);
+}
 
-  }
-  /* sans partie à plusieurs, les hauts faits restent à décrocher : ils montrent où aller */
-  if(!mes.length) peindreHautsFaits(body, j, toutes);
-  if(toutes.length){
-    var db=blocTitre(t("pal.recent"));
-    toutes.slice(0,5).forEach(function(x){ db.appendChild(cartePartie(x.g, x.i, j.id)); });
-    body.appendChild(db);
-  }else{
-    body.appendChild(el("p","empty",t("pl.nogame")));
-  }
-
-  /* modifier : son nom, sa couleur, ou le retirer du carnet */
+/* modifier : son nom, sa couleur, ou le retirer du carnet */
+function ficheEdition(body, j, titre){
   var eb=blocTitre(t("pal.edit"));
   var nom=el("input","field-input");
   nom.type="text";

@@ -1,6 +1,19 @@
 /* ------------------------------------------------------------------
    Écran de préparation
 ------------------------------------------------------------------ */
+/* état de préparation — il lit le registre : il ne peut naître qu'une
+   fois les jeux déclarés */
+var S = {
+  game:jeuxDuel()[0], mode:"simple", target:21, palets:4,
+  /* un score par jeu : jouer une belle au palet ne doit pas ramener
+     le cornhole a 15 au retour */
+  tgt:ciblesParDefaut(),
+  teams:[
+    {name:"", mates:["",""], color:"rouge"},
+    {name:"", mates:["",""], color:"bleu"}
+  ]
+};
+
 function renderCards(){
   var wrap=$("cards");
   wrap.innerHTML="";
