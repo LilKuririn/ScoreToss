@@ -411,6 +411,32 @@ Confort : les boutons de retour se touchent plus facilement, et taper vite sur u
 
 ---
 
+## Version 7.7 — La console
+
+Nom de release, jamais montré aux utilisateurs : `7.7 — Console`
+
+Depuis la 7.6 : réglettes de la console à 40 px par bouton (le maximum que tient « Tirer au sort » à
+360 px), « + » à la couleur du texte ; en-tête palet/pétanque aligné sur sa réglette ; icônes
+recompressées en palette (734 → 217 Kio, aussi dans l'APK), cache du service worker en v3.
+
+### en-US *(217 / 500)*
+
+```
+During a game, the − and + buttons are wider and + stands out more: fewer mistaps, even with cold fingers.
+
+In palet and pétanque, the points label now sits right above its counter. The app is also lighter to install.
+```
+
+### fr-FR *(267 / 500)*
+
+```
+Pendant la partie, les boutons − et + sont plus larges et le + ressort mieux : moins de fausses notes, même les doigts froids.
+
+Au palet et à la pétanque, l'indication de points se place juste au-dessus de sa réglette. L'application est aussi plus légère à installer.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
