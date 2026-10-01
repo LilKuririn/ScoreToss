@@ -85,6 +85,8 @@ body{
 }
 button,input{font:inherit;color:inherit}
 button{background:none;border:0;cursor:pointer}
+/* taper vite sur « + » ne doit pas zoomer la page (double-tap de Safari) */
+button,[role=tab]{touch-action:manipulation}
 h1,h2,h3,p{margin:0}
 :focus-visible{outline:2px solid color-mix(in oklab,var(--ink) 70%,transparent);outline-offset:2px;border-radius:6px}
 
@@ -184,6 +186,9 @@ h1,h2,h3,p{margin:0}
   transition:color .16s ease;
 }
 .crumb:active{color:var(--ink)}
+/* le libellé est petit, la cible ne doit pas l'être : 44 px de haut au doigt */
+.crumb{position:relative}
+.crumb::after{content:"";position:absolute;inset:-14px -10px}
 
 .setup-body{flex:1;min-height:0;overflow-y:auto;padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
 /* les blocs gardent leur taille naturelle : c'est la colonne qui défile,

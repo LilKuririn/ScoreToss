@@ -3,6 +3,6 @@
     <string name="quit_hint">Pulsa de nuevo para salir</string>
     <string name="no_browser">Ningún navegador disponible</string>
     <string name="share_via">Compartir</string>
-    <string name="saved_to">Guardado en Descargas: %1$s</string>
+    <string name="saved">Copia guardada</string>
     <string name="save_failed">No se ha podido guardar el archivo</string>
 </resources>

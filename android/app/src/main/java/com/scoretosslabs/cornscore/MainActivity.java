@@ -15,6 +15,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -64,6 +67,36 @@ public class MainActivity extends AppCompatActivity {
                 pendingFile = null;
             }
         });
+
+    /* Le contenu à écrire attend que l'utilisateur ait choisi le fichier.
+       ponytail: perdu si l'activité est recréée pendant le choix ; il
+       suffit alors de relancer l'export. */
+    private String pendingSave;
+    private final ActivityResultLauncher<String> creator =
+        registerForActivityResult(new ActivityResultContracts.CreateDocument("application/json"), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri uri) {
+                String content = pendingSave;
+                pendingSave = null;
+                if (uri == null || content == null) return;
+                try (OutputStream out = getContentResolver().openOutputStream(uri)) {
+                    out.write(content.getBytes(StandardCharsets.UTF_8));
+                    Toast.makeText(MainActivity.this, R.string.saved, Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, R.string.save_failed, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    void enregistrer(String name, String content) {
+        pendingSave = content;
+        try {
+            creator.launch(name == null || name.isEmpty() ? "cornscore.json" : name);
+        } catch (ActivityNotFoundException e) {
+            pendingSave = null;
+            Toast.makeText(this, R.string.save_failed, Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override

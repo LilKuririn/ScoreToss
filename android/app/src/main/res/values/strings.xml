@@ -5,6 +5,6 @@
     <string name="quit_hint">Press again to leave</string>
     <string name="no_browser">No browser available</string>
     <string name="share_via">Share</string>
-    <string name="saved_to">Saved to Downloads: %1$s</string>
+    <string name="saved">Backup saved</string>
     <string name="save_failed">Could not save the file</string>
 </resources>

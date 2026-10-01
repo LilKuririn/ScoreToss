@@ -3,6 +3,6 @@
     <string name="quit_hint">Appuyez à nouveau pour quitter</string>
     <string name="no_browser">Aucun navigateur disponible</string>
     <string name="share_via">Partager</string>
-    <string name="saved_to">Enregistré dans Téléchargements : %1$s</string>
+    <string name="saved">Sauvegarde enregistrée</string>
     <string name="save_failed">Enregistrement impossible</string>
 </resources>
