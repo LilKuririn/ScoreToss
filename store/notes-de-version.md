@@ -458,6 +458,32 @@ Mise à jour de fond : le code de la fiche joueur et de l'état des parties a é
 
 ---
 
+## Version 7.9 — Lisibilité
+
+Nom de release, jamais montré aux utilisateurs : `7.9 — Lisibilité`
+
+Depuis la 7.8 : audit UI/UX. Libellés en casse de phrase dans la police du texte, aucun texte sous
+10,5 px ; accueil à trois boutons nommés ; retour visuel au toucher sur dix éléments, cibles
+agrandies ; partie en paysage côte à côte ; un seul bouton principal, jetons de durée et d'arrondi.
+
+### en-US *(303 / 500)*
+
+```
+Easier to read: the small capital-letter labels give way to larger, clearer text, and the home screen now names its Players, Records and About buttons.
+
+Nicer to tap: every button reacts to your touch, and the smallest ones are easier to hit. With the phone on its side, both teams now sit side by side.
+```
+
+### fr-FR *(336 / 500)*
+
+```
+Plus lisible : les petits libellés en capitales laissent place à un texte plus grand et plus clair, et l'accueil nomme ses boutons Joueurs, Palmarès et À propos.
+
+Plus agréable au doigt : chaque bouton réagit quand on le touche, et les plus petits se touchent plus facilement. Téléphone couché, les deux équipes s'affichent côte à côte.
+```
+
+---
+
 ## Modèle pour les suivantes
 
 Court, factuel, du point de vue de l'utilisateur. Pas de numéro de version — la console l'affiche
