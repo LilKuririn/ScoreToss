@@ -28,20 +28,27 @@ function overFacts(){
    dépasse la cible : la marge de la victoire se voit sans la lire. */
 function overChart(f,w,l){
   var N=G.rounds.length;
-  var W=320, H=118, PL=17, PR=4, PT=9, PB=15;
-  var ymax=Math.max(G.target, f.run[0][N], f.run[1][N], 1);
-  function px(i){ return PL + (i/N)*(W-PL-PR); }
-  function py(v){ return PT + (1-v/ymax)*(H-PT-PB); }
+  var g={ N:N, W:320, H:118, PL:17, PR:4, PT:9, PB:15,
+          ymax:Math.max(G.target, f.run[0][N], f.run[1][N], 1) };
+  g.px=function(i){ return g.PL + (i/N)*(g.W-g.PL-g.PR); };
+  g.py=function(v){ return g.PT + (1-v/g.ymax)*(g.H-g.PT-g.PB); };
 
   var svg=document.createElementNS(SVGNS,"svg");
   svg.setAttribute("class","prog");
-  svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  svg.setAttribute("viewBox","0 0 "+g.W+" "+g.H);
   svg.setAttribute("role","img");
   svg.setAttribute("aria-label",tf(N>1 ? "over.chart.aria_p" : "over.chart.aria",{
     a:G.teams[w].label, sa:G.scores[w],
     b:G.teams[l].label, sb:G.scores[l], n:N
   }));
+  progReperes(svg, g);
+  progCourbes(svg, g, f, w, l);
+  return svg;
+}
 
+/* les repères : points à gauche, numéros de manche en bas */
+function progReperes(svg, g){
+  var N=g.N, W=g.W, H=g.H, PL=g.PL, ymax=g.ymax, px=g.px, py=g.py;
   function rule(yv,cls){
     var ln=document.createElementNS(SVGNS,"line");
     ln.setAttribute("x1",PL); ln.setAttribute("x2",W);
@@ -92,7 +99,11 @@ function overChart(f,w,l){
     tx.textContent=n;
     svg.appendChild(tx);
   });
+}
 
+/* les deux courbes, et le point de chaque manche */
+function progCourbes(svg, g, f, w, l){
+  var N=g.N, px=g.px, py=g.py;
   /* le vainqueur passe par-dessus quand les deux courbes se croisent */
   [l,w].forEach(function(i){
     var d="";
@@ -126,7 +137,6 @@ function overChart(f,w,l){
     }
   });
   svg.appendChild(dots);
-  return svg;
 }
 
 /* Face-à-face : chaque équipe garde sa colonne, du nom jusqu'à la

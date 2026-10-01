@@ -50,7 +50,9 @@ après chaque coup ; `blocBareme` et `blocDeroule` pour sa fiche de règles ; `p
 une phrase traduite dont un nom se détache en gras ; pour son écran de fin, `carteDeFin`,
 `tableauDeFin`, `boutonsDeFin(box, partager, suitesDeFin(rejouer, reprendre))` et
 `partagerClassement`. Son écran de préparation ouvre sur `@@entete:id|cle.du.nom|Nom@@`, l'en-tête
-commun de `src/gabarits/entete-preparation.html`. **Une partie terminée est archivée avant d'être
+commun de `src/gabarits/entete-preparation.html`. Son écran de partie porte la classe `partie`,
+et sa zone de saisie l'attribut `data-saisie` : téléphone couché, le CSS commun place alors les
+scores à gauche et la saisie à droite (`src/css/030-partie.css`). **Une partie terminée est archivée avant d'être
 sauvegardée** — dans l'autre ordre, fermer l'application sur l'écran de fin la faisait perdre au
 palmarès : `apresUnCoup` et `afterHistoryChange` le garantissent.
 
@@ -81,7 +83,9 @@ l'heure et les animations sont figés : une version comparée à elle-même donn
 1. Extraire la référence : `git show <commit>:index.html > .banc/reference.html` (dossier ignoré).
 2. Servir la racine du dépôt en HTTP (par exemple `python -m http.server 8765`) et ouvrir
    `/tools/banc/index.html`.
-3. Dans la console : `demarrer({})`, puis lire `BANC.resultat`.
+3. Dans la console : `demarrer({})`, puis lire `BANC.resultat`. Ses `differences` ne gardent que
+   quatre lignes par écart ; `debordements` relit tout et liste les points où plus d'éléments
+   sortent de l'écran qu'avant — vide, sinon une mise en page casse quelque part.
 
 Tout changement censé ne rien changer à l'écran doit passer le banc avec zéro différence. Un
 nouveau jeu ajoute son parcours à `tools/banc/scenarios.js` ; recharger ensuite la page du banc

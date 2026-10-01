@@ -202,38 +202,7 @@ function renderBracket(){
     for(var i=0;i<count;i++){
       var y=HEAD+span*i+span/2-MH/2;
       var m=matchAt(r,i);
-
-      var card=el("button","bk-match");
-      card.type="button";
-      card.style.left=x+"px";
-      card.style.top=y+"px";
-      card.style.width=MW+"px";
-      card.style.height=MH+"px";
-
-      var playable = !m.done && m.a!=null && m.b!=null;
-      var sa,sb;
-      if(m.done && !m.bye){
-        sa=bkSide(m.a, m.winner===0?"won":"lost", m.score[0]);
-        sb=bkSide(m.b, m.winner===1?"won":"lost", m.score[1]);
-      }else if(m.bye){
-        sa=bkSide(m.winner===0?m.a:m.b,"won",null);
-        sb=el("div","bk-side tbd");
-        sb.appendChild(el("i"));
-        sb.appendChild(el("span",null,t("tour.bye")));
-      }else{
-        sa=bkSide(m.a,null,null);
-        sb=bkSide(m.b,null,null);
-      }
-      card.appendChild(sa);
-      card.appendChild(el("div","bk-rule"));
-      card.appendChild(sb);
-
-      if(playable){
-        card.classList.add("playable");
-        (function(id){ card.addEventListener("click",function(){ playMatch(id); }); })(T.matches.indexOf(m));
-      }else{
-        card.disabled=true;
-      }
+      var card=bkCarte(m, x, y, MW, MH);
       if(T.champion>=0 ? (r===rounds-1) : (T.matches.indexOf(m)===next)) card.id="bkNext";
       canvas.appendChild(card);
 
@@ -255,6 +224,42 @@ function renderBracket(){
   $("bkTitle").textContent = tf(played>1?"tour.head_p":"tour.head",{t:T.teams.length,m:played});
 
   renderBkBar(next);
+}
+
+/* une carte de match : ses deux camps, et de quoi le jouer s'il est prêt */
+function bkCarte(m, x, y, largeur, hauteur){
+  var card=el("button","bk-match");
+  card.type="button";
+  card.style.left=x+"px";
+  card.style.top=y+"px";
+  card.style.width=largeur+"px";
+  card.style.height=hauteur+"px";
+
+  var sa,sb;
+  if(m.done && !m.bye){
+    sa=bkSide(m.a, m.winner===0?"won":"lost", m.score[0]);
+    sb=bkSide(m.b, m.winner===1?"won":"lost", m.score[1]);
+  }else if(m.bye){
+    sa=bkSide(m.winner===0?m.a:m.b,"won",null);
+    sb=el("div","bk-side tbd");
+    sb.appendChild(el("i"));
+    sb.appendChild(el("span",null,t("tour.bye")));
+  }else{
+    sa=bkSide(m.a,null,null);
+    sb=bkSide(m.b,null,null);
+  }
+  card.appendChild(sa);
+  card.appendChild(el("div","bk-rule"));
+  card.appendChild(sb);
+
+  if(!m.done && m.a!=null && m.b!=null){
+    var id=T.matches.indexOf(m);
+    card.classList.add("playable");
+    card.addEventListener("click",function(){ playMatch(id); });
+  }else{
+    card.disabled=true;
+  }
+  return card;
 }
 
 function renderBkBar(next){

@@ -23,9 +23,9 @@
 .games > *{flex:0 0 auto}
 
 .tile{
-  display:flex;align-items:center;gap:15px;width:100%;text-align:left;
+  display:flex;align-items:center;gap:16px;width:100%;text-align:left;
   background:var(--panel);border:1px solid var(--line);border-radius:18px;
-  padding:17px 16px;
+  padding:16px 16px;
   transition:border-color var(--t-moyen) ease,transform var(--t-court) ease;
 }
 .tile:active{transform:scale(.99);border-color:var(--line-2)}
@@ -46,7 +46,7 @@
 .tile[hidden]{display:none}      /* sinon `display:flex` l'emporte sur `hidden` */
 .soon-chip{
   font-size:11px;font-weight:600;color:var(--muted);
-  border:1px solid var(--line-2);border-radius:20px;padding:3px 9px;
+  border:1px solid var(--line-2);border-radius:20px;padding:4px 8px;
 }
 
 /* fil d'ariane vers le choix du jeu */
@@ -70,7 +70,7 @@
   background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:4px;
 }
 .seg button{
-  padding:11px 8px;border-radius:10px;font-weight:600;font-size:15px;
+  padding:12px 8px;border-radius:10px;font-weight:600;font-size:15px;
   color:var(--muted);transition:background var(--t-moyen) ease,color var(--t-moyen) ease;
   display:flex;flex-direction:column;align-items:center;gap:2px;
 }
@@ -94,7 +94,7 @@
   color:color-mix(in oklab,var(--team) 62%,var(--tone));
 }
 .field-input{
-  width:100%;padding:12px 13px;border-radius:11px;
+  width:100%;padding:12px 12px;border-radius:11px;
   background:var(--panel-2);border:1px solid transparent;
   font-size:16px;font-weight:600;letter-spacing:-.01em;
   transition:border-color var(--t-moyen) ease;
@@ -105,7 +105,7 @@
 .mates.trio{grid-template-columns:1fr 1fr 1fr;gap:6px}
 .mates .field-input{font-size:14px;padding:10px 12px;font-weight:500}
 
-.swatches{display:grid;grid-template-columns:repeat(9,1fr);gap:7px;padding:3px 0}
+.swatches{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;padding:4px 0}
 .sw{
   width:100%;aspect-ratio:1;border-radius:50%;position:relative;
   background:var(--c);border:1px solid rgba(0,0,0,.18);
@@ -122,7 +122,7 @@
   background:var(--panel);border:1px solid var(--line);
   border-radius:var(--r);padding:14px;
 }
-.opt{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;flex-direction:column;gap:8px}
 .opt[hidden]{display:none}      /* sinon `display:flex` l'emporte sur `hidden` */
 .opt + .opt{margin-top:16px}
 .opt-row{display:flex;gap:6px}
@@ -147,7 +147,7 @@
 /* résumé des règles */
 #rulesBody{display:flex;flex-direction:column;gap:20px;padding-top:16px}
 .pts{display:flex;flex-direction:column;gap:10px}
-.pt-row{display:flex;align-items:center;gap:13px}
+.pt-row{display:flex;align-items:center;gap:12px}
 .pt-row b{
   flex:0 0 auto;width:34px;height:34px;border-radius:10px;
   display:grid;place-items:center;
@@ -156,8 +156,8 @@
   font-variant-numeric:tabular-nums;
 }
 .pt-row span{font-size:15px;font-weight:600;letter-spacing:-.01em}
-.rulist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px}
-.rulist li{position:relative;padding-left:17px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+.rulist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.rulist li{position:relative;padding-left:16px;font-size:13.5px;line-height:1.6;color:var(--muted)}
 .rulist li::before{
   content:"";position:absolute;left:0;top:8px;
   width:5px;height:5px;border-radius:50%;background:var(--line-2);

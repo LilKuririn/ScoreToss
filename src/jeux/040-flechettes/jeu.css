@@ -4,13 +4,13 @@
 
 /* Les scores : un par joueur ou par équipe, celui qui lance ressort. À
    plus de trois, la rangée défile plutôt que d'écraser la cible. */
-.fl-scores{display:flex;gap:7px;overflow-x:auto;padding:0 14px 12px;scrollbar-width:none}
+.fl-scores{display:flex;gap:8px;overflow-x:auto;padding:0 14px 12px;scrollbar-width:none}
 .fl-scores::-webkit-scrollbar{display:none}
 .fl-score{
   --c:var(--rouge);
   flex:1 0 116px;min-width:0;
-  display:grid;grid-template-columns:auto 1fr;column-gap:7px;row-gap:2px;align-items:center;
-  padding:9px 12px 8px;border-radius:12px;
+  display:grid;grid-template-columns:auto 1fr;column-gap:8px;row-gap:2px;align-items:center;
+  padding:8px 12px 8px;border-radius:12px;
   background:var(--panel);border:1px solid var(--line);
   transition:border-color var(--t-moyen) ease,background var(--t-moyen) ease;
 }
@@ -24,7 +24,7 @@
 .fl-score.on .sc,.fl-score.win .sc{color:color-mix(in oklab,var(--c) 62%,var(--tone))}
 
 .fl-console{
-  flex:1;min-height:0;display:flex;flex-direction:column;gap:9px;
+  flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;
   padding:0 14px calc(14px + env(safe-area-inset-bottom));
 }
 .fl-console > *{flex:0 0 auto}
@@ -104,7 +104,7 @@
   text-transform:uppercase;color:var(--muted);text-align:left;padding:0 0 8px;
 }
 .fl-log th:last-child,.fl-log td:last-child{text-align:right}
-.fl-log td{padding:7px 0;border-top:1px solid var(--line);vertical-align:middle;font-size:13.5px}
+.fl-log td{padding:8px 0;border-top:1px solid var(--line);vertical-align:middle;font-size:13.5px}
 .fl-log td.nv{font-family:var(--fm);font-size:11px;color:var(--muted);width:28px}
 .fl-log .qui{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:104px}
 .fl-log .darts{display:flex;gap:4px}
@@ -131,9 +131,9 @@
   text-transform:uppercase;color:var(--muted);text-align:right;padding:0 0 6px 8px;
 }
 .fl-rang th:first-child{text-align:left;padding-left:0}
-.fl-rang td{padding:9px 0 9px 8px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px}
+.fl-rang td{padding:8px 0 8px 8px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px}
 .fl-rang td:first-child{text-align:left;padding-left:0}
-.fl-rang .who{display:flex;align-items:center;gap:7px;min-width:0;font-weight:600}
+.fl-rang .who{display:flex;align-items:center;gap:8px;min-width:0;font-weight:600}
 .fl-rang .who i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
 .fl-rang .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fl-rang td.reste{font-weight:800}

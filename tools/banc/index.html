@@ -197,6 +197,35 @@ function comparer(A, B){
   return {points:n, identiques:identiques, differences:diffs};
 }
 
+/* Les éléments qui sortent de l'écran, point par point. Un bandeau qui défile
+   en a par conception : seul compte ce qui déborde plus qu'avant. Les écarts
+   ne gardent que quatre lignes, ce relevé lit toutes celles des deux passes. */
+function horsEcran(P){
+  var largeur={}, m={};
+  SCENARIOS.forEach(function(s){ largeur[s.nom]=s.taille[0]; });
+  P.points.forEach(function(p){
+    var W=largeur[p.scenario]||390, n=0, ex=null;
+    (p.lignes||[]).forEach(function(l){
+      if(l.charAt(0)==="#") return;
+      var c=l.split(" ¦ "), x=+c[3], w=+c[5];
+      if(w>0 && (x<-1 || x+w>W+1)){
+        n++;
+        if(!ex) ex=c[0]+"."+String(c[2]).split(" ")[0]+" «"+String(c[8]||"").slice(0,24)+"»";
+      }
+    });
+    m[p.scenario+" › "+p.point]={n:n, ex:ex};
+  });
+  return m;
+}
+function nouveauxDebordements(A, B){
+  var a=horsEcran(A), b=horsEcran(B), out=[];
+  Object.keys(b).forEach(function(k){
+    var avant=(a[k]||{}).n||0;
+    if(b[k].n>avant) out.push(k+" : "+avant+" → "+b[k].n+" ("+b[k].ex+")");
+  });
+  return out;
+}
+
 window.BANC={etat:"prêt"};
 window.demarrer=function(opts){
   opts=opts||{};
@@ -208,6 +237,7 @@ window.demarrer=function(opts){
       var r=comparer(A,B);
       r.erreursReference=A.erreurs;
       r.erreursCandidat=B.erreurs;
+      r.debordements=nouveauxDebordements(A,B);
       r.duree=Math.round((Date.now()-BANC.debut)/1000)+" s";
       BANC.resultat=r;
       BANC.etat="fini";

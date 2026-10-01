@@ -3,7 +3,7 @@
    ============================================================= */
 /* la barre du bas sert à créer : le champ, puis le bouton sur un quart de
    la largeur — étiré à la hauteur du champ plutôt qu'à la sienne */
-.jr-bar{display:flex;align-items:stretch;gap:9px}
+.jr-bar{display:flex;align-items:stretch;gap:8px}
 .jr-bar[hidden]{display:none}
 .jr-bar .field-input{flex:1 1 auto;min-width:0}
 .jr-bar .cta{flex:0 0 25%;width:auto;padding:0 8px;border-radius:11px;font-size:15px}
@@ -27,7 +27,7 @@
 /* la liste du choix : une ligne par joueur, sa couleur en pastille */
 .jr-choix{display:flex;flex-direction:column;gap:2px;margin-top:2px}
 .jr-choix button{
-  display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
   padding:12px 10px;border-radius:11px;font-size:15px;font-weight:600;color:var(--ink);
 }
 .jr-choix button:active{background:var(--panel-2)}

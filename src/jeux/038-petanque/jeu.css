@@ -4,7 +4,7 @@
   --reste:1;
   position:relative;overflow:hidden;isolation:isolate;
   display:flex;align-items:center;gap:10px;
-  height:40px;padding:0 4px 0 11px;margin-bottom:9px;
+  height:40px;padding:0 4px 0 12px;margin-bottom:8px;
   background:var(--panel-2);border-radius:10px;
 }
 .pe-chrono[hidden]{display:none}      /* sinon `display:flex` l'emporte sur `hidden` */

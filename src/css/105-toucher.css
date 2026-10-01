@@ -28,7 +28,7 @@
    Trois tiers sous le titre : à côté de lui, « Jugadores » ne tiendrait pas à 360 px. */
 #s-games .brand-row{flex-direction:column;align-items:stretch;gap:14px}
 #s-games .nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-#s-games .nav-btn{width:auto;display:flex;align-items:center;justify-content:center;gap:7px;min-width:0}
+#s-games .nav-btn{width:auto;display:flex;align-items:center;justify-content:center;gap:8px;min-width:0}
 #s-games .nav-btn::before{
   content:attr(aria-label);order:2;min-width:0;
   font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;

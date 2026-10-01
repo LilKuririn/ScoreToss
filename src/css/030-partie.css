@@ -41,11 +41,11 @@
   font-size:11px;font-weight:600;
   color:color-mix(in oklab,var(--team) 55%,var(--tone));
   border:1px solid color-mix(in oklab,var(--team) 40%,transparent);
-  padding:3px 7px;border-radius:20px;
+  padding:4px 8px;border-radius:20px;
 }
-.t-mates{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:7px}
+.t-mates{font-family:var(--fm);font-size:11px;letter-spacing:.06em;color:var(--muted);margin-top:8px}
 .t-mates:empty{display:none}
-.t-honor{margin-top:11px}
+.t-honor{margin-top:12px}
 .t-honor[hidden]{display:none}
 
 .t-score{
@@ -59,8 +59,22 @@
   font-size:clamp(40px,min(23vw,22vh),116px);line-height:.78;color:var(--t-ink);
 }
 /* téléphone couché (iOS ne verrouille pas l'orientation d'une app installée
-   depuis Safari) : les deux équipes côte à côte plutôt qu'écrasées l'une sur l'autre */
+   depuis Safari) : la colonne de 460 px laisserait 390 px de haut à partager
+   entre les scores et la saisie. On prend toute la largeur, en deux colonnes :
+   les scores à gauche, la saisie à droite. Chaque écran de partie porte la
+   classe `partie`, sa saisie l'attribut `data-saisie`. */
 @media (orientation:landscape) and (max-height:520px){
+  .shell:has(> .screen.partie.on){max-width:none}
+  .screen.partie.on{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-rows:auto minmax(0,1fr) auto;
+  }
+  .screen.partie > *{grid-column:1;min-height:0}
+  .screen.partie > .top{grid-column:1 / -1}
+  .screen.partie > [data-saisie]{
+    grid-column:2;grid-row:2 / 4;overflow-y:auto;
+    border-top:0;border-left:1px solid var(--line);
+  }
   .fields{flex-direction:row}
   .tfield + .tfield{border-top:0;border-left:1px solid var(--line)}
 }
@@ -85,7 +99,7 @@
 @keyframes bloom{from{opacity:1}to{opacity:0}}
 
 /* réglette de progression vers l'objectif */
-.ticks{display:flex;gap:3px;align-items:flex-end;height:12px;margin-top:10px}
+.ticks{display:flex;gap:4px;align-items:flex-end;height:12px;margin-top:10px}
 .ticks i{flex:1;height:4px;border-radius:2px;background:var(--line-2);transition:background var(--t-long) ease,height var(--t-long) ease}
 .ticks i.f{background:color-mix(in oklab,var(--team) 78%,var(--tone));height:9px}
 .ticks i.last{height:12px}
@@ -94,7 +108,7 @@
 .console{
   border-top:1px solid var(--line);background:var(--panel);
   padding:12px 14px calc(12px + env(safe-area-inset-bottom));
-  display:flex;flex-direction:column;gap:9px;
+  display:flex;flex-direction:column;gap:8px;
 }
 .console-head{display:grid;grid-template-columns:1fr 104px 104px;align-items:center;gap:8px}
 .console-head .eyebrow{text-align:center}

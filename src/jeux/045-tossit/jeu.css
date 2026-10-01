@@ -6,13 +6,13 @@
 
 /* La bande des joueurs : toucher un joueur le désigne gagnant de la
    manche. Celui qui lance le jack porte son badge. */
-.ti-scores{display:flex;gap:7px;overflow-x:auto;padding:12px 14px 4px;scrollbar-width:none}
+.ti-scores{display:flex;gap:8px;overflow-x:auto;padding:12px 14px 4px;scrollbar-width:none}
 .ti-scores::-webkit-scrollbar{display:none}
 .ti-score{
   --c:var(--rouge);
   flex:1 0 104px;min-width:0;
   display:flex;flex-direction:column;gap:6px;
-  padding:9px 11px 10px;border-radius:12px;text-align:left;
+  padding:8px 12px 10px;border-radius:12px;text-align:left;
   background:var(--panel);border:1px solid var(--line);
   transition:border-color var(--t-moyen) ease,background var(--t-moyen) ease;
 }
@@ -23,7 +23,7 @@
 .ti-score .bas{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .ti-score .sc{font-size:26px;line-height:1;color:var(--ink)}
 .ti-jack{
-  flex:0 0 auto;padding:3px 6px;border-radius:20px;
+  flex:0 0 auto;padding:4px 6px;border-radius:20px;
   font-family:var(--fm);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
   border:1px solid var(--line-2);color:var(--muted);
 }
@@ -70,11 +70,11 @@
 .ti-types button:disabled{opacity:.4}
 .ti-corps{display:flex;flex-direction:column;gap:8px}
 .ti-ligne{display:grid;grid-template-columns:1fr 120px;align-items:center;gap:8px}
-.ti-ligne .lab{display:flex;align-items:baseline;gap:7px;min-width:0;font-size:13.5px;font-weight:600;color:var(--ink)}
+.ti-ligne .lab{display:flex;align-items:baseline;gap:8px;min-width:0;font-size:13.5px;font-weight:600;color:var(--ink)}
 .ti-ligne .lab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ti-ligne .lab b{flex:0 0 auto;font-family:var(--fm);font-size:11.5px;color:var(--muted)}
 .ti-bonus{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ti-bonus .ti-ligne{grid-template-columns:1fr;gap:5px}
+.ti-bonus .ti-ligne{grid-template-columns:1fr;gap:4px}
 .ti-bascules{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .ti-bascule{
   height:42px;padding:0 6px;border-radius:10px;border:1px solid var(--line-2);
@@ -99,7 +99,7 @@
 .ti-choix{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .ti-chip{
   --c:var(--rouge);
-  display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:10px;
+  display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;
   background:var(--panel-2);border:1px solid transparent;font-size:13px;font-weight:600;
 }
 .ti-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
@@ -115,9 +115,9 @@
   text-transform:uppercase;color:var(--muted);text-align:right;padding:0 0 6px 8px;
 }
 .ti-rang th:first-child{text-align:left;padding-left:0}
-.ti-rang td{padding:9px 0 9px 8px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px}
+.ti-rang td{padding:8px 0 8px 8px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px}
 .ti-rang td:first-child{text-align:left;padding-left:0}
-.ti-rang .who{display:flex;align-items:center;gap:7px;min-width:0;font-weight:600}
+.ti-rang .who{display:flex;align-items:center;gap:8px;min-width:0;font-weight:600}
 .ti-rang .who i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
 .ti-rang .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ti-rang td.total{font-weight:800}

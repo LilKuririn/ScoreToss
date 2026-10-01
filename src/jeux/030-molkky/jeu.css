@@ -4,7 +4,7 @@
    écran, le pavé de saisie doit rester atteignable. */
 .mk-list{
   flex:1;min-height:0;overflow-y:auto;
-  display:flex;flex-direction:column;gap:7px;padding:0 14px 14px;
+  display:flex;flex-direction:column;gap:8px;padding:0 14px 14px;
 }
 .mk-list > *{flex:0 0 auto}
 /* à deux ou trois joueurs la liste laissait une large bande vide sous
@@ -23,7 +23,7 @@
 .mk-row{
   --c:var(--rouge);
   display:flex;align-items:center;gap:10px;
-  padding:11px 13px;border-radius:12px;
+  padding:12px 12px;border-radius:12px;
   background:var(--panel);border:1px solid var(--line);
   transition:border-color var(--t-moyen) ease, background var(--t-moyen) ease, opacity var(--t-moyen) ease;
 }
@@ -33,7 +33,7 @@
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 .mk-row .miss{
-  flex:0 0 auto;display:flex;gap:3px;
+  flex:0 0 auto;display:flex;gap:4px;
 }
 .mk-row .miss b{width:5px;height:5px;border-radius:50%;background:var(--line-2)}
 .mk-row .miss b.f{background:var(--danger)}
@@ -56,7 +56,7 @@
 
 /* Le pavé de saisie : un lancer vaut 0 à 12, la valeur étant le numéro
    de l'unique quille ou le nombre de quilles. Un appui suffit. */
-.mk-pad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.mk-pad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .mk-key{
   height:52px;border-radius:11px;
   background:var(--panel-2);border:1px solid transparent;
@@ -70,7 +70,7 @@
 }
 .mk-key:disabled,.mk-miss:disabled{opacity:.32}
 .mk-miss{
-  width:100%;margin-top:7px;height:46px;border-radius:11px;
+  width:100%;margin-top:8px;height:46px;border-radius:11px;
   background:transparent;border:1px solid var(--line-2);
   font-size:14px;font-weight:600;color:var(--muted);
   transition:background var(--t-court) ease,color var(--t-court) ease;
@@ -104,7 +104,7 @@
 .mk-hero{
   --c:var(--rouge);
   display:flex;flex-direction:column;gap:10px;
-  padding:13px 15px 15px;border-radius:16px;
+  padding:12px 16px 16px;border-radius:16px;
   background:
     radial-gradient(120% 150% at 100% 0%,color-mix(in oklab,var(--c) 24%,transparent),transparent 62%),
     color-mix(in oklab,var(--c) 9%,var(--panel));
@@ -147,11 +147,11 @@
 .mk-ligne{
   --c:var(--rouge);
   display:flex;align-items:center;gap:10px;
-  padding:10px 13px 11px;border-radius:12px;
+  padding:10px 12px 12px;border-radius:12px;
   background:var(--panel);border:1px solid var(--line);
 }
 .mk-ligne .dot{width:9px;height:9px;border-radius:50%;background:var(--c);flex:0 0 auto}
-.mk-ligne .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.mk-ligne .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 .mk-ligne .l1{display:flex;align-items:baseline;gap:8px;min-width:0}
 .mk-ligne .who{
   min-width:0;font-size:14.5px;font-weight:600;color:var(--ink);
@@ -159,7 +159,7 @@
 }
 .mk-ligne .suite{flex:0 0 auto;font-family:var(--fm);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .mk-ligne .last{
-  flex:0 0 auto;padding:3px 7px;border-radius:7px;
+  flex:0 0 auto;padding:4px 8px;border-radius:7px;
   font-family:var(--fm);font-size:12px;font-weight:700;
   background:color-mix(in oklab,var(--c) 16%,transparent);
   color:color-mix(in oklab,var(--c) 70%,var(--tone));
